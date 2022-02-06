@@ -1,0 +1,125 @@
+from IO import print, input
+from OS import name as os_name, version as os_version
+import OS
+
+typedef (let myid : Int32) -> void MyCallFunc
+
+struct Versioning {
+    let major, minor, patch : Int32
+}
+
+union Floating {
+    let single : Float32,
+    let double : Float32
+}
+
+enum FloatingType {
+    SINGLE,
+    DOUBLE
+}
+
+struct FloatingValue {
+    let value : Floating,
+    let type : FloatingType
+}
+
+constexpr VERSION : Versioning = [1, 0, 0]
+
+func print_type(const type : Type) -> None {
+    print(type.name)
+}
+
+func test(let num : Int32 = 3) -> {None, Int32} {
+    if (num % 2 == 0) {
+        return None
+        // None replaces void?
+    } else {
+        return num
+    }
+}
+
+func call_callback(let fn : (let a : Int32) -> void) -> void {
+    fn(1)
+    let callback : MyCallFunc = fn
+    callback(2)
+}
+
+func add(let nums : array Int32) -> Int32 {
+    let total : Int32 = 0
+    for (let i := 0, i < nums.count(), i += 1) {
+        total += nums.get(i)
+    }
+
+    return total
+}
+
+func add2(let nums : Tuple) -> {Int32, void} {
+    let total : Int32 = 0
+    for (let i := 0, i < nums.count(), i += 1) {
+        if (nums.type(i) != Int32) {
+            return void
+        }
+        total += nums.get(i)
+    }
+    return total
+}
+
+func multiple() -> Tuple {
+    return [1, 2, 3]
+}
+
+func main(let params : array String8) -> void {
+    let mystr : String = "Hello"
+    set mystr2 := "Constant String!"
+    
+    print(String.format("My two strings are {}, {}\n", mystr, mystr2))
+
+    foreach (item in params) {
+        print("Foreach loop {}\n", item)
+    }
+
+    for (let i := 0, i < params.count, i += 1) {
+        print(String8.format("For loop {}: {}\n", i, params.get(i)))
+    }
+
+    let ttype : {void, Int32} = test(2)
+    let atype := test(1)
+
+    match (ttype) {
+        void: lambda () -> void {
+            print("Nothing!")
+        }
+        Int32: lambda (let num : Int32) -> void {
+            print(String8.format("Number! {}\n", num))
+        }
+    }
+
+    const mytuple : Tuple = multiple()
+    const a, b, c : Int32 = multiple() // Expands tuple to match the number of variables
+
+    add([1, 2, 3, 4])
+    add(1, 2, 3, 4)
+    /*
+     * Both add calls are valid and are packed into an array
+    */
+    add2([1, 2, 3, 4])
+    add2(1, 2, 3, 4)
+    /*
+     * Also valid here, but are instead packed into a Tuple
+    */
+
+    const myfunc : MyCallFunc = lambda (const a : Int32 = 0) -> void {
+        print(String8.format("{}\n", a))
+    }
+
+    myfunc()
+    myfunc(2)
+}
+
+class MyClass : public MyOther, public MyInterface {
+public:
+    func myfunc() -> void {}
+private:
+
+protected:
+}
