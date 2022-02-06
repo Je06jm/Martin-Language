@@ -7,4 +7,8 @@
 #define bits_32
 #endif
 
+#if defined(__i386__) || defined(_X86_) || defined(__x86_64__) || defined(_M_AMD64)
+#define cpu_x86
+#endif
+
 #endif

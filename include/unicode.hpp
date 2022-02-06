@@ -2,6 +2,7 @@
 #define MARTIN_UNICODE
 
 #include <stdint.h>
+#include "platform.hpp"
 
 typedef enum {
     UnicodeType_8Bits,
@@ -13,7 +14,7 @@ typedef enum {
     UnicodeType_32BitsBig
 } UnicodeType;
 
-#ifdef __x86_64__
+#ifdef cpu_x86
 
 #define UnicodeType_16Bits UnicodeType_16BitsLittle
 #define UnicodeType_32Bits UnicodeType_32BitsLittle

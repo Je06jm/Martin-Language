@@ -7,6 +7,6 @@ env = Environment(CPPPATH=['include'])
 if debug:
     env.Append(CPPDEFINES=['MARTIN_DEBUG'])
 
-src = Global("./src/*.cpp")
+src = Glob("./src/*.cpp")
 
 prog = env.Program("martin", src)

@@ -2,6 +2,7 @@
 #define MARTIN_NODES_TYPES
 
 #include <memory>
+#include <string>
 #include "platform.hpp"
 
 class TypeBase;
