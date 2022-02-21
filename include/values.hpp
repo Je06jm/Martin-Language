@@ -6,14 +6,13 @@
 #include "types.hpp"
 
 class ValueBase;
-typedef std::unique_ptr<ValueBase> Value;
+typedef std::shared_ptr<ValueBase> Value;
 
 class ValueBase {
 public:
     ~ValueBase() = default;
 
     static Value MakeValue(Type type);
-    static Value* MakeValuePointer(Type type);
 
     virtual Type GetType() const = 0;
 
@@ -24,8 +23,14 @@ public:
     virtual void SetData(void* data) {};
     virtual void GetData(void* data) const {};
 
-    virtual void SetDataPtr(void** data) {};
-    virtual void GetDataPtr(void** data) const {};
+    void SetDataPtr(const std::shared_ptr<void>& data) { data_ptr = data; };
+    std::shared_ptr<void> GetDataPtr() { return data_ptr; };
+
+    void SetLineNumber(unsigned int number) { if (lineno == 0) lineno = number; }
+    unsigned int GetLineNumber() const { return lineno; }
+protected:
+    std::shared_ptr<void> data_ptr;
+    unsigned int lineno = 0;
 };
 
 #endif

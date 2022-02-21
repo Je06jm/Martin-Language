@@ -20,13 +20,7 @@ void print(String* str) {
     if (str->SubName() == "String8")
         string = str->value;
     
-    else if (str->SubName() == "String16") {
-        string = unicode_convert(str->value, UnicodeType_16Bits, UnicodeType_8Bits);
-        allocated = true;
-    } else if (str->SubName() == "String32") {
-        string = unicode_convert(str->value, UnicodeType_32Bits, UnicodeType_8Bits);
-        allocated = true;
-    } else if (str->SubName() == "String16l") {
+    else if (str->SubName() == "String16l") {
         string = unicode_convert(str->value, UnicodeType_16BitsLittle, UnicodeType_8Bits);
         allocated = true;
     } else if (str->SubName() == "String32l") {

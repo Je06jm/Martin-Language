@@ -29,9 +29,9 @@ const extern Type IntPtr;
 const extern Type UIntMax;
 const extern Type UIntPtr;
 
+const extern Type ID;
+
 const extern Type String8;
-const extern Type String16;
-const extern Type String32;
 const extern Type String16l;
 const extern Type String32l;
 const extern Type String16b;
@@ -42,6 +42,7 @@ const extern Type Float64;
 
 const extern Type Boolean;
 
+const extern Type Tuple;
 
 /*
 const extern Type Tuple;
@@ -80,9 +81,9 @@ public:
         UINTMAX,
         UINTPTR,
 
+        ID,
+
         STRING8,
-        STRING16,
-        STRING32,
         STRING16L,
         STRING32L,
         STRING16B,
@@ -91,7 +92,9 @@ public:
         FLOAT32,
         FLOAT64,
 
-        BOOLEAN
+        BOOLEAN,
+
+        TUPLE
     };
 
     static Type MakeType(PrimitiveType type);

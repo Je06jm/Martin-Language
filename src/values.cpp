@@ -4,6 +4,8 @@
 
 #include <unicode.hpp>
 
+#include <vector>
+
 #define ValueClass(name, type, size)\
 class name : public ValueBase {\
     Type GetType() const override {\
@@ -40,18 +42,7 @@ class name : public ValueBase {\
         constant = is_constant;\
         return true;\
     }\
-    void SetDataPtr(void** data) override {\
-        if (!constant) {\
-            uint32_t length = unicode_length(*((const uint8_t**)data), unitype);\
-            value = std::unique_ptr<size>(new size[length + unisize]);\
-            memcpy(value.get(), *((uint8_t**)data), length + unisize);\
-        }\
-    }\
-    void GetDataPtr(void** data) const override {\
-        *((size**)data) = value.get();\
-    }\
 private:\
-    std::unique_ptr<size> value = nullptr;\
     bool constant = false;\
 };
 
@@ -83,9 +74,15 @@ ValueClass(IntMaxValue, IntMax, intmax_t);
 ValueClass(IntPtrValue, IntPtr, intptr_t);
 ValueClass(UIntMaxValue, UIntMax, uintmax_t);
 ValueClass(UIntPtrValue, UIntPtr, uintptr_t);
+
+class IDValue : public ValueBase {
+public:
+    Type GetType() const override {
+        return ID;
+    }
+};
+
 StringClass(String8Value, String8, UnicodeType_8Bits, 1, uint8_t);
-StringClass(String16Value, String16, UnicodeType_16Bits, 2, uint16_t);
-StringClass(String32Value, String32, UnicodeType_32Bits, 4, uint32_t);
 StringClass(String16lValue, String16l, UnicodeType_16BitsLittle, 2, uint16_t);
 StringClass(String32lValue, String32l, UnicodeType_32BitsLittle, 4, uint32_t);
 StringClass(String16bValue, String16b, UnicodeType_16BitsBig, 2, uint16_t);
@@ -94,11 +91,32 @@ ValueClass(Float32Value, Float32, float);
 ValueClass(Float64Value, Float64, double);
 ValueClass(BooleanValue, Boolean, bool);
 
+class TupleValue : public ValueBase {
+public:
+    Type GetType() const override {
+        return Tuple;
+    }
+
+    bool IsConstant() const override {
+        return constant;
+    }
+
+    bool SetConstant(bool is_constant) {
+        constant = is_constant;
+        return true;
+    }
+private:
+    bool constant = false;
+};
+
 Value ValueBase::MakeValue(Type type) {
-    if (type->IsType(None))
+    if (type == nullptr)
+        return Value(new UnknownValue);
+
+    else if (type->IsType(None))
         return Value(new NoneValue);
 
-    if (type->IsType(Int8))
+    else if (type->IsType(Int8))
         return Value(new Int8Value);
     
     else if (type->IsType(Int16))
@@ -136,6 +154,24 @@ Value ValueBase::MakeValue(Type type) {
     else if (type->IsType(UIntPtr))
         return Value(new UIntPtrValue);
     
+    else if (type->IsType(ID))
+        return Value(new IDValue);
+
+    else if (type->IsType(String8))
+        return Value(new String8Value);
+    
+    else if (type->IsType(String16l))
+        return Value(new String16lValue);
+    
+    else if (type->IsType(String32l))
+        return Value(new String32lValue);
+    
+    else if (type->IsType(String16b))
+        return Value(new String16bValue);
+    
+    else if (type->IsType(String32b))
+        return Value(new String32bValue);
+
     else if (type->IsType(Float32))
         return Value(new Float32Value);
     
@@ -145,59 +181,8 @@ Value ValueBase::MakeValue(Type type) {
     else if (type->IsType(Boolean))
         return Value(new BooleanValue);
 
+    else if (type->IsType(Tuple))
+        return Value(new TupleValue);
+
     return Value(new UnknownValue);
-}
-
-Value* ValueBase::MakeValuePointer(Type type) {
-    if (type->IsType(None))
-        return new Value(new NoneValue);
-
-    if (type->IsType(Int8))
-        return new Value(new Int8Value);
-    
-    else if (type->IsType(Int16))
-        return new Value(new Int16Value);
-    
-    else if (type->IsType(Int32))
-        return new Value(new Int32Value);
-    
-    else if (type->IsType(UInt8))
-        return new Value(new UInt8Value);
-    
-    else if (type->IsType(UInt16))
-        return new Value(new UInt16Value);
-    
-    else if (type->IsType(UInt32))
-        return new Value(new UInt32Value);
-    
-#ifdef bits_64
-    else if (type->IsType(Int64))
-        return new Value(new Int64Value);
-    
-    else if (type->IsType(UInt64))
-        return new Value(new UInt64Value);
-#endif
-
-    else if (type->IsType(IntMax))
-        return new Value(new IntMaxValue);
-    
-    else if (type->IsType(IntPtr))
-        return new Value(new IntPtrValue);
-    
-    else if (type->IsType(UIntMax))
-        return new Value(new UIntMaxValue);
-    
-    else if (type->IsType(UIntPtr))
-        return new Value(new UIntPtrValue);
-    
-    else if (type->IsType(Float32))
-        return new Value(new Float32Value);
-    
-    else if (type->IsType(Float64))
-        return new Value(new Float64Value);
-    
-    else if (type->IsType(Boolean))
-        return new Value(new BooleanValue);
-
-    return new Value(new UnknownValue);
 }

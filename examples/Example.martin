@@ -1,8 +1,9 @@
 from IO import print, input
 from OS import name as os_name, version as os_version
 import OS
+import System as Sys
 
-typedef (let myid : Int32) -> void MyCallFunc
+typedef (let myid : Int32) -> None MyCallFunc
 
 struct Versioning {
     let major, minor, patch : Int32
@@ -32,19 +33,18 @@ func print_type(const type : Type) -> None {
 func test(let num : Int32 = 3) -> {None, Int32} {
     if (num % 2 == 0) {
         return None
-        // None replaces void?
     } else {
         return num
     }
 }
 
-func call_callback(let fn : (let a : Int32) -> void) -> void {
+func call_callback(let fn : (let a : Int32) -> None) -> None {
     fn(1)
     let callback : MyCallFunc = fn
     callback(2)
 }
 
-func add(let nums : array Int32) -> Int32 {
+func add(let nums : array[] Int32) -> set Int32 {
     let total : Int32 = 0
     for (let i := 0, i < nums.count(), i += 1) {
         total += nums.get(i)
@@ -53,11 +53,11 @@ func add(let nums : array Int32) -> Int32 {
     return total
 }
 
-func add2(let nums : Tuple) -> {Int32, void} {
+func add2(let nums : Tuple) -> {const Int32, None} {
     let total : Int32 = 0
     for (let i := 0, i < nums.count(), i += 1) {
         if (nums.type(i) != Int32) {
-            return void
+            return None
         }
         total += nums.get(i)
     }
@@ -68,9 +68,26 @@ func multiple() -> Tuple {
     return [1, 2, 3]
 }
 
-func main(let params : array String8) -> void {
+func main(let params : array[] String8) -> None {
     let mystr : String = "Hello"
     set mystr2 := "Constant String!"
+
+    const app_name : shared String8 = "My App"
+
+    let myarr : array[1,2,3] Int32
+    set myarr2 : array[,2] Int32
+
+    let myref : reference array[] Float32
+    set myref2 : refernece array[,4,] Float32
+    let myref3 : reference pointer array[] Float32
+    // And so on
+
+
+    let myptr : pointer Float64
+    set myptr2 : set pointer array[] Float64
+    let myptr3 : pointer const reference array[2] Float64
+    set myptr4 : pointer pointer set array[3,4] Float64
+    // And so on
     
     print(String.format("My two strings are {}, {}\n", mystr, mystr2))
 
@@ -82,14 +99,14 @@ func main(let params : array String8) -> void {
         print(String8.format("For loop {}: {}\n", i, params.get(i)))
     }
 
-    let ttype : {void, Int32} = test(2)
+    let ttype : {None, Int32} = test(2)
     let atype := test(1)
 
     match (ttype) {
-        void: lambda () -> void {
+        None: lambda () -> None {
             print("Nothing!")
         }
-        Int32: lambda (let num : Int32) -> void {
+        Int32: lambda (let num : Int32) -> None {
             print(String8.format("Number! {}\n", num))
         }
     }
@@ -108,7 +125,7 @@ func main(let params : array String8) -> void {
      * Also valid here, but are instead packed into a Tuple
     */
 
-    const myfunc : MyCallFunc = lambda (const a : Int32 = 0) -> void {
+    const myfunc : MyCallFunc = lambda (const a : Int32 = 0) -> None {
         print(String8.format("{}\n", a))
     }
 
@@ -118,7 +135,7 @@ func main(let params : array String8) -> void {
 
 class MyClass : public MyOther, public MyInterface {
 public:
-    func myfunc() -> void {}
+    func myfunc() -> None {}
 private:
 
 protected:

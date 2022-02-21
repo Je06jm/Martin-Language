@@ -316,6 +316,21 @@ public:
     }
 };
 
+class IDType : public TypeBase {
+public:
+    bool IsType(Type type) const override {
+        return type == shared_from_this();
+    }
+
+    std::string GetName() const override {
+        return "ID";
+    }
+
+    PrimitiveType GetPrimitiveType() const override {
+        return PrimitiveType::ID;
+    }
+};
+
 class String8Type : public TypeBase {
 public:
     bool IsType(Type type) const override {
@@ -336,52 +351,6 @@ public:
 
     PrimitiveType GetPrimitiveType() const override {
         return PrimitiveType::STRING8;
-    }
-};
-
-class String16Type : public TypeBase {
-public:
-    bool IsType(Type type) const override {
-        return type == shared_from_this();
-    }
-
-    std::string GetName() const override {
-        return "String16";
-    }
-    
-    bool IsString() const override {
-        return true;
-    }
-
-    bool IsNativeEndianness() const override {
-        return true;
-    }
-
-    PrimitiveType GetPrimitiveType() const override {
-        return PrimitiveType::STRING16;
-    }
-};
-
-class String32Type : public TypeBase {
-public:
-    bool IsType(Type type) const override {
-        return type == shared_from_this();
-    }
-
-    std::string GetName() const override {
-        return "String32";
-    }
-    
-    bool IsString() const override {
-        return true;
-    }
-
-    bool IsNativeEndianness() const override {
-        return true;
-    }
-
-    PrimitiveType GetPrimitiveType() const override {
-        return PrimitiveType::STRING32;
     }
 };
 
@@ -542,6 +511,21 @@ public:
     }
 };
 
+class TupleType : public TypeBase {
+public:
+    bool IsType(Type type) const override {
+        return type == shared_from_this();
+    }
+
+    std::string GetName() const override {
+        return "Tuple";
+    }
+
+    PrimitiveType GetPrimitiveType() const override {
+        return PrimitiveType::TUPLE;
+    }
+};
+
 Type TypeBase::MakeType(PrimitiveType type) {
     switch (type) {
         case PrimitiveType::NONE:
@@ -585,14 +569,11 @@ Type TypeBase::MakeType(PrimitiveType type) {
         case PrimitiveType::UINTPTR:
             return Type(new UIntPtrType);
         
+        case PrimitiveType::ID:
+            return Type(new IDType);
+
         case PrimitiveType::STRING8:
             return Type(new String8Type);
-        
-        case PrimitiveType::STRING16:
-            return Type(new String16Type);
-
-        case PrimitiveType::STRING32:
-            return Type(new String32Type);
         
         case PrimitiveType::STRING16L:
             return Type(new String16lType);
@@ -615,6 +596,9 @@ Type TypeBase::MakeType(PrimitiveType type) {
         case PrimitiveType::BOOLEAN:
             return Type(new BooleanType);
 
+        case PrimitiveType::TUPLE:
+            return Type(new TupleType);
+
         default:
             return Type(new UnknownType);
     }
@@ -636,9 +620,8 @@ const Type IntMax = TypeBase::MakeType(TypeBase::PrimitiveType::INTMAX);
 const Type IntPtr = TypeBase::MakeType(TypeBase::PrimitiveType::INTPTR);
 const Type UIntMax = TypeBase::MakeType(TypeBase::PrimitiveType::UINTMAX);
 const Type UIntPtr = TypeBase::MakeType(TypeBase::PrimitiveType::UINTPTR);
+const Type ID = TypeBase::MakeType(TypeBase::PrimitiveType::ID);
 const Type String8 = TypeBase::MakeType(TypeBase::PrimitiveType::STRING8);
-const Type String16 = TypeBase::MakeType(TypeBase::PrimitiveType::STRING16);
-const Type String32 = TypeBase::MakeType(TypeBase::PrimitiveType::STRING32);
 const Type String16l = TypeBase::MakeType(TypeBase::PrimitiveType::STRING16L);
 const Type String32l = TypeBase::MakeType(TypeBase::PrimitiveType::STRING32L);
 const Type String16b = TypeBase::MakeType(TypeBase::PrimitiveType::STRING16B);
@@ -646,3 +629,4 @@ const Type String32b = TypeBase::MakeType(TypeBase::PrimitiveType::STRING32B);
 const Type Float32 = TypeBase::MakeType(TypeBase::PrimitiveType::FLOAT32);
 const Type Float64 = TypeBase::MakeType(TypeBase::PrimitiveType::FLOAT64);
 const Type Boolean = TypeBase::MakeType(TypeBase::PrimitiveType::BOOLEAN);
+const Type Tuple = TypeBase::MakeType(TypeBase::PrimitiveType::TUPLE);
