@@ -11,7 +11,7 @@ struct Versioning {
 
 union Floating {
     let single : Float32,
-    let double : Float32
+    let double : Float64
 }
 
 enum FloatingType {

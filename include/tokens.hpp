@@ -34,7 +34,7 @@ namespace Martin {
             KW_Let,
             KW_Set,
             KW_Const,
-            KW_ConstExpr,
+            KW_Constexpr,
             KW_Array,
             KW_Reference,
             KW_Shared,
@@ -54,7 +54,7 @@ namespace Martin {
             KW_Elif,
             KW_Else,
             KW_For,
-            KW_ForEach,
+            KW_Foreach,
             KW_While,
             KW_Continue,
             KW_Break,
@@ -64,6 +64,48 @@ namespace Martin {
             KW_And,
             KW_Or,
             KW_Not,
+            SYM_Comma,
+            SYM_Period,
+            SYM_OpenCurly,
+            SYM_CloseCurly,
+            SYM_OpenBracket,
+            SYM_CloseBracket,
+            SYM_OpenParentheses,
+            SYM_CloseParentheses,
+            SYM_SemiColon,
+            SYM_Colon,
+            SYM_Arrow,
+            SYM_AssignAdd,
+            SYM_AssignSub,
+            SYM_AssignMul,
+            SYM_AssignDiv,
+            SYM_AssignMod,
+            SYM_AssignPow,
+            SYM_AssignBitAnd,
+            SYM_AssignBitOr,
+            SYM_AssignBitXOr,
+            SYM_AssignBitShiftLeft,
+            SYM_AssignBitShiftRight,
+            SYM_Add,
+            SYM_Sub,
+            SYM_Mul,
+            SYM_Div,
+            SYM_Mod,
+            SYM_Pow,
+            SYM_BitAnd,
+            SYM_BitOr,
+            SYM_BitXOr,
+            SYM_BitNot,
+            SYM_BitShiftLeft,
+            SYM_BitShiftRight,
+            SYM_TypeAssign,
+            SYM_Assign,
+            SYM_Equals,
+            SYM_NotEquals,
+            SYM_LessThanEquals,
+            SYM_GreaterThanEquals,
+            SYM_LessThan,
+            SYM_GreaterThan
         };
 
         virtual ~TokenType() {};
@@ -74,6 +116,12 @@ namespace Martin {
         virtual std::shared_ptr<void> GetData() {
             return nullptr;
         };
+
+#ifdef MARTIN_DEBUG
+        virtual std::string GetName() const {
+            return "Unknown";
+        }
+#endif
 
         void SetLineNumber(unsigned int number) { if (lineno == 0) lineno = number; }
         unsigned int GetLineNumber() const { return lineno; }
