@@ -1,11 +1,15 @@
 #include <tuple.hpp>
 
-Value MakeTuple(const std::vector<Value>& values) {
-    Value ret = ValueBase::MakeValue(Tuple);
+namespace Martin {
 
-    auto ptr = std::make_shared<std::vector<Value>>(values);
+    Value MakeTuple(const std::vector<Value>& values) {
+        Value ret = ValueBase::MakeValue(Tuple);
 
-    ret->SetDataPtr(ptr);
+        auto ptr = std::make_shared<std::vector<Value>>(values);
 
-    return ret;
+        ret->SetDataPtr(ptr);
+
+        return ret;
+    }
+
 }

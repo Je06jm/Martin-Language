@@ -5,6 +5,10 @@
 
 #include "values.hpp"
 
-Value MakeTuple(const std::vector<Value>& values);
+namespace Martin {
+
+    Value MakeTuple(const std::vector<Value>& values);
+
+}
 
 #endif

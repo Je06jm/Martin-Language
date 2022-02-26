@@ -144,7 +144,18 @@ namespace Martin {
     };
 
     typedef std::shared_ptr<PatternType> Pattern;
+    typedef std::shared_ptr<std::vector<Token>> TokenList;
     
+    class Tokenizer {
+    public:
+        Tokenizer();
+
+        TokenList TokenizeString(std::string input);
+
+    private:
+        std::vector<Pattern> patterns;
+    };
+
     void InitTokenizer();
     std::unique_ptr<std::vector<Token>> Tokenize(std::string input);
 

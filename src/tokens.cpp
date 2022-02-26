@@ -4,7 +4,8 @@
 #include <stdint.h>
 #include <cstring>
 #include <algorithm>
-#include <stdlib.h>
+
+#include <logging.hpp>
 
 #include "strhelper.hpp"
 
@@ -707,7 +708,7 @@ namespace Martin {
                                     ((c >= 'A') && (c <= 'F')))
                                     return true;
                             }
-                            // TODO error
+                            Fatal("Malformed hex number on line $\n", line_number);
                         case 'o':
                         case 'O':
                             if (in.length() >= 4) {
@@ -715,7 +716,7 @@ namespace Martin {
                                 if ((c >= '0') && (c <= '7'))
                                     return true;
                             }
-                            // TODO error
+                            Fatal("Malformed octal number on line $\n", line_number);
                         case 'b':
                         case 'B':
                             if (in.length() >= 4) {
@@ -723,7 +724,7 @@ namespace Martin {
                                 if ((c == '0') || (c == '1'))
                                     return true;
                             }
-                            // TODO error
+                            Fatal("Malformed binary number on line $\n", line_number);
                     }
                 }
 
@@ -759,7 +760,7 @@ namespace Martin {
                                     ((c >= 'A') && (c <= 'F')))
                                     return true;
                             }
-                            // TODO error
+                            Fatal("Malformed hex number on line $\n", line_number);
                         case 'o':
                         case 'O':
                             if (in.length() >= index + 3) {
@@ -767,7 +768,7 @@ namespace Martin {
                                 if ((c >= '0') && (c <= '7'))
                                     return true;
                             }
-                            // TODO error
+                            Fatal("Malformed octal number on line $\n", line_number);
                         case 'b':
                         case 'B':
                             if (in.length() >= index + 3) {
@@ -775,7 +776,7 @@ namespace Martin {
                                 if ((c == '0') || (c == '1'))
                                     return true;
                             }
-                            // TODO error
+                            Fatal("Malformed binary number on line $\n", line_number);
                     }
                 }
 
@@ -1019,9 +1020,7 @@ namespace Martin {
     FixedToken(SYMLessThanEqualsToken, SYMLessThanEqualsPattern, Type::SYM_LessThanEquals, "<=")
     FixedToken(SYMGreaterThanEqualsToken, SYMGreaterThanEqualsPattern, Type::SYM_GreaterThanEquals, ">=")
 
-    std::vector<Pattern> patterns;
-
-    void InitTokenizer() {
+    Tokenizer::Tokenizer() {
         patterns.push_back(Pattern(new NewLinePattern));
         patterns.push_back(Pattern(new WhiteSpacePattern));
         patterns.push_back(Pattern(new CommentSingleLinePattern));
@@ -1113,17 +1112,17 @@ namespace Martin {
         patterns.push_back(Pattern(new SYMBitShiftLeftPattern));
         patterns.push_back(Pattern(new SYMBitShiftRightPattern));
         patterns.push_back(Pattern(new SYMTypeAssignPattern));
-        patterns.push_back(Pattern(new SYMAssignPattern));
         patterns.push_back(Pattern(new SYMEqualsPattern));
         patterns.push_back(Pattern(new SYMNotEqualsPattern));
         patterns.push_back(Pattern(new SYMLessThanEqualsPattern));
         patterns.push_back(Pattern(new SYMGreaterThanEqualsPattern));
         patterns.push_back(Pattern(new SYMLessThanPattern));
         patterns.push_back(Pattern(new SYMGreaterThanPattern));
+        patterns.push_back(Pattern(new SYMAssignPattern));
         patterns.push_back(Pattern(new IdentifierPattern));
     }
 
-    std::unique_ptr<std::vector<Token>> Tokenize(std::string input) {
+    TokenList Tokenizer::TokenizeString(std::string input) {
         std::vector<Token> tokens;
         size_t str_length;
 
@@ -1152,8 +1151,7 @@ namespace Martin {
                 if (index != std::string::npos)
                     input = input.substr(0, index);
                 
-                std::cerr << "No matching token type for: \"" << input << "\" on line " << line_number << "\n";
-                exit(EXIT_FAILURE);
+                Fatal("No matching token type for \"$\" on line $\n", input, line_number);
             }
         }
 

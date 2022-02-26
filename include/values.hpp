@@ -5,32 +5,36 @@
 
 #include "types.hpp"
 
-class ValueBase;
-typedef std::shared_ptr<ValueBase> Value;
+namespace Martin {
 
-class ValueBase {
-public:
-    ~ValueBase() = default;
+    class ValueBase;
+    typedef std::shared_ptr<ValueBase> Value;
 
-    static Value MakeValue(Type type);
+    class ValueBase {
+    public:
+        ~ValueBase() = default;
 
-    virtual Type GetType() const = 0;
+        static Value MakeValue(Type type);
 
-    virtual bool CanBeConstant() const { return true; }
-    virtual bool IsConstant() const { return true; }
-    virtual bool SetConstant(bool is_contant) { return false; }
+        virtual Type GetType() const = 0;
 
-    virtual void SetData(void* data) {};
-    virtual void GetData(void* data) const {};
+        virtual bool CanBeConstant() const { return true; }
+        virtual bool IsConstant() const { return true; }
+        virtual bool SetConstant(bool is_contant) { return false; }
 
-    void SetDataPtr(const std::shared_ptr<void>& data) { data_ptr = data; };
-    std::shared_ptr<void> GetDataPtr() { return data_ptr; };
+        virtual void SetData(void* data) {};
+        virtual void GetData(void* data) const {};
 
-    void SetLineNumber(unsigned int number) { if (lineno == 0) lineno = number; }
-    unsigned int GetLineNumber() const { return lineno; }
-protected:
-    std::shared_ptr<void> data_ptr;
-    unsigned int lineno = 0;
-};
+        void SetDataPtr(const std::shared_ptr<void>& data) { data_ptr = data; };
+        std::shared_ptr<void> GetDataPtr() { return data_ptr; };
+
+        void SetLineNumber(unsigned int number) { if (lineno == 0) lineno = number; }
+        unsigned int GetLineNumber() const { return lineno; }
+    protected:
+        std::shared_ptr<void> data_ptr;
+        unsigned int lineno = 0;
+    };
+
+}
 
 #endif
