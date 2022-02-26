@@ -28,7 +28,7 @@ namespace Martin {
 
         TreeNode node;
         Token token;
-        
+
         bool is_token = false;
     };
 
@@ -40,7 +40,9 @@ namespace Martin {
             OP_Mul,
             OP_Div,
             OP_Mod,
-            OP_Pow
+            OP_Pow,
+            OP_BitShiftLeft,
+            OP_BitShiftRight
         };
 
         virtual ~TreeNodeBase() {}

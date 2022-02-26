@@ -2,12 +2,16 @@
 
 #include "generators/addsub.hpp"
 #include "generators/muldivmod.hpp"
+#include "generators/pow.hpp"
+#include "generators/bitshift.hpp"
 
 namespace Martin {
 
     Parser::Parser() {
         generators.push_back(TreeGenerator(new OPMulDivModTreeGenerator));
+        generators.push_back(TreeGenerator(new OPPowTreeGenerator));
         generators.push_back(TreeGenerator(new OPAddSubTreeGenerator));
+        generators.push_back(TreeGenerator(new OPBitShiftTreeGenerator));
     }
 
     Tree Parser::ParseTokens(TokenList tokens, std::string& error_msg) {
