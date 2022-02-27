@@ -14,9 +14,13 @@ namespace Martin {
             return "**";
         }
 
+        void Serialize(std::string& serial) const override {
+            serial = Format("$($, $)", GetName(), *left, *right);
+        }
+
     private:
-            const TokenNode left;
-            const TokenNode right;
+        const TokenNode left;
+        const TokenNode right;
     };
 
     class OPPowTreeGenerator : public TreeNodeGenerator {
@@ -28,7 +32,7 @@ namespace Martin {
                 TokenNode right = GetIndexOrNull(tree, index+1);
 
                 if (left && right) {
-                    TreeNode op = TreeNode(new OPAddTreeNode(left, right));
+                    TreeNode op = TreeNode(new OPPowTreeNode(left, right));
 
                     if (left->is_token && !TypeHelper::CanDoMath(left))
                         Fatal("Invalid left hand side for $ operator on line $\n", op->GetName(), left->token->GetLineNumber());

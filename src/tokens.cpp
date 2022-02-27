@@ -9,7 +9,7 @@
 
 #include "strhelper.hpp"
 
-#ifdef MARTIN_DEBUG
+
 #define FixedToken(name, pname, type, str)\
     class name : public TokenType {\
     public:\
@@ -32,27 +32,6 @@
             return Token(new name);\
         }\
     };
-#else
-#define FixedToken(name, pname, type, str)\
-    class name : public TokenType {\
-    public:\
-        Type GetType() const override {\
-            return type;\
-        }\
-        void Process(std::string& in) override {\
-            in.erase(0, std::strlen(str));\
-        }\
-    };\
-    class pname : public PatternType {\
-    public:\
-        bool IsMatch(const std::string& in) const override {\
-            return StrHelper::IsFirstMatch(in.c_str(), str);\
-        }\
-        Token CreateToken() const override {\
-            return Token(new name);\
-        }\
-    };
-#endif
 
 namespace Martin {
     unsigned int line_number = 1;
@@ -140,11 +119,11 @@ namespace Martin {
         std::shared_ptr<void> GetData() override {
             return std::make_shared<float>(value);
         }
-#ifdef MARTIN_DEBUG
+
         std::string GetName() const override {
             return std::string("FloatingSingle ") + std::to_string(value);
         }
-#endif
+
     private:
         float value = 0.0f;
     };
@@ -165,11 +144,11 @@ namespace Martin {
         std::shared_ptr<void> GetData() override {
             return std::make_shared<double>(value);
         }
-#ifdef MARTIN_DEBUG
+
         std::string GetName() const override {
             return std::string("FloatingDouble ") + std::to_string(value);
         }
-#endif
+
     private:
         double value = 0.0f;
     };
@@ -184,22 +163,22 @@ namespace Martin {
 
             in.erase(0, 1);
             
-            if (in.length() >= 2) {
-                switch (in[1]) {
+            if (in.length() >= 1) {
+                switch (in[0]) {
                     case 'x':
                     case 'X':
                         type = NumberType::Hexidecimal;
-                        in.erase(0, 2);
+                        in.erase(0, 1);
                         break;
                     case 'o':
                     case 'O':
                         type = NumberType::Octal;
-                        in.erase(0, 2);
+                        in.erase(0, 1);
                         break;
                     case 'b':
                     case 'B':
                         type = NumberType::Binary;
-                        in.erase(0, 2);
+                        in.erase(0, 1);
                         break;
                 }
             }
@@ -274,11 +253,11 @@ namespace Martin {
         }
     
         std::shared_ptr<void> GetData() override { return std::make_shared<uintmax_t>(value); }
-#ifdef MARTIN_DEBUG
+
         std::string GetName() const override {
             return std::string("UInteger ") + std::to_string(value);
         }
-#endif
+
     private:
         uintmax_t value = 0;
     };
@@ -321,11 +300,11 @@ namespace Martin {
         }
     
         std::shared_ptr<void> GetData() override { return std::make_shared<intmax_t>(value); }
-#ifdef MARTIN_DEBUG
+
         std::string GetName() const override {
             return std::string("Integer ") + std::to_string(value);
         }
-#endif
+
     private:
         intmax_t value = 0;
     };
@@ -345,11 +324,11 @@ namespace Martin {
                 in.erase(0, std::strlen("false"));
             }
         }
-#ifdef MARTIN_DEBUG
+
         std::string GetName() const override {
             return std::string("Boolean ") + (value ? "true" : "false");
         }
-#endif
+
     private:
         bool value = false;
     };
@@ -370,12 +349,12 @@ namespace Martin {
         std::shared_ptr<void> GetData() override {
             return value;
         }
-#ifdef MARTIN_DEBUG
+
         std::string GetName() const override {
             const char* str = (const char*)value.get();
             return std::string("String8 ") + str;
         }
-#endif
+
     private:
         std::shared_ptr<uint8_t[]> value;
     };
@@ -394,11 +373,11 @@ namespace Martin {
         std::shared_ptr<void> GetData() override {
             return value;
         }
-#ifdef MARTIN_DEBUG
+
         std::string GetName() const override {
             return "String16";
         }
-#endif
+
     private:
         std::shared_ptr<uint8_t[]> value;
     };
@@ -417,11 +396,11 @@ namespace Martin {
         std::shared_ptr<void> GetData() override {
             return value;
         }
-#ifdef MARTIN_DEBUG
+
         std::string GetName() const override {
             return "String32";
         }
-#endif
+
     private:
         std::shared_ptr<uint8_t[]> value;
     };
@@ -440,11 +419,11 @@ namespace Martin {
         std::shared_ptr<void> GetData() override {
             return value;
         }
-#ifdef MARTIN_DEBUG
+
         std::string GetName() const override {
             return "String16l";
         }
-#endif
+
     private:
         std::shared_ptr<uint8_t[]> value;
     };
@@ -463,11 +442,11 @@ namespace Martin {
         std::shared_ptr<void> GetData() override {
             return value;
         }
-#ifdef MARTIN_DEBUG
+
         std::string GetName() const override {
             return "String16b";
         }
-#endif
+
     private:
         std::shared_ptr<uint8_t[]> value;
     };
@@ -486,11 +465,11 @@ namespace Martin {
         std::shared_ptr<void> GetData() override {
             return value;
         }
-#ifdef MARTIN_DEBUG
+
         std::string GetName() const override {
             return "String16b";
         }
-#endif
+
     private:
         std::shared_ptr<uint8_t[]> value;
     };
@@ -509,11 +488,11 @@ namespace Martin {
         std::shared_ptr<void> GetData() override {
             return value;
         }
-#ifdef MARTIN_DEBUG
+
         std::string GetName() const override {
             return "String32b";
         }
-#endif
+
     private:
         std::shared_ptr<uint8_t[]> value;
     };
@@ -556,12 +535,12 @@ namespace Martin {
         std::shared_ptr<void> GetData() override {
             return value;
         }
-#ifdef MARTIN_DEBUG
+
         std::string GetName() const override {
             const char* str = (const char*)value.get();
             return std::string("Identifier ") + str;
         }
-#endif
+
     private:
         std::shared_ptr<uint8_t[]> value;
     };
@@ -691,43 +670,28 @@ namespace Martin {
         bool IsMatch(const std::string& in) const override {
             char c = in[0];
             
-            if (c != 'u')
+            if ((c != 'u') && (c != '0'))
                 return false;
             
-            c = in[1];
+            else if (c == '0') {
+                if (in.length() <= 1)
+                    return false;
+                
+                c = in[1];
+                if (
+                    (c == 'x') ||
+                    (c == 'X') ||
+                    (c == 'o') ||
+                    (c == 'O') ||
+                    (c == 'b') ||
+                    (c == 'B')
+                )
+                    return true;
+                
+                else
+                    return false;
 
-            if ((c >= '0') && (c <= '9')) {
-                if (in.length() >= 3) {
-                    switch (in[2]) {
-                        case 'x':
-                        case 'X':
-                            if (in.length() >= 4) {
-                                c = in[3];
-                                if (((c >= '0') && (c <= '9')) ||
-                                    ((c >= 'a') && (c <= 'f')) ||
-                                    ((c >= 'A') && (c <= 'F')))
-                                    return true;
-                            }
-                            Fatal("Malformed hex number on line $\n", line_number);
-                        case 'o':
-                        case 'O':
-                            if (in.length() >= 4) {
-                                c = in[3];
-                                if ((c >= '0') && (c <= '7'))
-                                    return true;
-                            }
-                            Fatal("Malformed octal number on line $\n", line_number);
-                        case 'b':
-                        case 'B':
-                            if (in.length() >= 4) {
-                                c = in[3];
-                                if ((c == '0') || (c == '1'))
-                                    return true;
-                            }
-                            Fatal("Malformed binary number on line $\n", line_number);
-                    }
-                }
-
+            } else if (in.length() > 1 && ((in[1] >= '0') && (in[1] <= '9'))) {
                 return true;
             }
 
@@ -745,41 +709,15 @@ namespace Martin {
             char c = in[0];
             size_t index = 0;
 
-            if (c == '-')
+            if (c == '-') {
+                if (in.length() < 2)
+                    return false;
+                    
                 index++;
-
+            }
+            
+            c = in[index];
             if ((c >= '0') && (c <= '9')) {
-                if (in.length() >= index + 2) {
-                    switch (in[index + 1]) {
-                        case 'x':
-                        case 'X':
-                            if (in.length() >= index + 3) {
-                                c = in[index + 2];
-                                if (((c >= '0') && (c <= '9')) ||
-                                    ((c >= 'a') && (c <= 'f')) ||
-                                    ((c >= 'A') && (c <= 'F')))
-                                    return true;
-                            }
-                            Fatal("Malformed hex number on line $\n", line_number);
-                        case 'o':
-                        case 'O':
-                            if (in.length() >= index + 3) {
-                                c = in[index + 2];
-                                if ((c >= '0') && (c <= '7'))
-                                    return true;
-                            }
-                            Fatal("Malformed octal number on line $\n", line_number);
-                        case 'b':
-                        case 'B':
-                            if (in.length() >= index + 3) {
-                                c = in[index + 2];
-                                if ((c == '0') || (c == '1'))
-                                    return true;
-                            }
-                            Fatal("Malformed binary number on line $\n", line_number);
-                    }
-                }
-
                 return true;
             }
 
@@ -1101,10 +1039,10 @@ namespace Martin {
         patterns.push_back(Pattern(new SYMAssignBitShiftRightPattern));
         patterns.push_back(Pattern(new SYMAddPattern));
         patterns.push_back(Pattern(new SYMSubPattern));
+        patterns.push_back(Pattern(new SYMPowPattern));
         patterns.push_back(Pattern(new SYMMulPattern));
         patterns.push_back(Pattern(new SYMDivPattern));
         patterns.push_back(Pattern(new SYMModPattern));
-        patterns.push_back(Pattern(new SYMPowPattern));
         patterns.push_back(Pattern(new SYMBitAndPattern));
         patterns.push_back(Pattern(new SYMBitOrPattern));
         patterns.push_back(Pattern(new SYMBitXOrPattern));
@@ -1146,8 +1084,11 @@ namespace Martin {
 
             if (str_length == input.length()) {
                 // TODO error
-                input.erase(std::remove(input.begin(), input.end(), '\r'));
-                size_t index = input.find("\n");
+                size_t index = input.find("\r");
+                if (index != std::string::npos)
+                    input.erase(std::remove(input.begin(), input.end(), '\r'));
+
+                index = input.find("\n");
                 if (index != std::string::npos)
                     input = input.substr(0, index);
                 

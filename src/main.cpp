@@ -55,8 +55,9 @@ int main(int argc, char** argv) {
 
     std::string error;
 
-    Martin::Parser parser;
-    auto tree = parser.ParseTokens(arr, error);
+    Martin::Print("$\n", Martin::ParserSingleton);
+
+    auto tree = Martin::ParserSingleton.ParseTokens(arr, error);
 
     if (tree == nullptr)
         Martin::Error("Parsing error: $\n", error);
@@ -67,8 +68,9 @@ int main(int argc, char** argv) {
             if (item->is_token) 
                 Martin::Print("Parsed token\n");
             
-            else
-                Martin::Print("Parsed node: $\n", item->node->GetName());
+            else {
+                Martin::Print("Parsed node: $\n", *item);
+            }
                 
         }
     }

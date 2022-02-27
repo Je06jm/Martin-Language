@@ -14,9 +14,13 @@ namespace Martin {
             return "*";
         }
 
+        void Serialize(std::string& serial) const override {
+            serial = Format("$($, $)", GetName(), *left, *right);
+        }
+
     private:
-            TokenNode left;
-            TokenNode right;
+        TokenNode left;
+        TokenNode right;
     };
 
     class OPDivTreeNode : public TreeNodeBase {
@@ -31,9 +35,13 @@ namespace Martin {
             return "/";
         }
 
+        void Serialize(std::string& serial) const override {
+            serial = Format("$($, $)", GetName(), *left, *right);
+        }
+
     private:
-            TokenNode left;
-            TokenNode right;
+        TokenNode left;
+        TokenNode right;
     };
 
     class OPModTreeNode : public TreeNodeBase {
@@ -48,9 +56,13 @@ namespace Martin {
             return "%";
         }
 
+        void Serialize(std::string& serial) const override {
+            serial = Format("$($, $)", GetName(), *left, *right);
+        }
+
     private:
-            TokenNode left;
-            TokenNode right;
+        TokenNode left;
+        TokenNode right;
     };
 
     class OPMulDivModTreeGenerator : public TreeNodeGenerator {

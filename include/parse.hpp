@@ -7,6 +7,7 @@
 
 #include <tokens.hpp>
 #include <values.hpp>
+#include <logging.hpp>
 
 namespace Martin {
 
@@ -21,17 +22,6 @@ namespace Martin {
 
     typedef std::shared_ptr<TreeNodeGenerator> TreeGenerator;
 
-    struct _TokenNodeBase {
-        // Won't compile without these
-        _TokenNodeBase() {}
-        ~_TokenNodeBase() {}
-
-        TreeNode node;
-        Token token;
-
-        bool is_token = false;
-    };
-
     class TreeNodeBase {
     public:
         enum class Type {
@@ -41,14 +31,54 @@ namespace Martin {
             OP_Div,
             OP_Mod,
             OP_Pow,
+            OP_BitAnd,
+            OP_BitOr,
+            OP_BitXOr,
+            OP_BitNot,
             OP_BitShiftLeft,
-            OP_BitShiftRight
+            OP_BitShiftRight,
+            OP_Equals,
+            OP_NotEquals,
+            OP_GreaterThan,
+            OP_LessThan,
+            OP_GreaterThanEquals,
+            OP_LessThanEquals,
+            OP_LogicalAnd,
+            OP_LogicalOr,
+            OP_LogicalNot,
+            Struct_Parentheses,
+            Struct_Curly,
+            Struct_Bracket
         };
 
         virtual ~TreeNodeBase() {}
         
         virtual Type GetType() const = 0;
         virtual std::string GetName() const = 0;
+
+        virtual void Serialize(std::string& serial) const {
+            serial = "Unimplemented serialize on tree node";
+        }
+    };
+
+    struct _TokenNodeBase {
+        // Won't compile without these
+        _TokenNodeBase() {}
+        ~_TokenNodeBase() {}
+
+        void Serialize(std::string& serial) const {
+            if (is_token) {
+                serial = token->GetName();
+            } else {
+                std::string s;
+                node->Serialize(serial);
+            }
+        }
+
+        TreeNode node;
+        Token token;
+
+        bool is_token = false;
     };
 
 
@@ -57,6 +87,10 @@ namespace Martin {
         virtual ~TreeNodeGenerator() {}
 
         virtual size_t ProcessBranch(Tree tree, size_t index, size_t end) = 0;
+
+        virtual void Serialize(std::string& serial) const {
+            serial = "Unimplemented serialize on tree generator";
+        };
 
     protected:
         static TokenNode GetIndexOrNull(Tree tree, size_t index) {
@@ -83,6 +117,10 @@ namespace Martin {
             tree->erase(tree->begin() + index, tree->begin() + index + length);
             tree->insert(tree->begin() + index, replacement);
         }
+
+        static void RemoveTreeIndex(Tree tree, size_t index) {
+            tree->erase(tree->begin() + index);
+        }
     };
 
     class Parser {
@@ -91,11 +129,17 @@ namespace Martin {
 
         Tree ParseTokens(TokenList tokens, std::string& error_msg);
     
+        void ParseBranch(Tree tree, size_t start, size_t end);
+
+        void Serialize(std::string& serial) const {
+            serial = Format("Parser with $ generators", generators.size());
+        }
+
     private:
         std::vector<TreeGenerator> generators;
-
-        void ParseBranch(Tree tree, size_t start, size_t end);
     };
+
+    extern Parser ParserSingleton;
 
 }
 

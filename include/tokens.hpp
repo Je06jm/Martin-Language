@@ -117,11 +117,9 @@ namespace Martin {
             return nullptr;
         };
 
-#ifdef MARTIN_DEBUG
         virtual std::string GetName() const {
             return "Unknown";
         }
-#endif
 
         void SetLineNumber(unsigned int number) { if (lineno == 0) lineno = number; }
         unsigned int GetLineNumber() const { return lineno; }

@@ -68,78 +68,68 @@ namespace Martin {
         };
 
         class Logger {
-        friend Formatter;
         public:
             virtual ~Logger() {}
-            void Push(const std::string& msg) {
-                formatter.Push(msg);
-            };
-
-            virtual void Finish() = 0;
-        
-        protected:
-            Formatter formatter;
-            std::string buffer;
-
-        private:
-            void Clear() {
-                formatter.Clear();
-                buffer = "";
-            }
+            virtual void Out(std::string msg) = 0;
         };
         
         extern Logger* FatalLogger;
         extern Logger* ErrorLogger;
         extern Logger* WarningLogger;
         extern Logger* PrintLogger;
+
+        extern Formatter* FormatFormatter;
+
+        inline void FormatArr(std::vector<std::string>& arr) {}
+
+        template <typename T, typename... Args>
+        inline void FormatArr(std::vector<std::string>& arr, T first, Args... rest) {
+            std::string msg;
+            Serialize(first, msg);
+            arr.push_back(msg);
+            FormatArr(arr, rest...);
+        }
     }
 
-    inline void Fatal() {
-        LoggingUtil::FatalLogger->Finish();
-    }
+    template <typename T, typename... Args>
+    inline std::string Format(T first, Args... rest) {
+        std::vector<std::string> strs;
+        LoggingUtil::FormatArr(strs, first, rest...);
 
-    inline void Error() {
-        LoggingUtil::ErrorLogger->Finish();
-    }
+        for (auto str : strs) {
+            LoggingUtil::FormatFormatter->Push(str);
+        }
 
-    inline void Warning() {
-        LoggingUtil::WarningLogger->Finish();
-    }
+        std::string result;
+        if (LoggingUtil::FormatFormatter->GetFormatted(result)) {
+            return result;
+        }
 
-    inline void Print() {
-        LoggingUtil::PrintLogger->Finish();
+        return "Could not format string";
     }
 
     template <typename T, typename... Args>
     inline void Fatal(T first, Args... rest) {
-        std::string msg;
-        Serialize(first, msg);
-        LoggingUtil::FatalLogger->Push(msg);
-        Fatal(rest...);
+        std::string msg = Format(first, rest...);
+        LoggingUtil::FatalLogger->Out(msg);
     }
 
     template <typename T, typename... Args>
     inline void Error(T first, Args... rest) {
-        std::string msg;
-        Serialize(first, msg);
-        LoggingUtil::ErrorLogger->Push(msg);
-        Error(rest...);
+        std::string msg = Format(first, rest...);
+        LoggingUtil::ErrorLogger->Out(msg);
     }
 
     template <typename T, typename... Args>
     inline void Warning(T first, Args... rest) {
-        std::string msg;
-        Serialize(first, msg);
-        LoggingUtil::WarningLogger->Push(msg);
-        Warning(rest...);
+        std::string msg = Format(first, rest...);
+        LoggingUtil::WarningLogger->Out(msg);
     }
 
     template <typename T, typename... Args>
     inline void Print(T first, Args... rest) {
-        std::string msg;
-        Serialize(first, msg);
-        LoggingUtil::PrintLogger->Push(msg);
-        Print(rest...);
+        std::string msg = Format(first, rest...);
+        LoggingUtil::PrintLogger->Out(msg);
     }
 
 }

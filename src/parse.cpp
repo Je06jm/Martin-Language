@@ -3,15 +3,23 @@
 #include "generators/addsub.hpp"
 #include "generators/muldivmod.hpp"
 #include "generators/pow.hpp"
-#include "generators/bitshift.hpp"
+#include "generators/bitwise.hpp"
+#include "generators/equality.hpp"
+#include "generators/logical.hpp"
+#include "generators/enclosures.hpp"
 
 namespace Martin {
 
+    Parser ParserSingleton;
+
     Parser::Parser() {
+        generators.push_back(TreeGenerator(new StructEnclosuresTreeGenerator));
         generators.push_back(TreeGenerator(new OPMulDivModTreeGenerator));
         generators.push_back(TreeGenerator(new OPPowTreeGenerator));
         generators.push_back(TreeGenerator(new OPAddSubTreeGenerator));
-        generators.push_back(TreeGenerator(new OPBitShiftTreeGenerator));
+        generators.push_back(TreeGenerator(new OPBitwiseTreeGenerator));
+        generators.push_back(TreeGenerator(new OPEqualityTreeGenerator));
+        generators.push_back(TreeGenerator(new OPLogicalsTreeGenerator));
     }
 
     Tree Parser::ParseTokens(TokenList tokens, std::string& error_msg) {

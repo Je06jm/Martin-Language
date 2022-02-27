@@ -34,6 +34,17 @@ namespace Martin::TypeHelper {
         return false;
     }
 
+    bool CanDoLogic(TokenNode node) {
+        if (node->is_token) {
+            TokenType::Type type = node->token->GetType();
+            return (
+                (type == TokenType::Type::Boolean)
+            );
+        }
+
+        return false;
+    }
+
 }
 
 #endif

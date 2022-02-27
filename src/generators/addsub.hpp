@@ -17,6 +17,10 @@ namespace Martin {
         std::string GetName() const override {
             return "+";
         }
+
+        void Serialize(std::string& serial) const override {
+            serial = Format("$($, $)", GetName(), *left, *right);
+        }
     
     private:
         const TokenNode left;
@@ -33,6 +37,10 @@ namespace Martin {
 
         std::string GetName() const override {
             return "-";
+        }
+
+        void Serialize(std::string& serial) const override {
+            serial = Format("$($, $)", GetName(), *left, *right);
         }
 
     private:
@@ -72,6 +80,9 @@ namespace Martin {
 
                     return 3;
                 }
+            } else if (sym && (sym->GetType() == TokenType::Type::Integer)) {
+                // Do something here? The tokenizer probably converted 1-2 into
+                // Integer 1, Integer -2
             }
 
             return 0;
