@@ -200,8 +200,10 @@ namespace Martin {
                                 else if ((c >= 'A') && (c <= 'F'))
                                     value += c - 'A' + 10;
                                 
-                                else
+                                else {
+                                    value /= 16;
                                     return;
+                                }
                             }
                             
                             break;
@@ -212,8 +214,10 @@ namespace Martin {
                                 if ((c >= '0') && (c <= '7'))
                                     value += c - '0';
                                 
-                                else
+                                else {
+                                    value /= 8;
                                     return;
+                                }
                             }
                             
                             break;
@@ -224,8 +228,10 @@ namespace Martin {
                                 if ((c >= '0') && (c <= '9'))
                                     value += c - '0';
                                 
-                                else
+                                else {
+                                    value /= 10;
                                     return;
+                                }
                             }
 
                             break;
@@ -236,8 +242,10 @@ namespace Martin {
                                 if ((c == '0') || (c == '1'))
                                     value += c - '0';
                                 
-                                else
+                                else {
+                                    value /= 2;
                                     return;
+                                }
                             }
                             
                             break;
@@ -712,7 +720,7 @@ namespace Martin {
             if (c == '-') {
                 if (in.length() < 2)
                     return false;
-                    
+
                 index++;
             }
             
