@@ -2,37 +2,40 @@
 
 namespace Martin {
 
-    class OPPowTreeNode : public TreeNodeBase {
+    class OPDotTreeNode : public TreeNodeBase {
     public:
-        OPPowTreeNode(TokenNode left, TokenNode right) : left(left), right(right) {}
+        OPDotTreeNode(TokenNode left, TokenNode right) : left(left), right(right) {}
 
         Type GetType() const override {
-            return Type::OP_Pow;
+            return Type::OP_Dot;
         }
 
         std::string GetName() const override {
-            return "**";
+            return ".";
         }
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
 
-    private:
         const TokenNode left;
         const TokenNode right;
     };
 
-    class OPPowTreeGenerator : public TreeNodeGenerator {
+    class OPDotTreeGenerator : public TreeNodeGenerator {
     public:
+        bool IsReversed() const override {
+            return true;
+        }
+
         size_t ProcessBranch(Tree tree, size_t index, size_t end) override {
             Token sym = GetIndexOrNullToken(tree, index);
-            if (sym && (sym->GetType() == TokenType::Type::SYM_Pow)) {
+            if (sym && (sym->GetType() == TokenType::Type::SYM_Period)) {
                 TokenNode left = GetIndexOrNull(tree, index-1);
                 TokenNode right = GetIndexOrNull(tree, index+1);
 
                 if (left && right) {
-                    TreeNode op = TreeNode(new OPPowTreeNode(left, right));
+                    TreeNode op = TreeNode(new OPDotTreeNode(left, right));
 
                     TokenNode token_node = TokenNode(new TokenNodeBase);
                     token_node->node = op;
@@ -41,6 +44,7 @@ namespace Martin {
                     return 3;
                 }
             }
+
             return 0;
         }
     };

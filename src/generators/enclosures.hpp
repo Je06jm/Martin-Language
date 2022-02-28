@@ -6,7 +6,7 @@ namespace Martin {
 
     class StructParenthesesTreeNode : public TreeNodeBase {
     public:
-        StructParenthesesTreeNode(const std::vector<TokenNode>& inside) : inside(inside) {}
+        StructParenthesesTreeNode(Tree inside) : inside(inside) {}
 
         Type GetType() const override {
             return Type::Struct_Parentheses;
@@ -16,12 +16,21 @@ namespace Martin {
             return "()";
         }
 
-        const std::vector<TokenNode> inside;
+        void Serialize(std::string& serial) const override {
+            serial = GetName() + "(";
+            std::string s;
+            for (auto it : *inside) {
+                it->Serialize(s);
+                serial += s;
+            }
+        }
+
+        const Tree inside;
     };
 
     class StructCurlyTreeNode : public TreeNodeBase {
     public:
-        StructCurlyTreeNode(const std::vector<TokenNode>& inside) : inside(inside) {}
+        StructCurlyTreeNode(Tree inside) : inside(inside) {}
 
         Type GetType() const override {
             return Type::Struct_Curly;
@@ -31,12 +40,21 @@ namespace Martin {
             return "{}";
         }
 
-        const std::vector<TokenNode> inside;
+        void Serialize(std::string& serial) const override {
+            serial = GetName() + "(";
+            std::string s;
+            for (auto it : *inside) {
+                it->Serialize(s);
+                serial += s;
+            }
+        }
+
+        const Tree inside;
     };
 
     class StructBracketTreeNode : public TreeNodeBase {
     public:
-        StructBracketTreeNode(const std::vector<TokenNode>& inside) : inside(inside) {}
+        StructBracketTreeNode(Tree inside) : inside(inside) {}
 
         Type GetType() const override {
             return Type::Struct_Bracket;
@@ -46,7 +64,16 @@ namespace Martin {
             return "[]";
         }
 
-        const std::vector<TokenNode> inside;
+        void Serialize(std::string& serial) const override {
+            serial = GetName() + "(";
+            std::string s;
+            for (auto it : *inside) {
+                it->Serialize(s);
+                serial += s;
+            }
+        }
+
+        const Tree inside;
     };
 
     class StructEnclosuresTreeGenerator : public TreeNodeGenerator {
@@ -89,13 +116,37 @@ namespace Martin {
                     
                     if (counter < 0) {
                         size_t before = tree->size();
-                        ParserSingleton.ParseBranch(tree, index + 1, i - 1);
+                        Tree new_tree = Tree(new std::vector<TokenNode>);
+                        new_tree->insert(new_tree->begin(), tree->begin() + index + 1, tree->begin() + i);
+                        tree->erase(tree->begin() + index + 1, tree->begin() + i);
+                        RemoveTreeIndex(tree, index);
+                        RemoveTreeIndex(tree, index+1);
                         size_t shrinked = before - tree->size();
 
-                        RemoveTreeIndex(tree, index);
-                        RemoveTreeIndex(tree, i - shrinked - 1);
+                        ParserSingleton.ParseBranch(new_tree, 0, new_tree->size());
 
-                        return shrinked + 2;
+                        TreeNode op;
+
+                        switch (opener) {
+                            case TokenType::Type::SYM_OpenCurly:
+                                op = TreeNode(new StructCurlyTreeNode(new_tree));
+                                break;
+                            
+                            case TokenType::Type::SYM_OpenBracket:
+                                op = TreeNode(new StructBracketTreeNode(new_tree));
+                                break;
+                            
+                            case TokenType::Type::SYM_OpenParentheses:
+                                op = TreeNode(new StructParenthesesTreeNode(new_tree));
+                                break;
+                        }
+
+                        TokenNode token_node = TokenNode(new TokenNodeBase);
+                        token_node->node = op;
+
+                        tree->insert(tree->begin() + index, token_node);
+
+                        return shrinked + 1;
                     }
                 }
             }

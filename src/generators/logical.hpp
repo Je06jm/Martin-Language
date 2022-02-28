@@ -76,18 +76,7 @@ namespace Martin {
                 TokenNode left = GetIndexOrNull(tree, index-1);
                 TokenNode right = GetIndexOrNull(tree, index+1);
 
-                if (right && (sym->GetType() == TokenType::Type::KW_Not)) {
-                    TreeNode op = TreeNode(new OPLogicalNotTreeNode(right));
-
-                    if (right->is_token && !TypeHelper::CanDoLogic(right))
-                        Fatal("Invalid right hand side for $ operator on line $\n", op->GetName(), right->token->GetLineNumber());
-                    
-                    TokenNode token_node = TokenNode(new TokenNodeBase);
-                    token_node->node = op;
-                    ReplaceTreeWithTokenNode(tree, token_node, index, 2);
-
-                    return 2;
-                } else if (left && right) {
+                if (left && right) {
                     TreeNode op;
 
                     if (sym->GetType() == TokenType::Type::KW_And)
@@ -101,6 +90,28 @@ namespace Martin {
                     ReplaceTreeWithTokenNode(tree, token_node, index-1, 3);
 
                     return 3;
+                }
+            }
+
+            return 0;
+        }
+    };
+
+    class OPNotLogicTreeGenerator : public TreeNodeGenerator {
+    public:
+        size_t ProcessBranch(Tree tree, size_t index, size_t end) override {
+            Token sym = GetIndexOrNullToken(tree, index);
+            if (sym &&  (sym->GetType() == TokenType::Type::KW_Not)) {
+                TokenNode right = GetIndexOrNull(tree, index+1);
+
+                if (right) {
+                    TreeNode op = TreeNode(new OPLogicalNotTreeNode(right));
+                    
+                    TokenNode token_node = TokenNode(new TokenNodeBase);
+                    token_node->node = op;
+                    ReplaceTreeWithTokenNode(tree, token_node, index, 2);
+
+                    return 2;
                 }
             }
 

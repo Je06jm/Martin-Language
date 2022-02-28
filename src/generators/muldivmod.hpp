@@ -89,12 +89,6 @@ namespace Martin {
                     else
                         op = TreeNode(new OPModTreeNode(left, right));
                     
-                    if (left->is_token && !TypeHelper::CanDoMath(left))
-                        Fatal("Invalid left hand side for $ operator on line $\n", op->GetName(), left->token->GetLineNumber());
-                    
-                    else if (right->is_token && !TypeHelper::CanDoMath(right))
-                        Fatal("Invalid right hand side for $ operator on line $\n", op->GetName(), right->token->GetLineNumber());
-
                     TokenNode token_node = TokenNode(new TokenNodeBase);
                     token_node->node = op;
                     ReplaceTreeWithTokenNode(tree, token_node, index-1, 3);

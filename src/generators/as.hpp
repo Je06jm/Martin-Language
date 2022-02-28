@@ -2,37 +2,37 @@
 
 namespace Martin {
 
-    class OPPowTreeNode : public TreeNodeBase {
+    class StructAsTreeNode : public TreeNodeBase {
     public:
-        OPPowTreeNode(TokenNode left, TokenNode right) : left(left), right(right) {}
+        StructAsTreeNode(TokenNode left, TokenNode right) : left(left), right(right) {}
 
         Type GetType() const override {
-            return Type::OP_Pow;
+            return Type::Struct_As;
         }
 
         std::string GetName() const override {
-            return "**";
+            return "as";
         }
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *left, *right);
+            
         }
 
-    private:
         const TokenNode left;
         const TokenNode right;
     };
 
-    class OPPowTreeGenerator : public TreeNodeGenerator {
+    class StructAsTreeGenerator : public TreeNodeGenerator {
     public:
         size_t ProcessBranch(Tree tree, size_t index, size_t end) override {
             Token sym = GetIndexOrNullToken(tree, index);
-            if (sym && (sym->GetType() == TokenType::Type::SYM_Pow)) {
+            if (sym && (sym->GetType() == TokenType::Type::KW_As)) {
                 TokenNode left = GetIndexOrNull(tree, index-1);
                 TokenNode right = GetIndexOrNull(tree, index+1);
 
                 if (left && right) {
-                    TreeNode op = TreeNode(new OPPowTreeNode(left, right));
+                    TreeNode op = TreeNode(new StructAsTreeNode(left, right));
 
                     TokenNode token_node = TokenNode(new TokenNodeBase);
                     token_node->node = op;

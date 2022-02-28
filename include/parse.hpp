@@ -46,9 +46,13 @@ namespace Martin {
             OP_LogicalAnd,
             OP_LogicalOr,
             OP_LogicalNot,
+            OP_Dot,
             Struct_Parentheses,
             Struct_Curly,
-            Struct_Bracket
+            Struct_Bracket,
+            Struct_As,
+            Struct_Comma,
+            Misc_FromImport
         };
 
         virtual ~TreeNodeBase() {}
@@ -85,6 +89,10 @@ namespace Martin {
     class TreeNodeGenerator {
     public:
         virtual ~TreeNodeGenerator() {}
+
+        virtual bool IsReversed() const {
+            return false;
+        }
 
         virtual size_t ProcessBranch(Tree tree, size_t index, size_t end) = 0;
 

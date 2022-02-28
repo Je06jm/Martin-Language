@@ -49,7 +49,6 @@ namespace Martin {
             KW_Virtual,
             KW_Override,
             KW_Static,
-            KW_Super,
             KW_If,
             KW_Elif,
             KW_Else,

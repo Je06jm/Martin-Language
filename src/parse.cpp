@@ -7,6 +7,10 @@
 #include "generators/equality.hpp"
 #include "generators/logical.hpp"
 #include "generators/enclosures.hpp"
+#include "generators/dot.hpp"
+#include "generators/as.hpp"
+#include "generators/comma.hpp"
+#include "generators/fromimport.hpp"
 
 namespace Martin {
 
@@ -14,12 +18,17 @@ namespace Martin {
 
     Parser::Parser() {
         generators.push_back(TreeGenerator(new StructEnclosuresTreeGenerator));
+        generators.push_back(TreeGenerator(new OPDotTreeGenerator));
+        generators.push_back(TreeGenerator(new StructAsTreeGenerator));
         generators.push_back(TreeGenerator(new OPMulDivModTreeGenerator));
         generators.push_back(TreeGenerator(new OPPowTreeGenerator));
         generators.push_back(TreeGenerator(new OPAddSubTreeGenerator));
         generators.push_back(TreeGenerator(new OPBitwiseTreeGenerator));
         generators.push_back(TreeGenerator(new OPEqualityTreeGenerator));
+        generators.push_back(TreeGenerator(new OPNotLogicTreeGenerator));
         generators.push_back(TreeGenerator(new OPLogicalsTreeGenerator));
+        generators.push_back(TreeGenerator(new StructCommaTreeGenerator));
+        generators.push_back(TreeGenerator(new MiscFromImportTreeGenerator));
     }
 
     Tree Parser::ParseTokens(TokenList tokens, std::string& error_msg) {
@@ -43,15 +52,33 @@ namespace Martin {
     void Parser::ParseBranch(Tree tree, size_t start, size_t end) {
         size_t removed, index;
 
+        Print("Parsing branch\n");
+        for (auto it : *tree) {
+            Print("$\n", *it);
+        }
+
         for (auto gen : generators) {
-            index = start;
-            while ((index < end) && (index < tree->size())) {
-                removed = gen->ProcessBranch(tree, index, end);
-                if (removed)
-                    end -= removed - 1;
-                
-                else
-                    index++;
+            if (gen->IsReversed()) {
+                index = end - 1;
+                size_t accum = 0;
+                while ((index < end) && (index >= start) && (index < tree->size())) {
+                    removed = gen->ProcessBranch(tree, index, end);
+                    if (removed)
+                        accum += removed - 1;
+                    
+                    index--;
+                }
+                end -= accum;
+            } else {
+                index = start;
+                while ((index < end) && (index < tree->size())) {
+                    removed = gen->ProcessBranch(tree, index, end);
+                    if (removed)
+                        end -= removed - 1;
+                    
+                    else
+                        index++;
+                }
             }
         }
     }
