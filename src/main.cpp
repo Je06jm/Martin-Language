@@ -30,24 +30,8 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    std::ifstream file(argv[0]);
-    if (!file.is_open()) {
-        Martin::Error("Could not open file: $\n", (const char*)argv[0]);
-        return 0;
-    }
-
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    file.close();
-
-    std::string code = buffer.str();
-
-    Martin::Tokenizer tokenizer;
-    auto arr = tokenizer.TokenizeString(code);
-
     std::string error;
-
-    auto tree = Martin::ParserSingleton.ParseTokens(arr, error);
+    auto tree = Martin::ParserSingleton.ParseFile(argv[0], error);
 
     if (tree == nullptr)
         Martin::Error("Parsing error: $\n", error);

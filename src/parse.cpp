@@ -1,4 +1,7 @@
 #include <parse.hpp>
+#include <tokens.hpp>
+#include <fstream>
+#include <sstream>
 
 #include "generators/addsub.hpp"
 #include "generators/muldivmod.hpp"
@@ -61,7 +64,33 @@ namespace Martin {
         generators.push_back(TreeGenerator(new ExternTreeGenerator));
     }
 
-    Tree Parser::ParseTokens(TokenList tokens, std::string& error_msg) {
+    Tree Parser::ParseFile(const std::string& path, std::string& error_msg) {
+        std::ifstream file(path);
+        if (!file.is_open()) {
+            error_msg = Format("Could not open file: $", path);
+            return nullptr;
+        }
+
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        file.close();
+
+        std::string code = buffer.str();
+
+        return ParseString(code, error_msg);
+    }
+
+    Tree Parser::ParseString(const std::string& code, std::string& error_msg) {
+        auto token_array = TokenizerSingleton.TokenizeString(code);
+        auto tree = ParserSingleton.ParseTokens(token_array);
+
+        // Run verifier here
+        // Run codegen/code here
+
+        return tree;
+    }
+
+    Tree Parser::ParseTokens(TokenList tokens) {
         Tree tree = Tree(new std::vector<TokenNode>);
 
         tree->reserve(tokens->size());

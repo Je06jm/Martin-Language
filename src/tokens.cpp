@@ -1158,4 +1158,6 @@ namespace Martin {
         return std::make_unique<std::vector<Token>>(tokens);
     }
 
+    Tokenizer TokenizerSingleton;
+
 }

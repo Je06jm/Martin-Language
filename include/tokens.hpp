@@ -158,8 +158,7 @@ namespace Martin {
         std::vector<Pattern> patterns;
     };
 
-    void InitTokenizer();
-    std::unique_ptr<std::vector<Token>> Tokenize(std::string input);
+    extern Tokenizer TokenizerSingleton;
 
 }
 

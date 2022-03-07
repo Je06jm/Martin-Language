@@ -214,7 +214,10 @@ namespace Martin {
     public:
         Parser();
 
-        Tree ParseTokens(TokenList tokens, std::string& error_msg);
+        Tree ParseFile(const std::string& path, std::string& error_msg);
+        Tree ParseString(const std::string& code, std::string& error_msg);
+
+        Tree ParseTokens(TokenList tokens);
     
         void ParseBranch(Tree tree, size_t start, size_t end);
 
