@@ -96,6 +96,7 @@ namespace Martin {
         std::vector<std::string> strs;
         LoggingUtil::FormatArr(strs, first, rest...);
 
+        LoggingUtil::FormatFormatter->Clear();
         for (auto str : strs) {
             LoggingUtil::FormatFormatter->Push(str);
         }

@@ -35,56 +35,13 @@ namespace Martin::LoggingUtil {
 
         if (index < buffer.size()) {
             size_t size = buffer.size();
-            Warning("String has $ unused arguments: $\n", size - index + 2, format);
+            Warning("String has $ unused arguments: $\n", size - index, format);
             return false;
         }
 
         buffer.clear();
 
         return true;
-    }
-
-    std::string FormatTime() {
-        const char days[7][4] = {
-            "Sun",
-            "Mon",
-            "Tue",
-            "Wed",
-            "Thu",
-            "Fri",
-            "Sat"
-        };
-
-        const char months[12][4] = {
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec"
-        };
-
-        time_t result = time(nullptr);
-        tm* local_time = localtime(&result);
-
-        // Format example: [Wed Jan 1, 2022 - 1:30 pm]
-        std::string str_time = "[";
-        str_time += std::string(days[local_time->tm_wday]) + " ";
-        str_time += std::string(months[local_time->tm_mon]) + " ";
-        str_time += std::to_string(local_time->tm_mday) + " ";
-        str_time += std::to_string(local_time->tm_year + 1900) + ", ";
-        str_time += std::to_string(local_time->tm_hour % 12) + ":";
-        str_time += std::to_string(local_time->tm_min) + " ";
-        str_time += std::string(local_time->tm_hour / 12 ? "pm" : "am");
-        str_time += "]";
-
-        return str_time;
     }
 
     class FatalLoggingClass : public Logger {
@@ -99,7 +56,7 @@ namespace Martin::LoggingUtil {
 
     private:
         void Setup(std::string& buffer) {
-            buffer = "\033[0m\033[1;41m[Fatal]\033[4;41m" + FormatTime() + "\033[0;41m - ";
+            buffer = "\033[0;41m";
         }
 
         void ReplaceNewlines(std::string& msg) {
@@ -123,7 +80,7 @@ namespace Martin::LoggingUtil {
 
     private:
         void Setup(std::string& buffer) {
-            buffer = "\033[0m\033[1;31m[Error]\033[4;31m" + FormatTime() + "\033[0;31m - ";
+            buffer = "\033[0;31m";
         }
 
         void ReplaceNewlines(std::string& msg) {
@@ -147,7 +104,7 @@ namespace Martin::LoggingUtil {
 
     private:
         void Setup(std::string& buffer) {
-            buffer = "\033[0m\033[1;33m[Warning]\033[4;33m" + FormatTime() + "\033[0;33m - ";
+            buffer = "\033[0;33m";
         }
 
         void ReplaceNewlines(std::string& msg) {
@@ -171,7 +128,7 @@ namespace Martin::LoggingUtil {
     
     private:
         void Setup(std::string& buffer) {
-            buffer = "\033[0m\033[1;37m[Print]\033[4;37m" + FormatTime() + "\033[0;37m - ";
+            buffer = "\033[0;37m";
         }
 
         void ReplaceNewlines(std::string& msg) {

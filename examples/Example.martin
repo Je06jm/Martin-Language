@@ -3,7 +3,8 @@ from OS import name as os_name, version as os_version
 import OS
 import System as Sys
 
-typedef (let myid : Int32) -> None MyCallFunc
+typedef MyCallFunc : (let myid : Int32) -> None
+typedef MyClassHeap : shared MyClass
 
 struct Versioning {
     let major, minor, patch : Int32
@@ -44,7 +45,7 @@ func call_callback(let fn : (let a : Int32) -> None) -> None {
     callback(2)
 }
 
-func add(let nums : array[] Int32) -> set Int32 {
+func add(let nums : array[] Int32) -> Int32 {
     let total : Int32 = 0
     for (let i := 0, i < nums.count(), i += 1) {
         total += nums.get(i)
@@ -78,7 +79,7 @@ func main(let params : array[] String8) -> None {
     set myarr2 : array[,2] Int32
 
     let myref : reference array[] Float32
-    set myref2 : refernece array[,4,] Float32
+    set myref2 : reference array[,4,] Float32
     let myref3 : reference pointer array[] Float32
     // And so on
 
@@ -99,16 +100,29 @@ func main(let params : array[] String8) -> None {
         print(String8.format("For loop {}: {}\n", i, params.get(i)))
     }
 
-    let ttype : {None, Int32} = test(2)
+    let ttype : {None, Int32, Float32, String} = test(2)
     let atype := test(1)
 
     match (ttype) {
-        None: lambda () -> None {
+        default: lambda () -> None {
             print("Nothing!")
         }
         Int32: lambda (let num : Int32) -> None {
             print(String8.format("Number! {}\n", num))
         }
+        Float32: PrintFloat(ttype)
+        String: {
+            let tmp := String8.substr(ttype, 2, String8.length(ttype))
+            print(tmp)
+        }
+    }
+
+    let float_enum : Floating = Floating.SINGLE
+
+    switch (float_enum) {
+        Floating.SINGLE: {}
+        Floating.DOUBLE: lambda () -> None {}
+        default: print()
     }
 
     const mytuple : Tuple = multiple()
@@ -134,9 +148,31 @@ func main(let params : array[] String8) -> None {
 }
 
 class MyClass : public MyOther, public MyInterface {
-public:
-    func myfunc() -> None {}
-private:
+    friend protected MyWinClass;
+    friend private MyCppClass;
+    public {
+        func myfunc() -> None {}
+        extern "Microsoft C" func MyWinFunc() -> None {}
+        extern "C" func MyCFunc() -> None {}
+        extern "C" func MyExternCFunc() -> None
+        virtual func MyVirtual() -> None {}
+        virtual func MyPureVirtual() -> None
+        override func MyOverride() -> None
+        static func MyStatic() -> None {}
+        unsafe static func CanUsePointers() -> None {}
+    }
+    private {
 
-protected:
+    }
+    protected {
+
+    }
+}
+
+extern "Microsoft C++" MyWinClass {
+    
+}
+
+extern "C++" MyCppClass {
+    
 }

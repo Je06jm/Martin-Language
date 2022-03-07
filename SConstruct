@@ -14,7 +14,14 @@ else:
 
 if debug and ('gcc' in env['TOOLS']):
     env.Append(CPPDEFINES=['MARTIN_DEBUG'])
-    env.Append(CXXFLAGS=['-g'])
+    env.Append(CXXFLAGS=[
+        '-g',
+        '-fsanitize=address',
+        '-fno-omit-frame-pointer'
+    ])
+    env.Append(LINKFLAGS=[
+        '-fsanitize=address'
+    ])
 
 else:
     if 'gcc' in env['TOOLS']:

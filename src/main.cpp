@@ -45,17 +45,7 @@ int main(int argc, char** argv) {
     Martin::Tokenizer tokenizer;
     auto arr = tokenizer.TokenizeString(code);
 
-#ifdef MARTIN_DEBUG
-    for (auto token : *arr) {
-        Martin::Print("$: $\n", token->GetLineNumber(), token->GetName());
-    }
-#else
-    Martin::Print("Debug mode is off\n");
-#endif
-
     std::string error;
-
-    Martin::Print("$\n", Martin::ParserSingleton);
 
     auto tree = Martin::ParserSingleton.ParseTokens(arr, error);
 
@@ -64,15 +54,15 @@ int main(int argc, char** argv) {
 
     else {
         // Compile / Run code here
-        for (auto item : *tree) {
-            if (item->is_token) 
-                Martin::Print("Parsed token\n");
-            
-            else {
-                Martin::Print("Parsed node: $\n", *item);
+        for (auto it : *tree) {
+            if (it->is_token) {
+                Martin::Warning("Found a token in tree vector($): $\n", it->token->GetLineNumber(), it->token->GetName());
             }
-                
         }
+
+        Martin::Print("Nothing to do yet. If no warnings have printed, then the parser has accepted your syntax as valid.\n");
+        Martin::Print("Note that this does not mean your syntax is valid as there is no verification run to make sure that the code is valid.\n");
+        Martin::Print("For example, the following code will run as valid: \"func hello(func what() -> None{}) {}\"\n");
     }
 
     return 0;

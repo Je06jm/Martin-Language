@@ -52,7 +52,61 @@ namespace Martin {
             Struct_Bracket,
             Struct_As,
             Struct_Comma,
-            Misc_FromImport
+            Definition_Let,
+            Definition_Set,
+            Definition_Const,
+            Definition_Constexpr,
+            Definition_Struct,
+            Definition_Union,
+            Definition_Enum,
+            Definition_Typedef,
+            Access_Array,
+            Access_Reference,
+            Access_Shared,
+            Access_Unique,
+            Access_Pointer,
+            Assignment_Assign,
+            Assignment_TypeAssign,
+            Assignment_AddAssign,
+            Assignment_SubAssign,
+            Assignment_MulAssign,
+            Assignment_DivAssign,
+            Assignment_ModAssign,
+            Assignment_PowAssign,
+            Assignment_BitAndAssign,
+            Assignment_BitOrAssign,
+            Assignment_BitXOrAssign,
+            Assignment_BitNotAssign,
+            Assignment_BitShiftLeftAssign,
+            Assignment_BitShiftRightAssign,
+            FlowControl_If,
+            FlowControl_Elif,
+            FlowControl_Else,
+            FlowControl_While,
+            FlowControl_For,
+            FlowControl_Foreach,
+            FlowControl_Switch,
+            FlowControl_Match,
+            FlowControl_Continue,
+            FlowControl_Break,
+            FlowControl_Return,
+            ClassType_Virtual,
+            ClassType_Override,
+            ClassType_Static,
+            ClassAccess_Public,
+            ClassAccess_Protected,
+            ClassAccess_Private,
+            ClassAccess_Friend,
+            Misc_FromImport,
+            Misc_Arrow,
+            Misc_In,
+            Misc_Colon,
+            Misc_Func,
+            Misc_Lambda,
+            Misc_Unsafe,
+            Misc_Class,
+            Misc_Extern,
+            Misc_Call
         };
 
         virtual ~TreeNodeBase() {}
@@ -102,6 +156,9 @@ namespace Martin {
 
     protected:
         static TokenNode GetIndexOrNull(Tree tree, size_t index) {
+            if (!tree)
+                Fatal("Trying to get an item on a nullptr tree\n");
+            
             if (index >= tree->size())
                 return nullptr;
 
@@ -109,6 +166,9 @@ namespace Martin {
         }
 
         static Token GetIndexOrNullToken(Tree tree, size_t index) {
+            if (!tree)
+                Fatal("Trying to get an item on a nullptr tree\n");
+            
             TokenNode token_node = GetIndexOrNull(tree, index);
             if ((token_node == nullptr) || !token_node->is_token)
                 return nullptr;
@@ -117,16 +177,35 @@ namespace Martin {
         }
 
         static void ReplaceTree(Tree tree, Tree replacement, size_t index, size_t length) {
+            if (!tree)
+                Fatal("Trying to erase items on a nullptr tree\n");
+            else if (index >= tree->size())
+                Fatal("Trying to erase items starting at $ of a tree of size $\n", index, tree->size());
+            else if ((index + length) >= tree->size())
+                Fatal("Trying to erase $ items starting at $ of a tree of size $\n", length, index, tree->size());
+
             tree->erase(tree->begin() + index, tree->begin() + index + length);
             tree->insert(tree->begin() + index, replacement->begin(), replacement->end());
         }
 
         static void ReplaceTreeWithTokenNode(Tree tree, TokenNode replacement, size_t index, size_t length) {
+            if (!tree)
+                Fatal("Trying to erase items on a nullptr tree\n");
+            else if (index >= tree->size())
+                Fatal("Trying to erase items starting at $ of a tree of size $\n", index, tree->size());
+            else if ((index + length) > tree->size())
+                Fatal("Trying to erase $ items starting at $ of a tree of size $\n", length, index, tree->size());
+
             tree->erase(tree->begin() + index, tree->begin() + index + length);
             tree->insert(tree->begin() + index, replacement);
         }
 
         static void RemoveTreeIndex(Tree tree, size_t index) {
+            if (!tree)
+                Fatal("Trying to erase an item on a nullptr tree\n");
+            if (index >= tree->size())
+                Fatal("Trying to erase item $ of a tree of size $\n", index, tree->size());;
+            
             tree->erase(tree->begin() + index);
         }
     };

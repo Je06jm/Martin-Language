@@ -23,6 +23,7 @@ namespace Martin {
                 it->Serialize(s);
                 serial += s;
             }
+            serial += ")";
         }
 
         const Tree inside;
@@ -47,6 +48,7 @@ namespace Martin {
                 it->Serialize(s);
                 serial += s;
             }
+            serial += ")";
         }
 
         const Tree inside;
@@ -71,6 +73,7 @@ namespace Martin {
                 it->Serialize(s);
                 serial += s;
             }
+            serial += ")";
         }
 
         const Tree inside;
@@ -119,8 +122,8 @@ namespace Martin {
                         Tree new_tree = Tree(new std::vector<TokenNode>);
                         new_tree->insert(new_tree->begin(), tree->begin() + index + 1, tree->begin() + i);
                         tree->erase(tree->begin() + index + 1, tree->begin() + i);
-                        RemoveTreeIndex(tree, index);
                         RemoveTreeIndex(tree, index+1);
+                        RemoveTreeIndex(tree, index);
                         size_t shrinked = before - tree->size();
 
                         ParserSingleton.ParseBranch(new_tree, 0, new_tree->size());
@@ -146,7 +149,7 @@ namespace Martin {
 
                         tree->insert(tree->begin() + index, token_node);
 
-                        return shrinked + 1;
+                        return shrinked;
                     }
                 }
             }

@@ -11,6 +11,21 @@
 #include "generators/as.hpp"
 #include "generators/comma.hpp"
 #include "generators/fromimport.hpp"
+#include "generators/definitions.hpp"
+#include "generators/datatypes.hpp"
+#include "generators/accesstypes.hpp"
+#include "generators/assignments.hpp"
+#include "generators/arrow.hpp"
+#include "generators/flowcontrols.hpp"
+#include "generators/in.hpp"
+#include "generators/colon.hpp"
+#include "generators/funclambda.hpp"
+#include "generators/unsafe.hpp"
+#include "generators/classtype.hpp"
+#include "generators/classaccess.hpp"
+#include "generators/class.hpp"
+#include "generators/extern.hpp"
+#include "generators/call.hpp"
 
 namespace Martin {
 
@@ -18,6 +33,7 @@ namespace Martin {
 
     Parser::Parser() {
         generators.push_back(TreeGenerator(new StructEnclosuresTreeGenerator));
+        generators.push_back(TreeGenerator(new CallTreeGenerator));
         generators.push_back(TreeGenerator(new OPDotTreeGenerator));
         generators.push_back(TreeGenerator(new StructAsTreeGenerator));
         generators.push_back(TreeGenerator(new OPMulDivModTreeGenerator));
@@ -27,8 +43,22 @@ namespace Martin {
         generators.push_back(TreeGenerator(new OPEqualityTreeGenerator));
         generators.push_back(TreeGenerator(new OPNotLogicTreeGenerator));
         generators.push_back(TreeGenerator(new OPLogicalsTreeGenerator));
+        generators.push_back(TreeGenerator(new AccessTypesTreeGenerator));
+        generators.push_back(TreeGenerator(new DefinitionsTreeGenerator));
+        generators.push_back(TreeGenerator(new DataTypesTreeGenerator));
+        generators.push_back(TreeGenerator(new AssignmentsTreeGenerator));
+        generators.push_back(TreeGenerator(new ArrowTreeGenerator));
+        generators.push_back(TreeGenerator(new FlowControlsTreeGenerator));
+        generators.push_back(TreeGenerator(new FuncLambdaTreeGenerator));
+        generators.push_back(TreeGenerator(new ClassTypeTreeGenerator));
+        generators.push_back(TreeGenerator(new ClassAccessTreeGenerator));
+        generators.push_back(TreeGenerator(new UnsafeTreeGenerator));
         generators.push_back(TreeGenerator(new StructCommaTreeGenerator));
         generators.push_back(TreeGenerator(new MiscFromImportTreeGenerator));
+        generators.push_back(TreeGenerator(new InTreeGenerator));
+        generators.push_back(TreeGenerator(new ColonTreeGenerator));
+        generators.push_back(TreeGenerator(new ClassTreeGenerator));
+        generators.push_back(TreeGenerator(new ExternTreeGenerator));
     }
 
     Tree Parser::ParseTokens(TokenList tokens, std::string& error_msg) {
@@ -51,11 +81,6 @@ namespace Martin {
 
     void Parser::ParseBranch(Tree tree, size_t start, size_t end) {
         size_t removed, index;
-
-        Print("Parsing branch\n");
-        for (auto it : *tree) {
-            Print("$\n", *it);
-        }
 
         for (auto gen : generators) {
             if (gen->IsReversed()) {

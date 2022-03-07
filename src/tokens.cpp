@@ -757,7 +757,7 @@ namespace Martin {
     class String8Pattern : public PatternType {
     public:
         bool IsMatch(const std::string& in) const override {
-            if (in[0] == '8')
+            if ((in[0] == '8') && (in.size() >= 2))
                 return StrHelper::IsMatch(in.substr(1));
 
             return StrHelper::IsMatch(in);
@@ -771,7 +771,10 @@ namespace Martin {
     class String16Pattern : public PatternType {
     public:
         bool IsMatch(const std::string& in) const override {
-            if ((in[0] != '1') || (in[1] == '6'))
+            if (in.size() < 2)
+                return false;
+
+            else if ((in[0] != '1') || (in[1] == '6'))
                 return false;
 
             return StrHelper::IsMatch(in.substr(2));
@@ -785,7 +788,10 @@ namespace Martin {
     class String32Pattern : public PatternType {
     public:
         bool IsMatch(const std::string& in) const override {
-            if ((in[0] != '3') || (in[1] != '2'))
+            if (in.size() < 2)
+                return false;
+
+            else if ((in[0] != '3') || (in[1] != '2'))
                 return false;
 
             return StrHelper::IsMatch(in.substr(2));
@@ -799,7 +805,10 @@ namespace Martin {
     class String16lPattern : public PatternType {
     public:
         bool IsMatch(const std::string& in) const override {
-            if ((in[0] != '1') || (in[1] != '6') || (in[2] != 'l'))
+            if (in.size() < 3)
+                return false;
+
+            else if ((in[0] != '1') || (in[1] != '6') || (in[2] != 'l'))
                 return false;
 
             return StrHelper::IsMatch(in.substr(3));
@@ -813,7 +822,10 @@ namespace Martin {
     class String32lPattern : public PatternType {
     public:
         bool IsMatch(const std::string& in) const override {
-            if ((in[0] != '3') || (in[1] != '2') || (in[2] != 'l'))
+            if (in.size() < 3)
+                return false;
+
+            else if ((in[0] != '3') || (in[1] != '2') || (in[2] != 'l'))
                 return false;
 
             return StrHelper::IsMatch(in.substr(3));
@@ -827,7 +839,10 @@ namespace Martin {
     class String16bPattern : public PatternType {
     public:
         bool IsMatch(const std::string& in) const override {
-            if ((in[0] != '1') || (in[1] != '6') || (in[2] != 'b'))
+            if (in.size() < 3)
+                return false;
+
+            else if ((in[0] != '1') || (in[1] != '6') || (in[2] != 'b'))
                 return false;
 
             return StrHelper::IsMatch(in.substr(3));
@@ -841,7 +856,10 @@ namespace Martin {
     class String32bPattern : public PatternType {
     public:
         bool IsMatch(const std::string& in) const override {
-            if ((in[0] != '3') || (in[1] != '2') || (in[2] != 'b'))
+            if (in.size() < 3)
+                return false;
+
+            else if ((in[0] != '3') || (in[1] != '2') || (in[2] != 'b'))
                 return false;
 
             return StrHelper::IsMatch(in.substr(3));
@@ -885,6 +903,7 @@ namespace Martin {
     FixedToken(KWFromToken, KWFromPattern, Type::KW_From, "from ")
     FixedToken(KWImportToken, KWImportPattern, Type::KW_Import, "import ")
     FixedToken(KWAsToken, KWAsPattern, Type::KW_As, "as ")
+    FixedToken(KWInToken, KWInPattern, Type::KW_In, "in ")
     FixedToken(KWStructToken, KWStructPattern, Type::KW_Struct, "struct ")
     FixedToken(KWUnionToken, KWUnionPattern, Type::KW_Union, "union ")
     FixedToken(KWEnumToken, KWEnumPattern, Type::KW_Enum, "enum ")
@@ -893,9 +912,35 @@ namespace Martin {
     FixedToken(KWSetToken, KWSetPattern, Type::KW_Set, "set ")
     FixedToken(KWConstToken, KWConstPattern, Type::KW_Const, "const ")
     FixedToken(KWConstexprToken, KWConstexprPattern, Type::KW_Constexpr, "constexpr ")
-    FixedToken(KWArrayToken, KWArrayPattern, Type::KW_Array, "array ")
+
+    class KWArrayToken : public TokenType {
+    public:
+        Type GetType() const override {
+            return Type::KW_Array;
+        }
+
+        void Process(std::string& in) override {
+            in.erase(0, std::strlen("array"));
+        }
+
+        std::string GetName() const override {
+            return "array ";
+        }
+    };
+
+    class KWArrayPattern : public PatternType {
+    public:
+        bool IsMatch(const std::string& in) const override {
+            return StrHelper::IsFirstMatch(in.c_str(), "array[");
+        }
+        Token CreateToken() const override {
+            return Token(new KWArrayToken);
+        }
+    };
+
     FixedToken(KWReferenceToken, KWReferencePattern, Type::KW_Reference, "reference ")
     FixedToken(KWSharedToken, KWSharedPattern, Type::KW_Shared, "shared ")
+    FixedToken(KWUniqueToken, KWUniquePattern, Type::KW_Unique, "unique ")
     FixedToken(KWPointerToken, KWPointerPattern, Type::KW_Pointer, "pointer ")
     FixedToken(KWExternToken, KWExternPattern, Type::KW_Extern, "extern ")
     FixedToken(KWUnsafeToken, KWUnsafePattern, Type::KW_Unsafe, "unsafe ")
@@ -904,10 +949,10 @@ namespace Martin {
     FixedToken(KWPublicToken, KWPublicPattern, Type::KW_Public, "public")
     FixedToken(KWProtectedToken, KWProtectedPattern, Type::KW_Protected, "protected")
     FixedToken(KWPrivateToken, KWPrivatePattern, Type::KW_Private, "private")
+    FixedToken(KWFriendToken, KWFriendPattern, Type::KW_Friend, "friend ");
     FixedToken(KWVirtualToken, KWVirtualPattern, Type::KW_Virtual, "virtual ")
     FixedToken(KWOverrideToken, KWOverridePattern, Type::KW_Override, "override ")
     FixedToken(KWStaticToken, KWStaticPattern, Type::KW_Static, "static ")
-    FixedToken(KWSuperToken, KWSuperPattern, Type::KW_Super, "super")
     FixedToken(KWIfToken, KWIfPattern, Type::KW_If, "if ")
     FixedToken(KWElifToken, KWElifPattern, Type::KW_Elif, "elif ")
     FixedToken(KWElseToken, KWElsePattern, Type::KW_Else, "else ")
@@ -917,6 +962,7 @@ namespace Martin {
     FixedToken(KWContinueToken, KWContinuePattern, Type::KW_Continue, "continue")
     FixedToken(KWBreakToken, KWBreakPattern, Type::KW_Break, "break")
     FixedToken(KWMatchToken, KWMatchPattern, Type::KW_Match, "match ")
+    FixedToken(KWSwitchToken, KWSwitchPattern, Type::KW_Switch, "switch ")
     FixedToken(KWReturnToken, KWReturnPattern, Type::KW_Return, "return ")
     FixedToken(KWLambdaToken, KWLambdaPattern, Type::KW_Lambda, "lambda ")
     FixedToken(KWAndToken, KWAndPattern, Type::KW_And, "and ")
@@ -957,6 +1003,7 @@ namespace Martin {
     FixedToken(SYMAssignBitAndToken, SYMAssignBitAndPattern, Type::SYM_AssignBitAnd, "&=")
     FixedToken(SYMAssignBitOrToken, SYMAssignBitOrPattern, Type::SYM_AssignBitOr, "|=")
     FixedToken(SYMAssignBitXOrToken, SYMAssignBitXOrPattern, Type::SYM_AssignBitXOr, "^=")
+    FixedToken(SYMAssignBitNotToken, SYMAssignBitNotPattern, Type::SYM_AssignBitNot, "~=")
     FixedToken(SYMAssignBitShiftLeftToken, SYMAssignBitShiftLeftPattern, Type::SYM_AssignBitShiftLeft, "<<=")
     FixedToken(SYMAssignBitShiftRightToken, SYMAssignBitShiftRightPattern, Type::SYM_AssignBitShiftRight, ">>=")
     FixedToken(SYMEqualsToken, SYMEqualsPattern, Type::SYM_Equals, "==")
@@ -986,6 +1033,7 @@ namespace Martin {
         patterns.push_back(Pattern(new KWFromPattern));
         patterns.push_back(Pattern(new KWImportPattern));
         patterns.push_back(Pattern(new KWAsPattern));
+        patterns.push_back(Pattern(new KWInPattern));
         patterns.push_back(Pattern(new KWStructPattern));
         patterns.push_back(Pattern(new KWUnionPattern));
         patterns.push_back(Pattern(new KWEnumPattern));
@@ -997,6 +1045,7 @@ namespace Martin {
         patterns.push_back(Pattern(new KWArrayPattern));
         patterns.push_back(Pattern(new KWReferencePattern));
         patterns.push_back(Pattern(new KWSharedPattern));
+        patterns.push_back(Pattern(new KWUniquePattern));
         patterns.push_back(Pattern(new KWPointerPattern));
         patterns.push_back(Pattern(new KWExternPattern));
         patterns.push_back(Pattern(new KWUnsafePattern));
@@ -1005,10 +1054,10 @@ namespace Martin {
         patterns.push_back(Pattern(new KWPublicPattern));
         patterns.push_back(Pattern(new KWProtectedPattern));
         patterns.push_back(Pattern(new KWPrivatePattern));
+        patterns.push_back(Pattern(new KWFriendPattern));
         patterns.push_back(Pattern(new KWVirtualPattern));
         patterns.push_back(Pattern(new KWOverridePattern));
         patterns.push_back(Pattern(new KWStaticPattern));
-        patterns.push_back(Pattern(new KWSuperPattern));
         patterns.push_back(Pattern(new KWIfPattern));
         patterns.push_back(Pattern(new KWElifPattern));
         patterns.push_back(Pattern(new KWElsePattern));
@@ -1018,6 +1067,7 @@ namespace Martin {
         patterns.push_back(Pattern(new KWContinuePattern));
         patterns.push_back(Pattern(new KWBreakPattern));
         patterns.push_back(Pattern(new KWMatchPattern));
+        patterns.push_back(Pattern(new KWSwitchPattern));
         patterns.push_back(Pattern(new KWReturnPattern));
         patterns.push_back(Pattern(new KWLambdaPattern));
         patterns.push_back(Pattern(new KWAndPattern));
@@ -1032,6 +1082,7 @@ namespace Martin {
         patterns.push_back(Pattern(new SYMOpenParenthesesPattern));
         patterns.push_back(Pattern(new SYMCloseParenthesesPattern));
         patterns.push_back(Pattern(new SYMSemiColonPattern));
+        patterns.push_back(Pattern(new SYMTypeAssignPattern));
         patterns.push_back(Pattern(new SYMColonPattern));
         patterns.push_back(Pattern(new SYMArrowPattern));
         patterns.push_back(Pattern(new SYMAssignAddPattern));
@@ -1043,6 +1094,7 @@ namespace Martin {
         patterns.push_back(Pattern(new SYMAssignBitAndPattern));
         patterns.push_back(Pattern(new SYMAssignBitOrPattern));
         patterns.push_back(Pattern(new SYMAssignBitXOrPattern));
+        patterns.push_back(Pattern(new SYMAssignBitNotPattern));
         patterns.push_back(Pattern(new SYMAssignBitShiftLeftPattern));
         patterns.push_back(Pattern(new SYMAssignBitShiftRightPattern));
         patterns.push_back(Pattern(new SYMAddPattern));
@@ -1057,7 +1109,6 @@ namespace Martin {
         patterns.push_back(Pattern(new SYMBitNotPattern));
         patterns.push_back(Pattern(new SYMBitShiftLeftPattern));
         patterns.push_back(Pattern(new SYMBitShiftRightPattern));
-        patterns.push_back(Pattern(new SYMTypeAssignPattern));
         patterns.push_back(Pattern(new SYMEqualsPattern));
         patterns.push_back(Pattern(new SYMNotEqualsPattern));
         patterns.push_back(Pattern(new SYMLessThanEqualsPattern));
