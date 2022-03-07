@@ -7,11 +7,12 @@ a big goal with support for being compiled, JIT compiled, and interpreted.
 Lastly, it supports zero cost returns of any sized type.
 
 ## Currently implemented
+* Parser
 * Tokenizer
 * Unicode conversion
 
 ## Currently working on
-* Parse
+* Verifier
 
 ## Future goals
 * Interpreter
