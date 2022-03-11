@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATORS_FLOWCONTROLS
+#define MARTIN_GENERATORS_FLOWCONTROLS
+
 #include <parse.hpp>
 
 namespace Martin {
@@ -321,3 +324,5 @@ namespace Martin {
     };
 
 }
+
+#endif

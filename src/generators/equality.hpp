@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATORS_EQUALITY
+#define MARTIN_GENERATORS_EQUALITY
+
 #include <parse.hpp>
 
 namespace Martin {
@@ -185,3 +188,5 @@ namespace Martin {
     };
 
 }
+
+#endif

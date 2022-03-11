@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATORS_ARROW
+#define MARTIN_GENERATORS_ARROW
+
 #include <parse.hpp>
 
 namespace Martin {
@@ -45,3 +48,5 @@ namespace Martin {
     };
 
 }
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATORS_ASSIGNMENTS
+#define MARTIN_GENERATORS_ASSIGNMENTS
+
 #include <parse.hpp>
 
 namespace Martin {
@@ -374,3 +377,5 @@ namespace Martin {
     };
 
 }
+
+#endif

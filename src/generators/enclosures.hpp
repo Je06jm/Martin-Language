@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATORS_ENCLOSURES
+#define MARTIN_GENERATORS_ENCLOSURES
+
 #include <parse.hpp>
 
 #include <vector>
@@ -158,3 +161,5 @@ namespace Martin {
     };
 
 }
+
+#endif

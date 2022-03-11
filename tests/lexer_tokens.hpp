@@ -1,15 +1,14 @@
 #include "testing.hpp"
 
-#include <string>
-
 #include "sample.martin"
 
 #include <tokens.hpp>
 
 namespace Martin {
-    class Test_lexer : public Test {
+    class Test_lexer_tokens : public Test {
+    public:
         std::string GetName() const override {
-            return "Lexer";
+            return "Lexer(Tokens)";
         }
 
         bool RunTest() override {
@@ -37,6 +36,10 @@ namespace Martin {
                 TokenType::Type::SYM_CloseParentheses,
                 TokenType::Type::SYM_CloseCurly
             };
+
+            if (!tree) {
+                error = "Tokenizer returned a nullptr\n";
+            }
 
             for (size_t i = 0; i < tree->size(); i++) {
                 if (i >= types.size())

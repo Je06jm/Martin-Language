@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATORS_MULDIVMOD
+#define MARTIN_GENERATORS_MULDIVMOD
+
 #include <parse.hpp>
 
 namespace Martin {
@@ -102,3 +105,5 @@ namespace Martin {
     };
 
 }
+
+#endif

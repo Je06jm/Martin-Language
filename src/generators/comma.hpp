@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATORS_COMMA
+#define MARTIN_GENERATORS_COMMA
+
 #include <parse.hpp>
 
 namespace Martin {
@@ -69,3 +72,5 @@ namespace Martin {
     };
 
 }
+
+#endif

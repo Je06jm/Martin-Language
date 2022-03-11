@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATORS_CLASSACCESS
+#define MARTIN_GENERATORS_CLASSACCESS
+
 #include <parse.hpp>
 
 namespace Martin {
@@ -131,3 +134,5 @@ namespace Martin {
     };
 
 }
+
+#endif

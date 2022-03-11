@@ -1,5 +1,7 @@
 #include <parse.hpp>
 
+#include "comma.hpp"
+
 namespace Martin {
 
     class ArrayTypesTreeNode : public TreeNodeBase {
@@ -16,12 +18,10 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *sizes, *right);
-            
         }
-
-        /*
+        
         bool Valid() const override {
-            if (!sizes->Valid())
+            if (sizes->is_token || !sizes->node->Valid())
                 return false;
 
             else if (sizes->is_token && (
@@ -44,9 +44,9 @@ namespace Martin {
                 }
             }
 
-            return right->Valid();
+            return right->node->Valid();
         }
-        */
+        
 
         const TokenNode sizes;
         const TokenNode right;

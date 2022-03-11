@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATORS_FUNCLAMBDA
+#define MARTIN_GENERATORS_FUNCLAMBDA
+
 #include <parse.hpp>
 
 namespace Martin {
@@ -92,3 +95,5 @@ namespace Martin {
     };
 
 }
+
+#endif

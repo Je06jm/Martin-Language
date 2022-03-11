@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATOR_ADDSUB
+#define MARTIN_GENERATOR_ADDSUB
+
 #include <parse.hpp>
 
 #include <logging.hpp>
@@ -84,3 +87,5 @@ namespace Martin {
     };
 
 }
+
+#endif

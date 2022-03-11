@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATORS_BITWISE
+#define MARTIN_GENERATORS_BITWISE
+
 #include <parse.hpp>
 
 namespace Martin {
@@ -183,3 +186,5 @@ namespace Martin {
     };
 
 }
+
+#endif

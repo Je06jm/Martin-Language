@@ -43,7 +43,7 @@ else:
 src = Glob('./src/*.cpp')
 
 if run_test:
-    env.Append(CPPPATH=['./tests'])
+    env.Append(CPPPATH=['./tests', './src'])
     test = Glob('./tests/*.hpp')
     includes = ''
     inits = ''

@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATORS_DOT
+#define MARTIN_GENERATORS_DOT
+
 #include <parse.hpp>
 
 namespace Martin {
@@ -50,3 +53,5 @@ namespace Martin {
     };
 
 }
+
+#endif

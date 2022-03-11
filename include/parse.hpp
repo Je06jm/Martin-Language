@@ -119,7 +119,7 @@ namespace Martin {
         }
 
         virtual bool Valid() const {
-            return false;
+            return true;
         }
     };
 

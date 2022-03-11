@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATORS_TYPEHELPER
+#define MARTIN_GENERATORS_TYPEHELPER
+
 #ifndef MARTIN_TYPE_HELPER
 #define MARTIN_TYPE_HELPER
 
@@ -46,5 +49,7 @@ namespace Martin::TypeHelper {
     }
 
 }
+
+#endif
 
 #endif
