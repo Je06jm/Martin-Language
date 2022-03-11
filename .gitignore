@@ -37,6 +37,7 @@
 *.hex
 # Linux executable
 martin
+martin-test
 
 # Debug files
 *.dSYM/
@@ -56,3 +57,4 @@ dkms.conf
 # Misc
 .vscode/
 .sconsign.dblite
+temp/

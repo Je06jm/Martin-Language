@@ -16,12 +16,6 @@
 
 Martin::UnicodeType input_unicode_type = Martin::UnicodeType_8Bits;
 
-namespace Martin {
-
-    extern Value program;
-
-}
-
 int main(int argc, char** argv) {
     argc--; argv++;
 
@@ -41,6 +35,8 @@ int main(int argc, char** argv) {
         for (auto it : *tree) {
             if (it->is_token) {
                 Martin::Warning("Found a token in tree vector($): $\n", it->token->GetLineNumber(), it->token->GetName());
+            } else {
+                Martin::Print("$\n", *it);
             }
         }
 

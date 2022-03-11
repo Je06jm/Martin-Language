@@ -19,6 +19,35 @@ namespace Martin {
             
         }
 
+        /*
+        bool Valid() const override {
+            if (!sizes->Valid())
+                return false;
+
+            else if (sizes->is_token && (
+                (sizes->token->GetType() != TokenType::Type::Integer) ||
+                (sizes->token->GetType() != TokenType::Type::UInteger)
+            ))
+                return false;
+                
+            else if (!sizes->is_token && (sizes->node->GetType() == Type::Struct_Comma)) {
+                auto comma = std::static_pointer_cast<StructCommaTreeNode>(sizes->node);
+                for (auto it : comma->nodes) {
+                    if (!it->is_token)
+                        return false;
+                    
+                    if (
+                        (it->token->GetType() != TokenType::Type::Integer) ||
+                        (it->token->GetType() != TokenType::Type::UInteger)
+                    )
+                        return false;
+                }
+            }
+
+            return right->Valid();
+        }
+        */
+
         const TokenNode sizes;
         const TokenNode right;
     };

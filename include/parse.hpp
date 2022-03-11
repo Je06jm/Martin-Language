@@ -117,6 +117,10 @@ namespace Martin {
         virtual void Serialize(std::string& serial) const {
             serial = "Unimplemented serialize on tree node";
         }
+
+        virtual bool Valid() const {
+            return false;
+        }
     };
 
     struct _TokenNodeBase {

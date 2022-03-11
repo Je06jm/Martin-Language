@@ -149,7 +149,7 @@ func main(let params : array[] String8) -> None {
 
 class MyClass : public MyOther, public MyInterface {
     friend protected MyWinClass;
-    friend private MyCppClass;
+    friend private virtual MyCppClass;
     public {
         func myfunc() -> None {}
         extern "Microsoft C" func MyWinFunc() -> None {}
@@ -160,6 +160,8 @@ class MyClass : public MyOther, public MyInterface {
         override func MyOverride() -> None
         static func MyStatic() -> None {}
         unsafe static func CanUsePointers() -> None {}
+        virtual static var a : Int32
+        virtual override static var b : Int32
     }
     private {
 
