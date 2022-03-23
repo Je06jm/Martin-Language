@@ -52,6 +52,8 @@ namespace Martin {
             KW_Virtual,
             KW_Override,
             KW_Static,
+            KW_Getter,
+            KW_Setter,
             KW_If,
             KW_Elif,
             KW_Else,

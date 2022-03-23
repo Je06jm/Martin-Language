@@ -15,22 +15,34 @@ namespace Martin {
             auto tree = ParserSingleton.ParseString(martin_sample, error);
 
             if (!tree) {
-                error = Format("Parser encountered an error: $\n", error);
+                error = Format("Parser encountered an error: $", error);
                 return false;
             }
 
             for (auto it : *tree) {
                 if (it->is_token) {
-                    error = "Parser returned a tree with tokens without ownership\n";
+                    error = "Parser returned a tree with tokens without ownership";
                     return false;
                 }
             }
 
             for (auto it : *tree) {
                 if (!it->node->Valid()) {
-                    error = "Parser returned a tree with an invalid node\n";
+                    error = "Parser returned a tree with an invalid node";
                     return false;
                 }
+            }
+
+            tree = ParserSingleton.ParseString("", error);
+
+            if (!tree) {
+                error = Format("Parser encountered an error when given an empty string: $", error);
+                return false;
+            }
+
+            if (tree->size() != 0) {
+                error = "Parser returned a non-empty array when givin an empty string";
+                return false;
             }
 
             return true;

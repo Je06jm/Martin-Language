@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATOR_ACCESSTYPES
+#define MARTIN_GENERATOR_ACCESSTYPES
+
 #include <parse.hpp>
 
 #include "comma.hpp"
@@ -21,10 +24,10 @@ namespace Martin {
         }
         
         bool Valid() const override {
-            if (sizes->is_token || !sizes->node->Valid())
+            if (!sizes || (!sizes->is_token && !sizes->node->Valid()))
                 return false;
 
-            else if (sizes->is_token && (
+            else if (sizes->is_token && !(
                 (sizes->token->GetType() != TokenType::Type::Integer) ||
                 (sizes->token->GetType() != TokenType::Type::UInteger)
             ))
@@ -44,7 +47,26 @@ namespace Martin {
                 }
             }
 
-            return right->node->Valid();
+            if (right) {
+                if (right->is_token && (right->token->GetType() != TokenType::Type::Identifier))
+                    return false;
+                
+                else if (!right->is_token) {
+                    switch (right->node->GetType()) {
+                        case TreeNodeBase::Type::Access_Pointer:
+                        case TreeNodeBase::Type::Access_Reference:
+                        case TreeNodeBase::Type::Access_Shared:
+                        case TreeNodeBase::Type::Access_Unique:
+                        case TreeNodeBase::Type::Access_Array:
+                            break;
+                        
+                        default:
+                            return false;
+                    }
+                }
+            }
+
+            return right != nullptr;
         }
         
 
@@ -69,6 +91,29 @@ namespace Martin {
             
         }
 
+        bool Valid() const override {
+            if (right) {
+                if (right->is_token && (right->token->GetType() != TokenType::Type::Identifier))
+                    return false;
+                
+                else if (!right->is_token) {
+                    switch (right->node->GetType()) {
+                        case TreeNodeBase::Type::Access_Array:
+                        case TreeNodeBase::Type::Access_Pointer:
+                        case TreeNodeBase::Type::Access_Reference:
+                        case TreeNodeBase::Type::Access_Shared:
+                        case TreeNodeBase::Type::Access_Unique:
+                            break;
+                        
+                        default:
+                            return false;
+                    }
+                }
+            }
+
+            return right != nullptr;
+        }
+
         const TokenNode right;
     };
 
@@ -87,6 +132,29 @@ namespace Martin {
         void Serialize(std::string& serial) const override {
             serial = Format("$($)", GetName(), *right);
             
+        }
+
+        bool Valid() const override {
+            if (right) {
+                if (right->is_token && (right->token->GetType() != TokenType::Type::Identifier))
+                    return false;
+                
+                else if (!right->is_token) {
+                    switch (right->node->GetType()) {
+                        case TreeNodeBase::Type::Access_Array:
+                        case TreeNodeBase::Type::Access_Pointer:
+                        case TreeNodeBase::Type::Access_Reference:
+                        case TreeNodeBase::Type::Access_Shared:
+                        case TreeNodeBase::Type::Access_Unique:
+                            break;
+                        
+                        default:
+                            return false;
+                    }
+                }
+            }
+
+            return right != nullptr;
         }
 
         const TokenNode right;
@@ -109,6 +177,29 @@ namespace Martin {
             
         }
 
+        bool Valid() const override {
+            if (right) {
+                if (right->is_token && (right->token->GetType() != TokenType::Type::Identifier))
+                    return false;
+                
+                else if (!right->is_token) {
+                    switch (right->node->GetType()) {
+                        case TreeNodeBase::Type::Access_Array:
+                        case TreeNodeBase::Type::Access_Pointer:
+                        case TreeNodeBase::Type::Access_Reference:
+                        case TreeNodeBase::Type::Access_Shared:
+                        case TreeNodeBase::Type::Access_Unique:
+                            break;
+                        
+                        default:
+                            return false;
+                    }
+                }
+            }
+
+            return right != nullptr;
+        }
+
         const TokenNode right;
     };
 
@@ -127,6 +218,29 @@ namespace Martin {
         void Serialize(std::string& serial) const override {
             serial = Format("$($)", GetName(), *right);
             
+        }
+
+        bool Valid() const override {
+            if (right) {
+                if (right->is_token && (right->token->GetType() != TokenType::Type::Identifier))
+                    return false;
+                
+                else if (!right->is_token) {
+                    switch (right->node->GetType()) {
+                        case TreeNodeBase::Type::Access_Array:
+                        case TreeNodeBase::Type::Access_Pointer:
+                        case TreeNodeBase::Type::Access_Reference:
+                        case TreeNodeBase::Type::Access_Shared:
+                        case TreeNodeBase::Type::Access_Unique:
+                            break;
+                        
+                        default:
+                            return false;
+                    }
+                }
+            }
+
+            return right != nullptr;
         }
 
         const TokenNode right;
@@ -194,3 +308,5 @@ namespace Martin {
     };
 
 }
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef MARTIN_GENERATORS_UNSAFE
+#define MARTIN_GENERATORS_UNSAFE
+
 #include <parse.hpp>
 
 namespace Martin {
@@ -44,3 +47,5 @@ namespace Martin {
     };
 
 }
+
+#endif

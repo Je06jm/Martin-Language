@@ -30,8 +30,7 @@ namespace Martin {
     public:
         size_t ProcessBranch(Tree tree, size_t index, size_t end) override {
             Token sym = GetIndexOrNullToken(tree, index);
-            if (sym)
-                
+
             if (sym && (sym->GetType() == TokenType::Type::KW_In)) {
                 TokenNode left = GetIndexOrNull(tree, index-1);
                 TokenNode right = GetIndexOrNull(tree, index+1);

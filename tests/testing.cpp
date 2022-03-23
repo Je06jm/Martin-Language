@@ -21,23 +21,30 @@ int main() {
     Martin::Init();
     uint32_t passed = 0;
     uint32_t failed = 0;
+    bool except;
     bool success;
 
     Martin::Print("Found $ test.\n", Martin::tests.size());
 
     for (auto test : Martin::tests) {
-        Martin::Print("Running '$' test...", test->GetName());
+        Martin::Print("Running test '$'...", test->GetName());
+        except = false;
         try {
             success = test->RunTest();
         } catch (...) {
             success = false;
+            except = true;
         }
 
         if (success) {
             Martin::Print("\033[0;32mOK\n");
             passed++;
         } else {
-            Martin::Print("\033[0;31mFAIL\n");
+            Martin::Print("\033[0;31mFAIL");
+            if (except)
+                Martin::Print("(Unhandled exception)\n");
+            else
+                Martin::Print("($)\n", test->GetError());
             failed++;
         }
     }

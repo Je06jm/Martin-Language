@@ -3,6 +3,16 @@ from OS import name as os_name, version as os_version
 import OS
 import System as Sys
 
+// When imported, all private scopes are not included. Only this
+// file can access what's inside of this private scope
+private {
+    import MyLib
+
+    func my_helper() -> None {
+        MyLib.my_func()
+    }
+}
+
 typedef MyCallFunc : (let myid : Int32) -> None
 typedef MyClassHeap : shared MyClass
 
@@ -162,9 +172,29 @@ class MyClass : public MyOther, public MyInterface {
         unsafe static func CanUsePointers() -> None {}
         virtual static var a : Int32
         virtual override static var b : Int32
+
+        let a : Int32 {
+            get: lambda () -> Int32 {
+                return a
+            }
+            private set: lambda (const new_a : Int32) -> None {
+                a = new_a
+            }
+        }
+
+        let b : Int32 {
+            private get: my_get
+            set: my_set
+        }
     }
     private {
+        func my_get(let new_b : Int32) -> None {
+            b = new_b
+        }
 
+        func my_set() -> Int32 {
+            return b
+        }
     }
     protected {
 

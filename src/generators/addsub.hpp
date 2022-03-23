@@ -5,8 +5,6 @@
 
 #include <logging.hpp>
 
-#include "typehelper.hpp"
-
 namespace Martin {
 
     class OPAddTreeNode : public TreeNodeBase {

@@ -953,6 +953,8 @@ namespace Martin {
     FixedToken(KWVirtualToken, KWVirtualPattern, Type::KW_Virtual, "virtual ")
     FixedToken(KWOverrideToken, KWOverridePattern, Type::KW_Override, "override ")
     FixedToken(KWStaticToken, KWStaticPattern, Type::KW_Static, "static ")
+    FixedToken(KWGetToken, KWGetPattern, Type::KW_Get, "get")
+    FixedToken(KWSetToken, KWSetPattern, Type::KW_Set, "set")
     FixedToken(KWIfToken, KWIfPattern, Type::KW_If, "if ")
     FixedToken(KWElifToken, KWElifPattern, Type::KW_Elif, "elif ")
     FixedToken(KWElseToken, KWElsePattern, Type::KW_Else, "else ")
@@ -1058,6 +1060,8 @@ namespace Martin {
         patterns.push_back(Pattern(new KWVirtualPattern));
         patterns.push_back(Pattern(new KWOverridePattern));
         patterns.push_back(Pattern(new KWStaticPattern));
+        patterns.push_back(Pattern(new KWGetPattern));
+        patterns.push_back(Pattern(new KWSetPattern));
         patterns.push_back(Pattern(new KWIfPattern));
         patterns.push_back(Pattern(new KWElifPattern));
         patterns.push_back(Pattern(new KWElsePattern));

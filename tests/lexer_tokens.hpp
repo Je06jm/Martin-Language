@@ -38,7 +38,8 @@ namespace Martin {
             };
 
             if (!tree) {
-                error = "Tokenizer returned a nullptr\n";
+                error = "Tokenizer returned a nullptr";
+                return false;
             }
 
             for (size_t i = 0; i < tree->size(); i++) {
@@ -46,9 +47,20 @@ namespace Martin {
                     break;
 
                 if ((*tree)[i]->GetType() != types[i]) {
-                    error = Martin::Format("Tokenizer returned the wrong token $ at $\n", (*tree)[i]->GetName(), (*tree)[i]->GetLineNumber());
+                    error = Martin::Format("Tokenizer returned the wrong token $ at $", (*tree)[i]->GetName(), (*tree)[i]->GetLineNumber());
                     return false;
                 }
+            }
+
+            tree = TokenizerSingleton.TokenizeString("");
+            if (!tree) {
+                error = "Tokenizer returned a nullptr when given an empty string";
+                return false;
+            }
+
+            if (tree->size() != 0) {
+                error = "Tokenizer returned a non-empty list of tokens when given an empty string";
+                return false;
             }
             
             return true;

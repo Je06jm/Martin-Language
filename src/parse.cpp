@@ -29,6 +29,7 @@
 #include "generators/class.hpp"
 #include "generators/extern.hpp"
 #include "generators/call.hpp"
+#include "generators/gettersetter.hpp"
 
 namespace Martin {
 
@@ -54,6 +55,7 @@ namespace Martin {
         generators.push_back(TreeGenerator(new FlowControlsTreeGenerator));
         generators.push_back(TreeGenerator(new FuncLambdaTreeGenerator));
         generators.push_back(TreeGenerator(new ClassTypeTreeGenerator));
+        generators.push_back(TreeGenerator(new GetterSetterTreeGenerator));
         generators.push_back(TreeGenerator(new ClassAccessTreeGenerator));
         generators.push_back(TreeGenerator(new UnsafeTreeGenerator));
         generators.push_back(TreeGenerator(new StructCommaTreeGenerator));

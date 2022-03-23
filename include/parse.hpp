@@ -106,7 +106,9 @@ namespace Martin {
             Misc_Unsafe,
             Misc_Class,
             Misc_Extern,
-            Misc_Call
+            Misc_Call,
+            Misc_Getter,
+            Misc_Setter
         };
 
         virtual ~TreeNodeBase() {}

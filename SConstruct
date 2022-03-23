@@ -4,7 +4,7 @@ from os.path import exists
 truestr = ['true', '1', 'yes']
 
 debug = ARGUMENTS.get('debug')
-run_test = ARGUMENTS.get('test')
+run_test = ARGUMENTS.get('tests')
 
 if debug:
     debug = debug.lower() in truestr
