@@ -22,56 +22,66 @@ namespace Martin {
         }
 
         if (size >= 0) {
-            if (!((size == list->size()) && (size_type == ValidateSizeType::Equals))) {
-
-            } else if (!((size != list->size()) && (size_type == ValidateSizeType::NotEquals))) {
-
-            } else if (!((size < list->size()) && (size_type == ValidateSizeType::LessThan))) {
-
-            } else if (!((size > list->size()) && (size_type == ValidateSizeType::GreaterThan))) {
-
-            } else if (!((size <= list->size()) && (size_type == ValidateSizeType::LessThanEquals))) {
-
-            } else if (!((size >= list->size()) && (size_type == ValidateSizeType::GreaterThanEquals))) {
-
-            }
-
-            if ((size != list->size()) &&) {
-                error = Format("Tokenizer returned a list of size $ when expecting $", size, list->size());
+            if ((!(size == list->size()) && (size_type == ValidateSizeType::Equals))) {
+                error = Format("Tokenizer returned a list of size $ when expecting $", list->size(), size);
                 return false;
-
-            } else if ((size == list->size()) && !should_equal_size) {
+            } else if ((!(size != list->size()) && (size_type == ValidateSizeType::NotEquals))) {
                 error = Format("Tokenizer returned a list of size $ when expecting any other value", size);
                 return false;
-
+            } else if ((!(size < list->size()) && (size_type == ValidateSizeType::LessThan))) {
+                error = Format("Tokenizer returned a list of size $ when expecting less than $", list->size(), size);
+                return false;
+            } else if ((!(size > list->size()) && (size_type == ValidateSizeType::GreaterThan))) {
+                error = Format("Tokenizer returned a list of size $ when expecting greater than $", list->size(), size);
+                return false;
+            } else if ((!(size <= list->size()) && (size_type == ValidateSizeType::LessThanEquals))) {
+                error = Format("Tokenizer returned a list of size $ when expecting at most $", list->size(), size);
+                return false;
+            } else if ((!(size >= list->size()) && (size_type == ValidateSizeType::GreaterThanEquals))) {
+                error = Format("Tokenizer returned a list of size $ when expecting at least $", list->size(), size);
+                return false;
             }
         }
 
         return true;
     }
 
-    bool ValidateParserTree(Tree tree, std::string& error, int size = -1, bool should_equal_size = true) {
+    bool ValidateParserTree(Tree tree, std::string& error, int size = -1, ValidateSizeType size_type = ValidateSizeType::Equals) {
         if (!tree) {
-
+            error = "Parser return a nullptr";
+            return false;
         }
 
         if (size >= 0) {
             if (!((size == tree->size()) && (size_type == ValidateSizeType::Equals))) {
-
-            } else if (!((size != tree->size()) && (size_type == ValidateSizeType::NotEquals))) {
-
-            } else if (!((size < tree->size()) && (size_type == ValidateSizeType::LessThan))) {
-
-            } else if (!((size > tree->size()) && (size_type == ValidateSizeType::GreaterThan))) {
-
-            } else if (!((size <= tree->size()) && (size_type == ValidateSizeType::LessThanEquals))) {
-
-            } else if (!((size >= tree->size()) && (size_type == ValidateSizeType::GreaterThanEquals))) {
-
+                error = Format("Parser returned a tree of size $ when expecting $", tree->size(), size);
+                return false;
+            } else if ((!(size != tree->size()) && (size_type == ValidateSizeType::NotEquals))) {
+                error = Format("Parser returned a tree of size $ when expecting any other value", size);
+                return false;
+            } else if ((!(size < tree->size()) && (size_type == ValidateSizeType::LessThan))) {
+                error = Format("Parser returned a tree of size $ when expecting less than $", tree->size(), size);
+                return false;
+            } else if ((!(size > tree->size()) && (size_type == ValidateSizeType::GreaterThan))) {
+                error = Format("Parser returned a tree of size $ when expecting greater than $", tree->size(), size);
+                return false;
+            } else if ((!(size <= tree->size()) && (size_type == ValidateSizeType::LessThanEquals))) {
+                error = Format("Parser returned a tree of size $ when expecting at most $", tree->size(), size);
+                return false;
+            } else if ((!(size >= tree->size()) && (size_type == ValidateSizeType::GreaterThanEquals))) {
+                error = Format("Parser returned a tree of size $ when expecting at least $", tree->size(), size);
+                return false;
             }
         }
 
-        return false;
+        for (size_t i = 0; i < tree->size(); i++) {
+            if ((*tree)[i] == nullptr) {
+                error = Format("Parser returned a tree with a nullptr at $", i);
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

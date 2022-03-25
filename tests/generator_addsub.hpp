@@ -7,6 +7,8 @@
 
 #include <parse.hpp>
 
+#include "helpers/validatetree.hpp"
+
 namespace Martin {
     class Test_generator_addsub : public Test {
     public:
@@ -18,15 +20,7 @@ namespace Martin {
             {
                 auto tree = ParserSingleton.ParseString("1 + 2", error);
                 
-                if (!tree) {
-                    error = Format("Parser encountered an error when given \"1 + 2\": $", error);
-                    return false;
-                }
-
-                if (tree->size() != 1) {
-                    error = "Parser gave more than one TokenNode when given \"1 + 2\"";
-                    return false;
-                }
+                if (!ValidateParserTree(tree, error, 1)) return false;
 
                 TokenNode node = (*tree)[0];
                 if (node->is_token) {
@@ -41,6 +35,116 @@ namespace Martin {
 
                 if (!node->node->Valid()) {
                     error = "Parser node is not valid when given \"1 + 2\"";
+                    return false;
+                }
+            }
+
+            {
+                auto tree = ParserSingleton.ParseString("1.0 + a", error);
+                
+                if (!ValidateParserTree(tree, error, 1)) return false;
+
+                TokenNode node = (*tree)[0];
+                if (node->is_token) {
+                    error = "Parser node is a token when given \"1.0 + a\"";
+                    return false;
+                }
+
+                if (node->node->GetType() != TreeNodeBase::Type::OP_Add) {
+                    error = "Parser node is not Add when given \"1.0 + a\"";
+                    return false;
+                }
+
+                if (!node->node->Valid()) {
+                    error = "Parser node is not valid when given \"1.0 + a\"";
+                    return false;
+                }
+            }
+
+            {
+                auto tree = ParserSingleton.ParseString("1 - 2", error);
+                
+                if (!ValidateParserTree(tree, error, 1)) return false;
+
+                TokenNode node = (*tree)[0];
+                if (node->is_token) {
+                    error = "Parser node is a token when given \"1 - 2\"";
+                    return false;
+                }
+
+                if (node->node->GetType() != TreeNodeBase::Type::OP_Sub) {
+                    error = "Parser node is not Sub when given \"1 - 2\"";
+                    return false;
+                }
+
+                if (!node->node->Valid()) {
+                    error = "Parser node is not valid when given \"1 - 2\"";
+                    return false;
+                }
+            }
+
+            {
+                auto tree = ParserSingleton.ParseString("1.0 - a", error);
+                
+                if (!ValidateParserTree(tree, error, 1)) return false;
+
+                TokenNode node = (*tree)[0];
+                if (node->is_token) {
+                    error = "Parser node is a token when given \"1.0 - a\"";
+                    return false;
+                }
+
+                if (node->node->GetType() != TreeNodeBase::Type::OP_Sub) {
+                    error = "Parser node is not Sub when given \"1.0 - a\"";
+                    return false;
+                }
+
+                if (!node->node->Valid()) {
+                    error = "Parser node is not valid when given \"1.0 - a\"";
+                    return false;
+                }
+            }
+
+            {
+                auto tree = ParserSingleton.ParseString("1 + 2 - 3", error);
+                
+                if (!ValidateParserTree(tree, error, 1)) return false;
+
+                TokenNode node = (*tree)[0];
+                if (node->is_token) {
+                    error = "Parser node is a token when given \"1 + 2 - 3\"";
+                    return false;
+                }
+
+                if (node->node->GetType() != TreeNodeBase::Type::OP_Sub) {
+                    error = "Parser node is not Sub when given \"1 + 2 - 3\"";
+                    return false;
+                }
+
+                if (!node->node->Valid()) {
+                    error = "Parser node is not valid when given \"1 + 2 - 3\"";
+                    return false;
+                }
+            }
+
+            {
+                auto tree = ParserSingleton.ParseString("1.0 + a - 3", error);
+                
+                if (!ValidateParserTree(tree, error, 1)) return false;
+
+                TokenNode node = (*tree)[0];
+                if (node->is_token) {
+                    error = "Parser node is a token when given \"1.0 + a - 3\"";
+                    return false;
+                }
+
+                if (node->node->GetType() != TreeNodeBase::Type::OP_Sub) {
+                    error = "Parser node is not Sub when given \"1.0 + a - 3\"";
+                    return false;
+                }
+
+                if (!node->node->Valid()) {
+                    error = "Parser node is not valid when given \"1.0 + a - 3\"";
                     return false;
                 }
             }

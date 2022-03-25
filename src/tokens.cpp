@@ -26,6 +26,37 @@
     class pname : public PatternType {\
     public:\
         bool IsMatch(const std::string& in) const override {\
+            if (!StrHelper::IsFirstMatch(in.c_str(), str)) return false;\
+            size_t len = std::string(str).length();\
+            if (in.length() > len) {\
+                char c = in[len];\
+                if ((c >= 'a') && (c <= 'z')) return false;\
+                if ((c >= 'A') && (c <= 'Z')) return false;\
+                if ((c >= '0') && (c <= '9')) return false;\
+            }\
+            return true;\
+        }\
+        Token CreateToken() const override {\
+            return Token(new name);\
+        }\
+    };
+
+#define FixedTokenSYM(name, pname, type, str)\
+    class name : public TokenType {\
+    public:\
+        Type GetType() const override {\
+            return type;\
+        }\
+        void Process(std::string& in) override {\
+            in.erase(0, std::strlen(str));\
+        }\
+        std::string GetName() const override {\
+            return str;\
+        }\
+    };\
+    class pname : public PatternType {\
+    public:\
+        bool IsMatch(const std::string& in) const override {\
             return StrHelper::IsFirstMatch(in.c_str(), str);\
         }\
         Token CreateToken() const override {\
@@ -135,7 +166,7 @@ namespace Martin {
         }
 
         void Process(std::string& in) override {
-            size_t index = in.find_first_not_of("1234567890.");
+            size_t index = in.find_first_not_of("-1234567890.");
             std::string double_str = in.substr(0, index);
             in.erase(0, index);
             value = std::stod(double_str);
@@ -562,7 +593,10 @@ namespace Martin {
             bool found_f = false;
 
             for (size_t i = 0; i < in.length(); i++) {
-                if ((in[i] >= '0') && (in[i] <= '9')) {
+                if ((i == 0) && (in[0] == '-'))
+                    continue;
+
+                else if ((in[i] >= '0') && (in[i] <= '9')) {
                     if (period)
                         after = true;
                     
@@ -594,7 +628,10 @@ namespace Martin {
             bool after = false;
 
             for (size_t i = 0; i < in.length(); i++) {
-                if ((in[i] >= '0') && (in[i] <= '9')) {
+                if ((i == 0) && (in[0] == '-'))
+                    continue;
+
+                else if ((in[i] >= '0') && (in[i] <= '9')) {
                     if (period)
                         after = true;
                     
@@ -938,82 +975,82 @@ namespace Martin {
         }
     };
 
-    FixedToken(KWReferenceToken, KWReferencePattern, Type::KW_Reference, "reference ")
-    FixedToken(KWSharedToken, KWSharedPattern, Type::KW_Shared, "shared ")
-    FixedToken(KWUniqueToken, KWUniquePattern, Type::KW_Unique, "unique ")
-    FixedToken(KWPointerToken, KWPointerPattern, Type::KW_Pointer, "pointer ")
-    FixedToken(KWExternToken, KWExternPattern, Type::KW_Extern, "extern ")
-    FixedToken(KWUnsafeToken, KWUnsafePattern, Type::KW_Unsafe, "unsafe ")
-    FixedToken(KWFuncToken, KWFuncPattern, Type::KW_Func, "func ")
-    FixedToken(KWClassToken, KWClassPattern, Type::KW_Class, "class ")
+    FixedToken(KWReferenceToken, KWReferencePattern, Type::KW_Reference, "reference")
+    FixedToken(KWSharedToken, KWSharedPattern, Type::KW_Shared, "shared")
+    FixedToken(KWUniqueToken, KWUniquePattern, Type::KW_Unique, "unique")
+    FixedToken(KWPointerToken, KWPointerPattern, Type::KW_Pointer, "pointer")
+    FixedToken(KWExternToken, KWExternPattern, Type::KW_Extern, "extern")
+    FixedToken(KWUnsafeToken, KWUnsafePattern, Type::KW_Unsafe, "unsafe")
+    FixedToken(KWFuncToken, KWFuncPattern, Type::KW_Func, "func")
+    FixedToken(KWClassToken, KWClassPattern, Type::KW_Class, "class")
     FixedToken(KWPublicToken, KWPublicPattern, Type::KW_Public, "public")
     FixedToken(KWProtectedToken, KWProtectedPattern, Type::KW_Protected, "protected")
     FixedToken(KWPrivateToken, KWPrivatePattern, Type::KW_Private, "private")
-    FixedToken(KWFriendToken, KWFriendPattern, Type::KW_Friend, "friend ");
-    FixedToken(KWVirtualToken, KWVirtualPattern, Type::KW_Virtual, "virtual ")
-    FixedToken(KWOverrideToken, KWOverridePattern, Type::KW_Override, "override ")
-    FixedToken(KWStaticToken, KWStaticPattern, Type::KW_Static, "static ")
-    FixedToken(KWGetToken, KWGetPattern, Type::KW_Get, "get")
-    FixedToken(KWSetToken, KWSetPattern, Type::KW_Set, "set")
-    FixedToken(KWIfToken, KWIfPattern, Type::KW_If, "if ")
-    FixedToken(KWElifToken, KWElifPattern, Type::KW_Elif, "elif ")
-    FixedToken(KWElseToken, KWElsePattern, Type::KW_Else, "else ")
-    FixedToken(KWForToken, KWForPattern, Type::KW_For, "for ")
-    FixedToken(KWForeachToken, KWForeachPattern, Type::KW_Foreach, "foreach ")
-    FixedToken(KWWhileToken, KWWhilePattern, Type::KW_While, "while ")
+    FixedToken(KWFriendToken, KWFriendPattern, Type::KW_Friend, "friend");
+    FixedToken(KWVirtualToken, KWVirtualPattern, Type::KW_Virtual, "virtual")
+    FixedToken(KWOverrideToken, KWOverridePattern, Type::KW_Override, "override")
+    FixedToken(KWStaticToken, KWStaticPattern, Type::KW_Static, "static")
+    FixedToken(KWGetterToken, KWGetterPattern, Type::KW_Getter, "getter")
+    FixedToken(KWSetterToken, KWSetterPattern, Type::KW_Setter, "setter")
+    FixedToken(KWIfToken, KWIfPattern, Type::KW_If, "if")
+    FixedToken(KWElifToken, KWElifPattern, Type::KW_Elif, "elif")
+    FixedToken(KWElseToken, KWElsePattern, Type::KW_Else, "else")
+    FixedToken(KWForToken, KWForPattern, Type::KW_For, "for")
+    FixedToken(KWForeachToken, KWForeachPattern, Type::KW_Foreach, "foreach")
+    FixedToken(KWWhileToken, KWWhilePattern, Type::KW_While, "while")
     FixedToken(KWContinueToken, KWContinuePattern, Type::KW_Continue, "continue")
     FixedToken(KWBreakToken, KWBreakPattern, Type::KW_Break, "break")
-    FixedToken(KWMatchToken, KWMatchPattern, Type::KW_Match, "match ")
-    FixedToken(KWSwitchToken, KWSwitchPattern, Type::KW_Switch, "switch ")
-    FixedToken(KWReturnToken, KWReturnPattern, Type::KW_Return, "return ")
-    FixedToken(KWLambdaToken, KWLambdaPattern, Type::KW_Lambda, "lambda ")
-    FixedToken(KWAndToken, KWAndPattern, Type::KW_And, "and ")
-    FixedToken(KWOrToken, KWOrPattern, Type::KW_Or, "or ")
-    FixedToken(KWNotToken, KWNotPattern, Type::KW_Not, "not ")
-    
-    FixedToken(SYMCommaToken, SYMCommaPattern, Type::SYM_Comma, ",")
-    FixedToken(SYMPeriodToken, SYMPeriodPattern, Type::SYM_Period, ".")
-    FixedToken(SYMOpenCurlyToken, SYMOpenCurlyPattern, Type::SYM_OpenCurly, "{")
-    FixedToken(SYMCloseCurlyToken, SYMCloseCurlyPattern, Type::SYM_CloseCurly, "}")
-    FixedToken(SYMOpenBracketToken, SYMOpenBracketPattern, Type::SYM_OpenBracket, "[")
-    FixedToken(SYMCloseBracketToken, SYMCloseBracketPattern, Type::SYM_CloseBracket, "]")
-    FixedToken(SYMOpenParenthesesToken, SYMOpenParenthesesPattern, Type::SYM_OpenParentheses, "(")
-    FixedToken(SYMCloseParenthesesToken, SYMCloseParenthesesPattern, Type::SYM_CloseParentheses, ")")
-    FixedToken(SYMSemiColonToken, SYMSemiColonPattern, Type::SYM_SemiColon, ";")
-    FixedToken(SYMColonToken, SYMColonPattern, Type::SYM_Colon, ":")
-    FixedToken(SYMArrowToken, SYMArrowPattern, Type::SYM_Arrow, "->")
-    FixedToken(SYMAddToken, SYMAddPattern, Type::SYM_Add, "+")
-    FixedToken(SYMSubToken, SYMSubPattern, Type::SYM_Sub, "-")
-    FixedToken(SYMMulToken, SYMMulPattern, Type::SYM_Mul, "*")
-    FixedToken(SYMDivToken, SYMDivPattern, Type::SYM_Div, "/")
-    FixedToken(SYMModToken, SYMModPattern, Type::SYM_Mod, "%")
-    FixedToken(SYMPowToken, SYMPowPattern, Type::SYM_Pow, "**")
-    FixedToken(SYMBitAndToken, SYMBitAndPattern, Type::SYM_BitAnd, "&")
-    FixedToken(SYMBitOrToken, SYMBitOrPattern, Type::SYM_BitOr, "|")
-    FixedToken(SYMBitXOrToken, SYMBitXOrPattern, Type::SYM_BitXOr, "^")
-    FixedToken(SYMBitNotToken, SYMBitNotPattern, Type::SYM_BitNot, "~")
-    FixedToken(SYMBitShiftLeftToken, SYMBitShiftLeftPattern, Type::SYM_BitShiftLeft, "<<")
-    FixedToken(SYMBitShiftRightToken, SYMBitShiftRightPattern, Type::SYM_BitShiftRight, ">>")
-    FixedToken(SYMAssignToken, SYMAssignPattern, Type::SYM_Assign, "=")
-    FixedToken(SYMTypeAssignToken, SYMTypeAssignPattern, Type::SYM_TypeAssign, ":=")
-    FixedToken(SYMAssignAddToken, SYMAssignAddPattern, Type::SYM_AssignAdd, "+=")
-    FixedToken(SYMAssignSubToken, SYMAssignSubPattern, Type::SYM_AssignSub, "-=")
-    FixedToken(SYMAssignMulToken, SYMAssignMulPattern, Type::SYM_AssignMul, "*=")
-    FixedToken(SYMAssignDivToken, SYMAssignDivPattern, Type::SYM_AssignDiv, "/=")
-    FixedToken(SYMAssignModToken, SYMAssignModPattern, Type::SYM_AssignMod, "%=")
-    FixedToken(SYMAssignPowToken, SYMAssignPowPattern, Type::SYM_AssignPow, "**=")
-    FixedToken(SYMAssignBitAndToken, SYMAssignBitAndPattern, Type::SYM_AssignBitAnd, "&=")
-    FixedToken(SYMAssignBitOrToken, SYMAssignBitOrPattern, Type::SYM_AssignBitOr, "|=")
-    FixedToken(SYMAssignBitXOrToken, SYMAssignBitXOrPattern, Type::SYM_AssignBitXOr, "^=")
-    FixedToken(SYMAssignBitNotToken, SYMAssignBitNotPattern, Type::SYM_AssignBitNot, "~=")
-    FixedToken(SYMAssignBitShiftLeftToken, SYMAssignBitShiftLeftPattern, Type::SYM_AssignBitShiftLeft, "<<=")
-    FixedToken(SYMAssignBitShiftRightToken, SYMAssignBitShiftRightPattern, Type::SYM_AssignBitShiftRight, ">>=")
-    FixedToken(SYMEqualsToken, SYMEqualsPattern, Type::SYM_Equals, "==")
-    FixedToken(SYMNotEqualsToken, SYMNotEqualsPattern, Type::SYM_NotEquals, "!=")
-    FixedToken(SYMLessThanToken, SYMLessThanPattern, Type::SYM_LessThan, "<")
-    FixedToken(SYMGreaterThanToken, SYMGreaterThanPattern, Type::SYM_GreaterThan, ">")
-    FixedToken(SYMLessThanEqualsToken, SYMLessThanEqualsPattern, Type::SYM_LessThanEquals, "<=")
-    FixedToken(SYMGreaterThanEqualsToken, SYMGreaterThanEqualsPattern, Type::SYM_GreaterThanEquals, ">=")
+    FixedToken(KWMatchToken, KWMatchPattern, Type::KW_Match, "match")
+    FixedToken(KWSwitchToken, KWSwitchPattern, Type::KW_Switch, "switch")
+    FixedToken(KWReturnToken, KWReturnPattern, Type::KW_Return, "return")
+    FixedToken(KWLambdaToken, KWLambdaPattern, Type::KW_Lambda, "lambda")
+    FixedToken(KWAndToken, KWAndPattern, Type::KW_And, "and")
+    FixedToken(KWOrToken, KWOrPattern, Type::KW_Or, "or")
+    FixedToken(KWNotToken, KWNotPattern, Type::KW_Not, "not")
+
+    FixedTokenSYM(SYMCommaToken, SYMCommaPattern, Type::SYM_Comma, ",")
+    FixedTokenSYM(SYMPeriodToken, SYMPeriodPattern, Type::SYM_Period, ".")
+    FixedTokenSYM(SYMOpenCurlyToken, SYMOpenCurlyPattern, Type::SYM_OpenCurly, "{")
+    FixedTokenSYM(SYMCloseCurlyToken, SYMCloseCurlyPattern, Type::SYM_CloseCurly, "}")
+    FixedTokenSYM(SYMOpenBracketToken, SYMOpenBracketPattern, Type::SYM_OpenBracket, "[")
+    FixedTokenSYM(SYMCloseBracketToken, SYMCloseBracketPattern, Type::SYM_CloseBracket, "]")
+    FixedTokenSYM(SYMOpenParenthesesToken, SYMOpenParenthesesPattern, Type::SYM_OpenParentheses, "(")
+    FixedTokenSYM(SYMCloseParenthesesToken, SYMCloseParenthesesPattern, Type::SYM_CloseParentheses, ")")
+    FixedTokenSYM(SYMSemiColonToken, SYMSemiColonPattern, Type::SYM_SemiColon, ";")
+    FixedTokenSYM(SYMColonToken, SYMColonPattern, Type::SYM_Colon, ":")
+    FixedTokenSYM(SYMArrowToken, SYMArrowPattern, Type::SYM_Arrow, "->")
+    FixedTokenSYM(SYMAddToken, SYMAddPattern, Type::SYM_Add, "+")
+    FixedTokenSYM(SYMSubToken, SYMSubPattern, Type::SYM_Sub, "-")
+    FixedTokenSYM(SYMMulToken, SYMMulPattern, Type::SYM_Mul, "*")
+    FixedTokenSYM(SYMDivToken, SYMDivPattern, Type::SYM_Div, "/")
+    FixedTokenSYM(SYMModToken, SYMModPattern, Type::SYM_Mod, "%")
+    FixedTokenSYM(SYMPowToken, SYMPowPattern, Type::SYM_Pow, "**")
+    FixedTokenSYM(SYMBitAndToken, SYMBitAndPattern, Type::SYM_BitAnd, "&")
+    FixedTokenSYM(SYMBitOrToken, SYMBitOrPattern, Type::SYM_BitOr, "|")
+    FixedTokenSYM(SYMBitXOrToken, SYMBitXOrPattern, Type::SYM_BitXOr, "^")
+    FixedTokenSYM(SYMBitNotToken, SYMBitNotPattern, Type::SYM_BitNot, "~")
+    FixedTokenSYM(SYMBitShiftLeftToken, SYMBitShiftLeftPattern, Type::SYM_BitShiftLeft, "<<")
+    FixedTokenSYM(SYMBitShiftRightToken, SYMBitShiftRightPattern, Type::SYM_BitShiftRight, ">>")
+    FixedTokenSYM(SYMAssignToken, SYMAssignPattern, Type::SYM_Assign, "=")
+    FixedTokenSYM(SYMTypeAssignToken, SYMTypeAssignPattern, Type::SYM_TypeAssign, ":=")
+    FixedTokenSYM(SYMAssignAddToken, SYMAssignAddPattern, Type::SYM_AssignAdd, "+=")
+    FixedTokenSYM(SYMAssignSubToken, SYMAssignSubPattern, Type::SYM_AssignSub, "-=")
+    FixedTokenSYM(SYMAssignMulToken, SYMAssignMulPattern, Type::SYM_AssignMul, "*=")
+    FixedTokenSYM(SYMAssignDivToken, SYMAssignDivPattern, Type::SYM_AssignDiv, "/=")
+    FixedTokenSYM(SYMAssignModToken, SYMAssignModPattern, Type::SYM_AssignMod, "%=")
+    FixedTokenSYM(SYMAssignPowToken, SYMAssignPowPattern, Type::SYM_AssignPow, "**=")
+    FixedTokenSYM(SYMAssignBitAndToken, SYMAssignBitAndPattern, Type::SYM_AssignBitAnd, "&=")
+    FixedTokenSYM(SYMAssignBitOrToken, SYMAssignBitOrPattern, Type::SYM_AssignBitOr, "|=")
+    FixedTokenSYM(SYMAssignBitXOrToken, SYMAssignBitXOrPattern, Type::SYM_AssignBitXOr, "^=")
+    FixedTokenSYM(SYMAssignBitNotToken, SYMAssignBitNotPattern, Type::SYM_AssignBitNot, "~=")
+    FixedTokenSYM(SYMAssignBitShiftLeftToken, SYMAssignBitShiftLeftPattern, Type::SYM_AssignBitShiftLeft, "<<=")
+    FixedTokenSYM(SYMAssignBitShiftRightToken, SYMAssignBitShiftRightPattern, Type::SYM_AssignBitShiftRight, ">>=")
+    FixedTokenSYM(SYMEqualsToken, SYMEqualsPattern, Type::SYM_Equals, "==")
+    FixedTokenSYM(SYMNotEqualsToken, SYMNotEqualsPattern, Type::SYM_NotEquals, "!=")
+    FixedTokenSYM(SYMLessThanToken, SYMLessThanPattern, Type::SYM_LessThan, "<")
+    FixedTokenSYM(SYMGreaterThanToken, SYMGreaterThanPattern, Type::SYM_GreaterThan, ">")
+    FixedTokenSYM(SYMLessThanEqualsToken, SYMLessThanEqualsPattern, Type::SYM_LessThanEquals, "<=")
+    FixedTokenSYM(SYMGreaterThanEqualsToken, SYMGreaterThanEqualsPattern, Type::SYM_GreaterThanEquals, ">=")
 
     Tokenizer::Tokenizer() {
         patterns.push_back(Pattern(new NewLinePattern));
@@ -1060,8 +1097,8 @@ namespace Martin {
         patterns.push_back(Pattern(new KWVirtualPattern));
         patterns.push_back(Pattern(new KWOverridePattern));
         patterns.push_back(Pattern(new KWStaticPattern));
-        patterns.push_back(Pattern(new KWGetPattern));
-        patterns.push_back(Pattern(new KWSetPattern));
+        patterns.push_back(Pattern(new KWGetterPattern));
+        patterns.push_back(Pattern(new KWSetterPattern));
         patterns.push_back(Pattern(new KWIfPattern));
         patterns.push_back(Pattern(new KWElifPattern));
         patterns.push_back(Pattern(new KWElsePattern));

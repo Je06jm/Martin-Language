@@ -7,6 +7,8 @@
 
 #include <tokens.hpp>
 
+#include "helpers/validatetree.hpp"
+
 namespace Martin {
     class Test_token_accesstypes : public Test {
     public:
@@ -27,10 +29,7 @@ namespace Martin {
                 TokenType::Type::KW_Pointer
             };
 
-            if (!tree) {
-                error = "Tokenizer returned a nullptr";
-                return false;
-            }
+            if (!ValidateTokenList(tree, error)) return false;
 
             for (size_t i = 0; i < tree->size(); i++) {
                 if (i >= types.size())

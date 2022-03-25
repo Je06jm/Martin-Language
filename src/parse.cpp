@@ -30,12 +30,14 @@
 #include "generators/extern.hpp"
 #include "generators/call.hpp"
 #include "generators/gettersetter.hpp"
+#include "generators/seperator.hpp"
 
 namespace Martin {
 
     Parser ParserSingleton;
 
     Parser::Parser() {
+        generators.push_back(TreeGenerator(new SeperatorGenerator));
         generators.push_back(TreeGenerator(new StructEnclosuresTreeGenerator));
         generators.push_back(TreeGenerator(new CallTreeGenerator));
         generators.push_back(TreeGenerator(new OPDotTreeGenerator));

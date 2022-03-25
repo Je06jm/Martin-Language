@@ -8,6 +8,9 @@
 
 #include <tokens.hpp>
 
+#include "helpers/validatetree.hpp"
+#include "helpers/tokennode.hpp"
+
 namespace Martin {
     class Test_tree_accesstypes : public Test {
     public:
@@ -19,13 +22,11 @@ namespace Martin {
             auto tree = TokenizerSingleton.TokenizeString("1,2,3");
             auto tree2 = TokenizerSingleton.TokenizeString("Int32");
 
-            TokenNode one = TokenNode(new TokenNodeBase);
-            one->is_token = true;
-            one->token = (*tree)[0];
+            if (!ValidateTokenList(tree, error, 5, ValidateSizeType::Equals)) return false;
+            if (!ValidateTokenList(tree2, error, 1, ValidateSizeType::Equals)) return false;
 
-            TokenNode id = TokenNode(new TokenNodeBase);
-            id->is_token = true;
-            id->token = (*tree2)[0];
+            TokenNode one = GetTokenNodeFromTokenList(tree, 0);
+            TokenNode id = GetTokenNodeFromTokenList(tree2, 0);
 
             {
                 ArrayTypesTreeNode node(one, id);

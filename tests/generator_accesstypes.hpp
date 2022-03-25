@@ -7,6 +7,8 @@
 
 #include <parse.hpp>
 
+#include "helpers/validatetree.hpp"
+
 namespace Martin {
     class Test_generator_accesstypes : public Test {
     public:
@@ -18,15 +20,7 @@ namespace Martin {
             {
                 auto tree = ParserSingleton.ParseString("array[1] Int32", error);
 
-                if (!tree) {
-                    error = Format("Parser encountered an error when given \"array[1] Int32\": $", error);
-                    return false;
-                }
-
-                if (tree->size() != 1) {
-                    error = "Parser gave more than one TokenNode when given \"array[1] Int32\"";
-                    return false;
-                }
+                if (!ValidateParserTree(tree, error, 1, ValidateSizeType::Equals)) return false;
 
                 TokenNode node = (*tree)[0];
                 if (!node) {

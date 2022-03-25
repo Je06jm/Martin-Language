@@ -7,6 +7,8 @@
 
 #include <tokens.hpp>
 
+#include "helpers/validatetree.hpp"
+
 namespace Martin {
     class Test_token_addsub : public Test {
     public:
@@ -24,10 +26,7 @@ namespace Martin {
                 TokenType::Type::FloatingSingle
             };
 
-            if (!tree) {
-                error = "Tokenizer returned a nullptr";
-                return false;
-            }
+            if (!ValidateTokenList(tree, error)) return false;
 
             for (size_t i = 0; i < tree->size(); i++) {
                 if (i >= types.size())

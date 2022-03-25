@@ -22,10 +22,91 @@ namespace Martin {
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
+
+        bool Valid() const override {
+            if (!left || !right) return false;
+            
+            if (left->is_token && right->is_token) {
+                TokenType::Type left_type = left->token->GetType();
+                TokenType::Type right_type = right->token->GetType();
+
+                if (
+                    (
+                        (left_type == TokenType::Type::String8) ||
+                        (left_type == TokenType::Type::String16) ||
+                        (left_type == TokenType::Type::String32) ||
+                        (left_type == TokenType::Type::String16l) ||
+                        (left_type == TokenType::Type::String32l) ||
+                        (left_type == TokenType::Type::String16b) ||
+                        (left_type == TokenType::Type::String32b)
+                    ) &&
+                    (
+                        (right_type == TokenType::Type::String8) ||
+                        (right_type == TokenType::Type::String16) ||
+                        (right_type == TokenType::Type::String32) ||
+                        (right_type == TokenType::Type::String16l) ||
+                        (right_type == TokenType::Type::String32l) ||
+                        (right_type == TokenType::Type::String16b) ||
+                        (right_type == TokenType::Type::String32b)
+                    )
+                ) return true;
+            }
+
+            if (!ValidateTokenNode(left)) return false;
+            if (!ValidateTokenNode(right)) return false;
+
+            return true;
+        }
     
     private:
         const TokenNode left;
         const TokenNode right;
+
+        static bool ValidateTokenNode(TokenNode node) {
+            if (node->is_token) {
+                switch (node->token->GetType()) {
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (node->node->GetType()) {
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_BitAnd:
+                    case Type::OP_BitOr:
+                    case Type::OP_BitXOr:
+                    case Type::OP_BitNot:
+                    case Type::OP_BitShiftLeft:
+                    case Type::OP_BitShiftRight:
+                    case Type::OP_Equals:
+                    case Type::OP_NotEquals:
+                    case Type::OP_GreaterThan:
+                    case Type::OP_LessThan:
+                    case Type::OP_GreaterThanEquals:
+                    case Type::OP_LessThanEquals:
+                    case Type::OP_LogicalAnd:
+                    case Type::OP_LogicalOr:
+                    case Type::OP_LogicalNot:
+                    case Type::OP_Dot:
+                    case Type::Misc_Call:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+        }
     };
 
     class OPSubTreeNode : public TreeNodeBase {
@@ -44,9 +125,64 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
 
+        bool Valid() const override {
+            if (!left || !right) return false;
+            
+            if (!ValidateTokenNode(left)) return false;
+            if (!ValidateTokenNode(right)) return false;
+
+            return true;
+        }
+
     private:
-            TokenNode left;
-            TokenNode right;
+        TokenNode left;
+        TokenNode right;
+
+        static bool ValidateTokenNode(TokenNode node) {
+            if (node->is_token) {
+                switch (node->token->GetType()) {
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (node->node->GetType()) {
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_BitAnd:
+                    case Type::OP_BitOr:
+                    case Type::OP_BitXOr:
+                    case Type::OP_BitNot:
+                    case Type::OP_BitShiftLeft:
+                    case Type::OP_BitShiftRight:
+                    case Type::OP_Equals:
+                    case Type::OP_NotEquals:
+                    case Type::OP_GreaterThan:
+                    case Type::OP_LessThan:
+                    case Type::OP_GreaterThanEquals:
+                    case Type::OP_LessThanEquals:
+                    case Type::OP_LogicalAnd:
+                    case Type::OP_LogicalOr:
+                    case Type::OP_LogicalNot:
+                    case Type::OP_Dot:
+                    case Type::Misc_Call:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+        }
     };
 
     class OPAddSubTreeGenerator : public TreeNodeGenerator {
