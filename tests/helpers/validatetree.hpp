@@ -2,6 +2,7 @@
 #define MARTIN_HELPERS_VALIDATETREE
 
 #include <string>
+#include <vector>
 #include <parse.hpp>
 
 #include "parseerror.hpp"
@@ -100,6 +101,10 @@ namespace Martin {
             return false;
         }
 
+        if (!node->node) {
+            Fatal("Empty tree node\n");
+        }
+
         if (node->node->GetType() != type) {
             error = ParseNodeError(Format("not $", type_str), str);
             return false;
@@ -113,6 +118,20 @@ namespace Martin {
             }
 
             return false;
+        }
+
+        return true;
+    }
+
+    bool ValidateExpectedTokenList(TokenList tree, const std::vector<TokenType::Type>& types, std::string& error) {
+        for (size_t i = 0; i < tree->size(); i++) {
+            if (i >= types.size())
+                break;
+
+            if ((*tree)[i]->GetType() != types[i]) {
+                error = Martin::Format("Tokenizer returned the wrong token $ at $, $", (*tree)[i]->GetName(), (*tree)[i]->GetLineNumber(), i);
+                return false;
+            }
         }
 
         return true;

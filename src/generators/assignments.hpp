@@ -21,6 +21,54 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
 
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!left->is_token) {
+                switch (left->node->GetType()) {
+                    case Type::Assignment_TypeAssign:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+            
+            if (right->is_token) {
+                switch (right->token->GetType()) {
+                    case TokenType::Type::String8:
+                    case TokenType::Type::String16:
+                    case TokenType::Type::String32:
+                    case TokenType::Type::String16l:
+                    case TokenType::Type::String32l:
+                    case TokenType::Type::String16b:
+                    case TokenType::Type::String32b:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Boolean:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::Misc_Call:
+                    case Type::Misc_Lambda:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
         const TokenNode left;
         const TokenNode right;
     };
@@ -30,7 +78,7 @@ namespace Martin {
         TypeAssignTreeNode(TokenNode left, TokenNode right) : left(left), right(right) {}
 
         Type GetType() const override {
-            return Type::Assignment_Assign;
+            return Type::Assignment_TypeAssign;
         }
 
         std::string GetName() const override {
@@ -39,6 +87,54 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *left, *right);
+        }
+
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!left->is_token) {
+                switch (left->node->GetType()) {
+                    case Type::Assignment_TypeAssign:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            if (right->is_token) {
+                switch (right->token->GetType()) {
+                    case TokenType::Type::String8:
+                    case TokenType::Type::String16:
+                    case TokenType::Type::String32:
+                    case TokenType::Type::String16l:
+                    case TokenType::Type::String32l:
+                    case TokenType::Type::String16b:
+                    case TokenType::Type::String32b:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Boolean:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::Misc_Call:
+                    case Type::Misc_Lambda:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         const TokenNode left;
@@ -61,6 +157,53 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
 
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!left->is_token) {
+                switch (left->node->GetType()) {
+                    case Type::Assignment_TypeAssign:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            if (right->is_token) {
+                switch (right->token->GetType()) {
+                    case TokenType::Type::String8:
+                    case TokenType::Type::String16:
+                    case TokenType::Type::String32:
+                    case TokenType::Type::String16l:
+                    case TokenType::Type::String32l:
+                    case TokenType::Type::String16b:
+                    case TokenType::Type::String32b:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Boolean:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::Misc_Call:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
         const TokenNode left;
         const TokenNode right;
     };
@@ -79,6 +222,53 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *left, *right);
+        }
+
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!left->is_token) {
+                switch (left->node->GetType()) {
+                    case Type::Assignment_TypeAssign:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            if (right->is_token) {
+                switch (right->token->GetType()) {
+                    case TokenType::Type::String8:
+                    case TokenType::Type::String16:
+                    case TokenType::Type::String32:
+                    case TokenType::Type::String16l:
+                    case TokenType::Type::String32l:
+                    case TokenType::Type::String16b:
+                    case TokenType::Type::String32b:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Boolean:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::Misc_Call:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         const TokenNode left;
@@ -101,6 +291,53 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
 
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!left->is_token) {
+                switch (left->node->GetType()) {
+                    case Type::Assignment_TypeAssign:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            if (right->is_token) {
+                switch (right->token->GetType()) {
+                    case TokenType::Type::String8:
+                    case TokenType::Type::String16:
+                    case TokenType::Type::String32:
+                    case TokenType::Type::String16l:
+                    case TokenType::Type::String32l:
+                    case TokenType::Type::String16b:
+                    case TokenType::Type::String32b:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Boolean:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::Misc_Call:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
         const TokenNode left;
         const TokenNode right;
     };
@@ -119,6 +356,53 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *left, *right);
+        }
+
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!left->is_token) {
+                switch (left->node->GetType()) {
+                    case Type::Assignment_TypeAssign:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            if (right->is_token) {
+                switch (right->token->GetType()) {
+                    case TokenType::Type::String8:
+                    case TokenType::Type::String16:
+                    case TokenType::Type::String32:
+                    case TokenType::Type::String16l:
+                    case TokenType::Type::String32l:
+                    case TokenType::Type::String16b:
+                    case TokenType::Type::String32b:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Boolean:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::Misc_Call:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         const TokenNode left;
@@ -141,6 +425,53 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
 
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!left->is_token) {
+                switch (left->node->GetType()) {
+                    case Type::Assignment_TypeAssign:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            if (right->is_token) {
+                switch (right->token->GetType()) {
+                    case TokenType::Type::String8:
+                    case TokenType::Type::String16:
+                    case TokenType::Type::String32:
+                    case TokenType::Type::String16l:
+                    case TokenType::Type::String32l:
+                    case TokenType::Type::String16b:
+                    case TokenType::Type::String32b:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Boolean:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::Misc_Call:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
         const TokenNode left;
         const TokenNode right;
     };
@@ -150,7 +481,7 @@ namespace Martin {
         PowAssignTreeNode(TokenNode left, TokenNode right) : left(left), right(right) {}
 
         Type GetType() const override {
-            return Type::Assignment_Assign;
+            return Type::Assignment_PowAssign;
         }
 
         std::string GetName() const override {
@@ -159,6 +490,53 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *left, *right);
+        }
+
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!left->is_token) {
+                switch (left->node->GetType()) {
+                    case Type::Assignment_TypeAssign:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            if (right->is_token) {
+                switch (right->token->GetType()) {
+                    case TokenType::Type::String8:
+                    case TokenType::Type::String16:
+                    case TokenType::Type::String32:
+                    case TokenType::Type::String16l:
+                    case TokenType::Type::String32l:
+                    case TokenType::Type::String16b:
+                    case TokenType::Type::String32b:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Boolean:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::Misc_Call:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         const TokenNode left;
@@ -181,6 +559,53 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
 
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!left->is_token) {
+                switch (left->node->GetType()) {
+                    case Type::Assignment_TypeAssign:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            if (right->is_token) {
+                switch (right->token->GetType()) {
+                    case TokenType::Type::String8:
+                    case TokenType::Type::String16:
+                    case TokenType::Type::String32:
+                    case TokenType::Type::String16l:
+                    case TokenType::Type::String32l:
+                    case TokenType::Type::String16b:
+                    case TokenType::Type::String32b:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Boolean:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::Misc_Call:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
         const TokenNode left;
         const TokenNode right;
     };
@@ -199,6 +624,53 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *left, *right);
+        }
+
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!left->is_token) {
+                switch (left->node->GetType()) {
+                    case Type::Assignment_TypeAssign:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            if (right->is_token) {
+                switch (right->token->GetType()) {
+                    case TokenType::Type::String8:
+                    case TokenType::Type::String16:
+                    case TokenType::Type::String32:
+                    case TokenType::Type::String16l:
+                    case TokenType::Type::String32l:
+                    case TokenType::Type::String16b:
+                    case TokenType::Type::String32b:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Boolean:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::Misc_Call:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         const TokenNode left;
@@ -221,6 +693,53 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
 
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!left->is_token) {
+                switch (left->node->GetType()) {
+                    case Type::Assignment_TypeAssign:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            if (right->is_token) {
+                switch (right->token->GetType()) {
+                    case TokenType::Type::String8:
+                    case TokenType::Type::String16:
+                    case TokenType::Type::String32:
+                    case TokenType::Type::String16l:
+                    case TokenType::Type::String32l:
+                    case TokenType::Type::String16b:
+                    case TokenType::Type::String32b:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Boolean:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::Misc_Call:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
         const TokenNode left;
         const TokenNode right;
     };
@@ -239,6 +758,53 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *left, *right);
+        }
+
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!left->is_token) {
+                switch (left->node->GetType()) {
+                    case Type::Assignment_TypeAssign:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            if (right->is_token) {
+                switch (right->token->GetType()) {
+                    case TokenType::Type::String8:
+                    case TokenType::Type::String16:
+                    case TokenType::Type::String32:
+                    case TokenType::Type::String16l:
+                    case TokenType::Type::String32l:
+                    case TokenType::Type::String16b:
+                    case TokenType::Type::String32b:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Boolean:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::Misc_Call:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         const TokenNode left;
@@ -260,6 +826,53 @@ namespace Martin {
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
+        
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!left->is_token) {
+                switch (left->node->GetType()) {
+                    case Type::Assignment_TypeAssign:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            if (right->is_token) {
+                switch (right->token->GetType()) {
+                    case TokenType::Type::String8:
+                    case TokenType::Type::String16:
+                    case TokenType::Type::String32:
+                    case TokenType::Type::String16l:
+                    case TokenType::Type::String32l:
+                    case TokenType::Type::String16b:
+                    case TokenType::Type::String32b:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Boolean:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::Misc_Call:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
+        }
 
         const TokenNode left;
         const TokenNode right;
@@ -279,6 +892,53 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *left, *right);
+        }
+
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!left->is_token) {
+                switch (left->node->GetType()) {
+                    case Type::Assignment_TypeAssign:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            if (right->is_token) {
+                switch (right->token->GetType()) {
+                    case TokenType::Type::String8:
+                    case TokenType::Type::String16:
+                    case TokenType::Type::String32:
+                    case TokenType::Type::String16l:
+                    case TokenType::Type::String32l:
+                    case TokenType::Type::String16b:
+                    case TokenType::Type::String32b:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Boolean:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::Misc_Call:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         const TokenNode left;
@@ -356,6 +1016,10 @@ namespace Martin {
                             op = TreeNode(new BitXOrAssignTreeNode(left, right));
                             break;
                         
+                        case TokenType::Type::SYM_AssignBitNot:
+                            op = TreeNode(new BitNotAssignTreeNode(left, right));
+                            break;
+
                         case TokenType::Type::SYM_AssignBitShiftLeft:
                             op = TreeNode(new BitShiftLeftAssignTreeNode(left, right));
                             break;

@@ -21,18 +21,7 @@ namespace Martin {
             };
 
             if (!ValidateTokenList(tree, error)) return false;
-
-            for (size_t i = 0; i < tree->size(); i++) {
-                if (i >= types.size())
-                    break;
-                
-                if ((*tree)[i]->GetType() != types[i]) {
-                    error = Martin::Format("Tokenizer returned the wrong token $ at $, $", (*tree)[i]->GetName(), (*tree)[i]->GetLineNumber(), i);
-                    return false;
-                }
-            }
-
-            return true;
+            return ValidateExpectedTokenList(tree, types, error);
         }
     };
 }
