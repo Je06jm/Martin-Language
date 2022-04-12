@@ -20,6 +20,18 @@ namespace Martin {
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
+
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token) return false;
+            if (!right->is_token) return false;
+
+            if (right->token->GetType() != TokenType::Type::Identifier) return false;
+            if (left->node->GetType() != Type::Struct_Parentheses) return false;
+
+            return left->node->Valid();
+        }
         
         const TokenNode left;
         const TokenNode right;

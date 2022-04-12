@@ -1,8 +1,0 @@
-#ifndef MARTIN_MARTIN_SAMPLE
-#define MARTIN_MARTIN_SAMPLE
-const std::string martin_sample = ""
-"func myname(let a : Int32) -> Int32 {"
-"    set b := 3.14159"
-"    return Int32(b)"
-"}";
-#endif

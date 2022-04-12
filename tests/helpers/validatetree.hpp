@@ -4,6 +4,9 @@
 #include <string>
 #include <parse.hpp>
 
+#include "parseerror.hpp"
+#include "tokennode.hpp"
+
 namespace Martin {
 
     enum class ValidateSizeType {
@@ -84,6 +87,36 @@ namespace Martin {
         return true;
     }
 
+
+    bool ValidateTreeNode(Tree tree, int index, TreeNodeBase::Type type, const std::string& type_str, bool valid, const std::string& str, std::string& error) {
+        TokenNode node = GetTokenNodeFromParseList(tree, 0);
+        if (!node) {
+            error = ParseNodeError("null", str);
+            return false;
+        }
+
+        if (node->is_token) {
+            error = ParseNodeError("token", str);
+            return false;
+        }
+
+        if (node->node->GetType() != type) {
+            error = ParseNodeError(Format("not $", type_str), str);
+            return false;
+        }
+
+        if (node->node->Valid() != valid) {
+            if (valid) {
+                error = ParseNodeError("valid", str);
+            } else {
+                error = ParseNodeError("not valid", str);
+            }
+
+            return false;
+        }
+
+        return true;
+    }
 }
 
 #endif

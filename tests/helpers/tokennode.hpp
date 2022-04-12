@@ -19,6 +19,16 @@ namespace Martin {
         return node;
     }
 
+    TokenNode GetTokenNodeFromParseList(Tree list, size_t index) {
+        if (!list)
+            Fatal("Trying to get an item on a nullptr parse list\n");
+        
+        if (index >= list->size())
+            Fatal("Could not get an item at index $ from a parse list\n", index);
+        
+        return (*list)[index];
+    }
+
 }
 
 #endif

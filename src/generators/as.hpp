@@ -22,6 +22,15 @@ namespace Martin {
             
         }
 
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (!left->is_token || (left->token->GetType() != TokenType::Type::Identifier)) return false;
+            if (!right->is_token || (right->token->GetType() != TokenType::Type::Identifier)) return false;
+
+            return true;
+        }
+
         const TokenNode left;
         const TokenNode right;
     };

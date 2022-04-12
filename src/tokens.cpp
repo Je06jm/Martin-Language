@@ -27,13 +27,6 @@
     public:\
         bool IsMatch(const std::string& in) const override {\
             if (!StrHelper::IsFirstMatch(in.c_str(), str)) return false;\
-            size_t len = std::string(str).length();\
-            if (in.length() > len) {\
-                char c = in[len];\
-                if ((c >= 'a') && (c <= 'z')) return false;\
-                if ((c >= 'A') && (c <= 'Z')) return false;\
-                if ((c >= '0') && (c <= '9')) return false;\
-            }\
             return true;\
         }\
         Token CreateToken() const override {\
