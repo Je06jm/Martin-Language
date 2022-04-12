@@ -39,6 +39,36 @@ namespace Martin {
             SUBTEST("a <<= 1", TreeNodeBase::Type::Assignment_BitShiftLeftAssign, "<<=", true, error);
             SUBTEST("a >>= 1", TreeNodeBase::Type::Assignment_BitShiftRightAssign, ">>=", true, error);
 
+            SUBTEST("a = =", TreeNodeBase::Type::Assignment_Assign, "=", false, error);
+            SUBTEST("a := =", TreeNodeBase::Type::Assignment_TypeAssign, ":=", false, error);
+            SUBTEST("a += =", TreeNodeBase::Type::Assignment_AddAssign, "+=", false, error);
+            SUBTEST("a -= =", TreeNodeBase::Type::Assignment_SubAssign, "-=", false, error);
+            SUBTEST("a *= =", TreeNodeBase::Type::Assignment_MulAssign, "*=", false, error);
+            SUBTEST("a /= =", TreeNodeBase::Type::Assignment_DivAssign, "/=", false, error);
+            SUBTEST("a %= =", TreeNodeBase::Type::Assignment_ModAssign, "%=", false, error);
+            SUBTEST("a **= =", TreeNodeBase::Type::Assignment_PowAssign, "**=", false, error);
+            SUBTEST("a &= =", TreeNodeBase::Type::Assignment_BitAndAssign, "&=", false, error);
+            SUBTEST("a |= =", TreeNodeBase::Type::Assignment_BitOrAssign, "|=", false, error);
+            SUBTEST("a ^= =", TreeNodeBase::Type::Assignment_BitXOrAssign, "^=", false, error);
+            SUBTEST("a ~= =", TreeNodeBase::Type::Assignment_BitNotAssign, "~=", false, error);
+            SUBTEST("a <<= =", TreeNodeBase::Type::Assignment_BitShiftLeftAssign, "<<=", false, error);
+            SUBTEST("a >>= =", TreeNodeBase::Type::Assignment_BitShiftRightAssign, ">>=", false, error);
+
+            SUBTEST("1 = a", TreeNodeBase::Type::Assignment_Assign, "=", false, error);
+            SUBTEST("1 := a", TreeNodeBase::Type::Assignment_TypeAssign, ":=", false, error);
+            SUBTEST("1 += a", TreeNodeBase::Type::Assignment_AddAssign, "+=", false, error);
+            SUBTEST("1 -= a", TreeNodeBase::Type::Assignment_SubAssign, "-=", false, error);
+            SUBTEST("1 *= a", TreeNodeBase::Type::Assignment_MulAssign, "*=", false, error);
+            SUBTEST("1 /= a", TreeNodeBase::Type::Assignment_DivAssign, "/=", false, error);
+            SUBTEST("1 %= a", TreeNodeBase::Type::Assignment_ModAssign, "%=", false, error);
+            SUBTEST("1 **= a", TreeNodeBase::Type::Assignment_PowAssign, "**=", false, error);
+            SUBTEST("1 &= a", TreeNodeBase::Type::Assignment_BitAndAssign, "&=", false, error);
+            SUBTEST("1 |= a", TreeNodeBase::Type::Assignment_BitOrAssign, "|=", false, error);
+            SUBTEST("1 ^= a", TreeNodeBase::Type::Assignment_BitXOrAssign, "^=", false, error);
+            SUBTEST("1 ~= a", TreeNodeBase::Type::Assignment_BitNotAssign, "~=", false, error);
+            SUBTEST("1 <<= a", TreeNodeBase::Type::Assignment_BitShiftLeftAssign, "<<=", false, error);
+            SUBTEST("1 >>= a", TreeNodeBase::Type::Assignment_BitShiftRightAssign, ">>=", false, error);
+
             return true;
         }
     };
