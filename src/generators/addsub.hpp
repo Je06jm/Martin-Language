@@ -95,11 +95,9 @@ namespace Martin {
                     case Type::OP_LessThan:
                     case Type::OP_GreaterThanEquals:
                     case Type::OP_LessThanEquals:
-                    case Type::OP_LogicalAnd:
-                    case Type::OP_LogicalOr:
-                    case Type::OP_LogicalNot:
                     case Type::OP_Dot:
                     case Type::Misc_Call:
+                    case Type::Struct_Parentheses:
                         return true;
                     
                     default:
@@ -171,11 +169,9 @@ namespace Martin {
                     case Type::OP_LessThan:
                     case Type::OP_GreaterThanEquals:
                     case Type::OP_LessThanEquals:
-                    case Type::OP_LogicalAnd:
-                    case Type::OP_LogicalOr:
-                    case Type::OP_LogicalNot:
                     case Type::OP_Dot:
                     case Type::Misc_Call:
+                    case Type::Struct_Parentheses:
                         return true;
                     
                     default:

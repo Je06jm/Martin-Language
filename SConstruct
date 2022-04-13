@@ -53,7 +53,7 @@ if run_test:
             path = path[path.find('/')+1:]
             includes += '#include <' + path + '>\n'
             path = path[:path.find('.')]
-            inits += 'TEST_VECTOR.push_back(std::shared_ptr<Test>(new Test_' + path + '));\n'
+            inits += '\t\tTEST_VECTOR.push_back(std::shared_ptr<Test>(new Test_' + path + '));\n'
             
     file = open('./tests/testing.cpp', 'r')
     contents = file.read()

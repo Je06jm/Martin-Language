@@ -21,6 +21,17 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), id->GetName(), *right);
         }
 
+        bool Valid() const override {
+            if (!id || !right) return false;
+
+            if (id->GetType() != TokenType::Type::Identifier) return false;
+            if (right->is_token) return false;
+
+            if (right->node->GetType() != Type::Struct_Parentheses) return false;
+
+            return right->node->Valid();
+        }
+
         const Token id;
         const TokenNode right;
     };

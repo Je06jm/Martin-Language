@@ -28,7 +28,7 @@ namespace Martin {
             else if (!left->is_token) {
                 switch (left->node->GetType()) {
                     case Type::Assignment_TypeAssign:
-                        return true;
+                        return left->node->Valid();
                     
                     default:
                         return false;
@@ -59,7 +59,7 @@ namespace Martin {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
                     case Type::Misc_Lambda:
-                        return true;
+                        return right->node->Valid();
                     
                     default:
                         return false;
@@ -96,7 +96,7 @@ namespace Martin {
             else if (!left->is_token) {
                 switch (left->node->GetType()) {
                     case Type::Assignment_TypeAssign:
-                        return true;
+                        return left->node->Valid();
                     
                     default:
                         return false;
@@ -127,7 +127,7 @@ namespace Martin {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
                     case Type::Misc_Lambda:
-                        return true;
+                        return right->node->Valid();
                     
                     default:
                         return false;

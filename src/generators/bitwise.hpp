@@ -21,9 +21,62 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
 
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (!ValidateTokenNode(left)) return false;
+            if (!ValidateTokenNode(right)) return false;
+
+            return true;
+        }
+
     private:
         const TokenNode left;
         const TokenNode right;
+
+        static bool ValidateTokenNode(TokenNode node) {
+            if (node->is_token) {
+                switch (node->token->GetType()) {
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (node->node->GetType()) {
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_BitAnd:
+                    case Type::OP_BitOr:
+                    case Type::OP_BitXOr:
+                    case Type::OP_BitNot:
+                    case Type::OP_BitShiftLeft:
+                    case Type::OP_BitShiftRight:
+                    case Type::OP_Equals:
+                    case Type::OP_NotEquals:
+                    case Type::OP_GreaterThan:
+                    case Type::OP_LessThan:
+                    case Type::OP_GreaterThanEquals:
+                    case Type::OP_LessThanEquals:
+                    case Type::OP_Dot:
+                    case Type::Misc_Call:
+                    case Type::Struct_Parentheses:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+        }
     };
 
     class OPBitOrTreeNode : public TreeNodeBase {
@@ -42,9 +95,62 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
 
+        bool Valid() const override {
+            if (!left || !right) return false;
+            
+            if (!ValidateTokenNode(left)) return false;
+            if (!ValidateTokenNode(right)) return false;
+
+            return true;
+        }
+
     private:
         const TokenNode left;
         const TokenNode right;
+
+        static bool ValidateTokenNode(TokenNode node) {
+            if (node->is_token) {
+                switch (node->token->GetType()) {
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (node->node->GetType()) {
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_BitAnd:
+                    case Type::OP_BitOr:
+                    case Type::OP_BitXOr:
+                    case Type::OP_BitNot:
+                    case Type::OP_BitShiftLeft:
+                    case Type::OP_BitShiftRight:
+                    case Type::OP_Equals:
+                    case Type::OP_NotEquals:
+                    case Type::OP_GreaterThan:
+                    case Type::OP_LessThan:
+                    case Type::OP_GreaterThanEquals:
+                    case Type::OP_LessThanEquals:
+                    case Type::OP_Dot:
+                    case Type::Misc_Call:
+                    case Type::Struct_Parentheses:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+        }
     };
 
     class OPBitXOrTreeNode : public TreeNodeBase {
@@ -63,9 +169,62 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
 
+        bool Valid() const override {
+            if (!left || !right) return false;
+            
+            if (!ValidateTokenNode(left)) return false;
+            if (!ValidateTokenNode(right)) return false;
+
+            return true;
+        }
+
     private:
         const TokenNode left;
         const TokenNode right;
+
+        static bool ValidateTokenNode(TokenNode node) {
+            if (node->is_token) {
+                switch (node->token->GetType()) {
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (node->node->GetType()) {
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_BitAnd:
+                    case Type::OP_BitOr:
+                    case Type::OP_BitXOr:
+                    case Type::OP_BitNot:
+                    case Type::OP_BitShiftLeft:
+                    case Type::OP_BitShiftRight:
+                    case Type::OP_Equals:
+                    case Type::OP_NotEquals:
+                    case Type::OP_GreaterThan:
+                    case Type::OP_LessThan:
+                    case Type::OP_GreaterThanEquals:
+                    case Type::OP_LessThanEquals:
+                    case Type::OP_Dot:
+                    case Type::Misc_Call:
+                    case Type::Struct_Parentheses:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+        }
     };
 
     class OPBitNotTreeNode : public TreeNodeBase {
@@ -84,8 +243,60 @@ namespace Martin {
             serial = Format("$($)", GetName(), *right);
         }
 
+        bool Valid() const override {
+            if (!right) return false;
+            
+            if (!ValidateTokenNode(right)) return false;
+
+            return true;
+        }
+
     private:
         const TokenNode right;
+
+        static bool ValidateTokenNode(TokenNode node) {
+            if (node->is_token) {
+                switch (node->token->GetType()) {
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (node->node->GetType()) {
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_BitAnd:
+                    case Type::OP_BitOr:
+                    case Type::OP_BitXOr:
+                    case Type::OP_BitNot:
+                    case Type::OP_BitShiftLeft:
+                    case Type::OP_BitShiftRight:
+                    case Type::OP_Equals:
+                    case Type::OP_NotEquals:
+                    case Type::OP_GreaterThan:
+                    case Type::OP_LessThan:
+                    case Type::OP_GreaterThanEquals:
+                    case Type::OP_LessThanEquals:
+                    case Type::OP_Dot:
+                    case Type::Misc_Call:
+                    case Type::Struct_Parentheses:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+        }
     };
 
     class OPBitShiftLeftTreeNode : public TreeNodeBase {
@@ -100,9 +311,66 @@ namespace Martin {
             return "<<";
         }
 
+        void Serialize(std::string& serial) const override {
+            serial = Format("$($, $)", GetName(), *left, *right);
+        }
+
+        bool Valid() const override {
+            if (!left || !right) return false;
+            
+            if (!ValidateTokenNode(left)) return false;
+            if (!ValidateTokenNode(right)) return false;
+
+            return true;
+        }
+
     private:
         const TokenNode left;
         const TokenNode right;
+
+        static bool ValidateTokenNode(TokenNode node) {
+            if (node->is_token) {
+                switch (node->token->GetType()) {
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (node->node->GetType()) {
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_BitAnd:
+                    case Type::OP_BitOr:
+                    case Type::OP_BitXOr:
+                    case Type::OP_BitNot:
+                    case Type::OP_BitShiftLeft:
+                    case Type::OP_BitShiftRight:
+                    case Type::OP_Equals:
+                    case Type::OP_NotEquals:
+                    case Type::OP_GreaterThan:
+                    case Type::OP_LessThan:
+                    case Type::OP_GreaterThanEquals:
+                    case Type::OP_LessThanEquals:
+                    case Type::OP_Dot:
+                    case Type::Misc_Call:
+                    case Type::Struct_Parentheses:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+        }
     };
 
     class OPBitShiftRightTreeNode : public TreeNodeBase {
@@ -117,9 +385,66 @@ namespace Martin {
             return ">>";
         }
 
+        void Serialize(std::string& serial) const override {
+            serial = Format("$($, $)", GetName(), *left, *right);
+        }
+
+        bool Valid() const override {
+            if (!left || !right) return false;
+            
+            if (!ValidateTokenNode(left)) return false;
+            if (!ValidateTokenNode(right)) return false;
+
+            return true;
+        }
+
     private:
         const TokenNode left;
         const TokenNode right;
+
+        static bool ValidateTokenNode(TokenNode node) {
+            if (node->is_token) {
+                switch (node->token->GetType()) {
+                    case TokenType::Type::UInteger:
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::FloatingSingle:
+                    case TokenType::Type::FloatingDouble:
+                    case TokenType::Type::Identifier:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                switch (node->node->GetType()) {
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_BitAnd:
+                    case Type::OP_BitOr:
+                    case Type::OP_BitXOr:
+                    case Type::OP_BitNot:
+                    case Type::OP_BitShiftLeft:
+                    case Type::OP_BitShiftRight:
+                    case Type::OP_Equals:
+                    case Type::OP_NotEquals:
+                    case Type::OP_GreaterThan:
+                    case Type::OP_LessThan:
+                    case Type::OP_GreaterThanEquals:
+                    case Type::OP_LessThanEquals:
+                    case Type::OP_Dot:
+                    case Type::Misc_Call:
+                    case Type::Struct_Parentheses:
+                        return true;
+                    
+                    default:
+                        return false;
+                }
+            }
+        }
     };
 
     class OPBitwiseTreeGenerator : public TreeNodeGenerator {

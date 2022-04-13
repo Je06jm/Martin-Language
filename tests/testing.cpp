@@ -13,7 +13,7 @@ namespace Martin {
 #define TEST_VECTOR tests
 
     void Init() {
-        MARTIN_TESTING_INITS
+MARTIN_TESTING_INITS
     }
 }
 

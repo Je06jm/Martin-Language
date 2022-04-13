@@ -2,12 +2,14 @@
 #define MARTIN_GENERATORS_CLASS
 
 #include <parse.hpp>
+#include "colon.hpp"
+#include "comma.hpp"
 
 namespace Martin {
 
     class ClassTreeNode : public TreeNodeBase {
     public:
-        ClassTreeNode(TokenNode name,TokenNode scope) : name(name), scope(scope) {}
+        ClassTreeNode(TokenNode name, TokenNode scope) : name(name), scope(scope) {}
 
         Type GetType() const override {
             return Type::Misc_Class;
@@ -25,8 +27,52 @@ namespace Martin {
                 serial = Format("$($, nullptr)", *name, GetName());
         }
 
+        bool Valid() const override {
+            if (!name || !scope) return false;
+
+            if (name->is_token && (name->token->GetType() != TokenType::Type::Identifier)) return false;
+            else if (!name->is_token) {
+                if (name->node->GetType() != Type::Misc_Colon) return false;
+                if (!name->node->Valid()) return false;
+
+                auto node = std::static_pointer_cast<ColonTreeNode>(name->node);
+                
+                if (!node->left->is_token) return false;
+                if (node->left->token->GetType() != TokenType::Type::Identifier) return false;
+
+                if (node->right->is_token) return false;
+                if (!node->right->node->Valid()) return false;
+                if (node->right->node->GetType() == Type::Struct_Comma) {
+                    auto comma = std::static_pointer_cast<StructCommaTreeNode>(node->right->node);
+                    for (auto it : comma->nodes) {
+                        if (it->is_token) return false;
+                        if (!IsAccess(it->node->GetType())) return false;
+                        if (!it->node->Valid()) return false;
+                    }
+                } else if (!IsAccess(node->right->node->GetType())) return false;
+            }
+
+            if (scope->is_token) return false;
+
+            if (scope->node->GetType() != Type::Struct_Curly) return false;
+
+            return true;
+        }
+
         const TokenNode name;
-        const TokenNode scope;    
+        const TokenNode scope;
+
+        bool IsAccess(Type type) const {
+            switch (type) {
+                case Type::ClassAccess_Public:
+                case Type::ClassAccess_Protected:
+                case Type::ClassAccess_Private:
+                    return true;
+                
+                default:
+                    return false;
+            }
+        }
     };
 
     class ClassTreeGenerator : public TreeNodeGenerator {
