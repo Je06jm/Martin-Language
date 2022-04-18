@@ -32,13 +32,21 @@ int main(int argc, char** argv) {
 
     else {
         // Compile / Run code here
+        bool valid = true;
         for (auto it : *tree) {
             if (it->is_token) {
                 Martin::Warning("Found a token in tree vector($): $\n", it->token->GetLineNumber(), it->token->GetName());
             } else {
-                Martin::Print("$\n", *it);
+                Martin::Print("Node $\n", *it);
+                if (!it->node->Valid()) {
+                    Martin::Error("Node is not valid\n");
+                    valid = false;
+                }
             }
         }
+
+        if (valid)
+            Martin::Print("All nodes in the tree are valid\n");
 
         Martin::Print("Nothing to do yet. If no warnings have printed, then the parser has accepted your syntax as valid.\n");
         Martin::Print("Note that this does not mean your syntax is valid as there is no verification run to make sure that the code is valid.\n");
@@ -46,4 +54,5 @@ int main(int argc, char** argv) {
     }
 
     return 0;
+    
 }

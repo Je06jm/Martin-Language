@@ -27,6 +27,48 @@ namespace Martin {
             serial += ")";
         }
 
+        bool Valid() const override {
+            if (nodes.size() == 0) return false;
+
+            for (auto it : nodes) {
+                if (it->is_token) {
+                    switch (it->token->GetType()) {
+                        case TokenType::Type::Identifier:
+                        case TokenType::Type::Integer:
+                        case TokenType::Type::UInteger:
+                        case TokenType::Type::FloatingSingle:
+                        case TokenType::Type::FloatingDouble:
+                        case TokenType::Type::Boolean:
+                        case TokenType::Type::String8:
+                        case TokenType::Type::String16l:
+                        case TokenType::Type::String32l:
+                        case TokenType::Type::String16b:
+                        case TokenType::Type::String32b:
+                            break;
+                        
+                        default:
+                            return false;
+                    }
+                } else {
+                    switch (it->node->GetType()) {
+                        case Type::Misc_Call:
+                        case Type::OP_Dot:
+                        case Type::Misc_Lambda:
+                        case Type::Struct_Parentheses:
+                        case Type::ClassAccess_Public:
+                        case Type::ClassAccess_Private:
+                        case Type::ClassAccess_Protected:
+                            break;
+                        
+                        default:
+                            return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         const std::vector<TokenNode> nodes;
     };
 

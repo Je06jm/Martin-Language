@@ -21,6 +21,28 @@ namespace Martin {
             serial = Format("$($)", GetName(), *right);
         }
 
+        bool Valid() const override {
+            if (!right) return false;
+
+            if (right->is_token) return false;
+
+            switch (right->node->GetType()) {
+                case Type::ClassType_Virtual:
+                case Type::ClassType_Override:
+                case Type::ClassType_Static:
+                case Type::Definition_Let:
+                case Type::Definition_Set:
+                case Type::Definition_Const:
+                case Type::Definition_Constexpr:
+                case Type::Assignment_Assign:
+                case Type::Assignment_TypeAssign:
+                    return right->node->Valid();
+
+                default:
+                    return false;
+            }
+        }
+
         const TokenNode right;
     };
 
@@ -40,6 +62,28 @@ namespace Martin {
             serial = Format("$($)", GetName(), *right);
         }
 
+        bool Valid() const override {
+            if (!right) return false;
+
+            if (right->is_token) return false;
+
+            switch (right->node->GetType()) {
+                case Type::ClassType_Virtual:
+                case Type::ClassType_Override:
+                case Type::ClassType_Static:
+                case Type::Definition_Let:
+                case Type::Definition_Set:
+                case Type::Definition_Const:
+                case Type::Definition_Constexpr:
+                case Type::Assignment_Assign:
+                case Type::Assignment_TypeAssign:
+                    return right->node->Valid();
+
+                default:
+                    return false;
+            }
+        }
+
         const TokenNode right;
     };
 
@@ -57,6 +101,28 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($)", GetName(), *right);
+        }
+
+        bool Valid() const override {
+            if (!right) return false;
+
+            if (right->is_token) return false;
+
+            switch (right->node->GetType()) {
+                case Type::ClassType_Virtual:
+                case Type::ClassType_Override:
+                case Type::ClassType_Static:
+                case Type::Definition_Let:
+                case Type::Definition_Set:
+                case Type::Definition_Const:
+                case Type::Definition_Constexpr:
+                case Type::Assignment_Assign:
+                case Type::Assignment_TypeAssign:
+                    return right->node->Valid();
+
+                default:
+                    return false;
+            }
         }
 
         const TokenNode right;

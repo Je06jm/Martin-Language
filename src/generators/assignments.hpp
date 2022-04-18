@@ -2,6 +2,13 @@
 #define MARTIN_GENERATORS_ASSIGNMENTS
 
 #include <parse.hpp>
+#include "addsub.hpp"
+#include "bitwise.hpp"
+#include "dot.hpp"
+#include "enclosures.hpp"
+#include "funclambda.hpp"
+#include "muldivmod.hpp"
+#include "pow.hpp"
 
 namespace Martin {
 
@@ -27,7 +34,10 @@ namespace Martin {
             if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
             else if (!left->is_token) {
                 switch (left->node->GetType()) {
-                    case Type::Assignment_TypeAssign:
+                    case Type::Definition_Let:
+                    case Type::Definition_Set:
+                    case Type::Definition_Const:
+                    case Type::Definition_Constexpr:
                         return left->node->Valid();
                     
                     default:
@@ -59,6 +69,14 @@ namespace Martin {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
                     case Type::Misc_Lambda:
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_Dot:
+                    case Type::Struct_Parentheses:
                         return right->node->Valid();
                     
                     default:
@@ -95,7 +113,10 @@ namespace Martin {
             if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
             else if (!left->is_token) {
                 switch (left->node->GetType()) {
-                    case Type::Assignment_TypeAssign:
+                    case Type::Definition_Let:
+                    case Type::Definition_Set:
+                    case Type::Definition_Const:
+                    case Type::Definition_Constexpr:
                         return left->node->Valid();
                     
                     default:
@@ -127,6 +148,14 @@ namespace Martin {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
                     case Type::Misc_Lambda:
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_Dot:
+                    case Type::Struct_Parentheses:
                         return right->node->Valid();
                     
                     default:
@@ -160,16 +189,8 @@ namespace Martin {
         bool Valid() const override {
             if (!left || !right) return false;
 
-            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
-            else if (!left->is_token) {
-                switch (left->node->GetType()) {
-                    case Type::Assignment_TypeAssign:
-                        return true;
-                    
-                    default:
-                        return false;
-                }
-            }
+            if (!left->is_token) return false;
+            if (left->token->GetType() != TokenType::Type::Identifier) return false;
 
             if (right->is_token) {
                 switch (right->token->GetType()) {
@@ -184,7 +205,6 @@ namespace Martin {
                     case TokenType::Type::UInteger:
                     case TokenType::Type::FloatingSingle:
                     case TokenType::Type::FloatingDouble:
-                    case TokenType::Type::Boolean:
                     case TokenType::Type::Identifier:
                         return true;
                     
@@ -194,6 +214,14 @@ namespace Martin {
             } else {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_Dot:
+                    case Type::Struct_Parentheses:
                         return true;
                     
                     default:
@@ -227,31 +255,15 @@ namespace Martin {
         bool Valid() const override {
             if (!left || !right) return false;
 
-            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
-            else if (!left->is_token) {
-                switch (left->node->GetType()) {
-                    case Type::Assignment_TypeAssign:
-                        return true;
-                    
-                    default:
-                        return false;
-                }
-            }
+            if (!left->is_token) return false;
+            if (left->token->GetType() != TokenType::Type::Identifier) return false;
 
             if (right->is_token) {
                 switch (right->token->GetType()) {
-                    case TokenType::Type::String8:
-                    case TokenType::Type::String16:
-                    case TokenType::Type::String32:
-                    case TokenType::Type::String16l:
-                    case TokenType::Type::String32l:
-                    case TokenType::Type::String16b:
-                    case TokenType::Type::String32b:
                     case TokenType::Type::Integer:
                     case TokenType::Type::UInteger:
                     case TokenType::Type::FloatingSingle:
                     case TokenType::Type::FloatingDouble:
-                    case TokenType::Type::Boolean:
                     case TokenType::Type::Identifier:
                         return true;
                     
@@ -261,6 +273,14 @@ namespace Martin {
             } else {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_Dot:
+                    case Type::Struct_Parentheses:
                         return true;
                     
                     default:
@@ -294,31 +314,15 @@ namespace Martin {
         bool Valid() const override {
             if (!left || !right) return false;
 
-            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
-            else if (!left->is_token) {
-                switch (left->node->GetType()) {
-                    case Type::Assignment_TypeAssign:
-                        return true;
-                    
-                    default:
-                        return false;
-                }
-            }
+            if (!left->is_token) return false;
+            if (left->token->GetType() != TokenType::Type::Identifier) return false;
 
             if (right->is_token) {
                 switch (right->token->GetType()) {
-                    case TokenType::Type::String8:
-                    case TokenType::Type::String16:
-                    case TokenType::Type::String32:
-                    case TokenType::Type::String16l:
-                    case TokenType::Type::String32l:
-                    case TokenType::Type::String16b:
-                    case TokenType::Type::String32b:
                     case TokenType::Type::Integer:
                     case TokenType::Type::UInteger:
                     case TokenType::Type::FloatingSingle:
                     case TokenType::Type::FloatingDouble:
-                    case TokenType::Type::Boolean:
                     case TokenType::Type::Identifier:
                         return true;
                     
@@ -328,6 +332,14 @@ namespace Martin {
             } else {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_Dot:
+                    case Type::Struct_Parentheses:
                         return true;
                     
                     default:
@@ -361,31 +373,15 @@ namespace Martin {
         bool Valid() const override {
             if (!left || !right) return false;
 
-            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
-            else if (!left->is_token) {
-                switch (left->node->GetType()) {
-                    case Type::Assignment_TypeAssign:
-                        return true;
-                    
-                    default:
-                        return false;
-                }
-            }
+            if (!left->is_token) return false;
+            if (left->token->GetType() != TokenType::Type::Identifier) return false;
 
             if (right->is_token) {
                 switch (right->token->GetType()) {
-                    case TokenType::Type::String8:
-                    case TokenType::Type::String16:
-                    case TokenType::Type::String32:
-                    case TokenType::Type::String16l:
-                    case TokenType::Type::String32l:
-                    case TokenType::Type::String16b:
-                    case TokenType::Type::String32b:
                     case TokenType::Type::Integer:
                     case TokenType::Type::UInteger:
                     case TokenType::Type::FloatingSingle:
                     case TokenType::Type::FloatingDouble:
-                    case TokenType::Type::Boolean:
                     case TokenType::Type::Identifier:
                         return true;
                     
@@ -395,6 +391,14 @@ namespace Martin {
             } else {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_Dot:
+                    case Type::Struct_Parentheses:
                         return true;
                     
                     default:
@@ -428,31 +432,15 @@ namespace Martin {
         bool Valid() const override {
             if (!left || !right) return false;
 
-            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
-            else if (!left->is_token) {
-                switch (left->node->GetType()) {
-                    case Type::Assignment_TypeAssign:
-                        return true;
-                    
-                    default:
-                        return false;
-                }
-            }
+            if (!left->is_token) return false;
+            if (left->token->GetType() != TokenType::Type::Identifier) return false;
 
             if (right->is_token) {
                 switch (right->token->GetType()) {
-                    case TokenType::Type::String8:
-                    case TokenType::Type::String16:
-                    case TokenType::Type::String32:
-                    case TokenType::Type::String16l:
-                    case TokenType::Type::String32l:
-                    case TokenType::Type::String16b:
-                    case TokenType::Type::String32b:
                     case TokenType::Type::Integer:
                     case TokenType::Type::UInteger:
                     case TokenType::Type::FloatingSingle:
                     case TokenType::Type::FloatingDouble:
-                    case TokenType::Type::Boolean:
                     case TokenType::Type::Identifier:
                         return true;
                     
@@ -462,6 +450,14 @@ namespace Martin {
             } else {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_Dot:
+                    case Type::Struct_Parentheses:
                         return true;
                     
                     default:
@@ -495,31 +491,15 @@ namespace Martin {
         bool Valid() const override {
             if (!left || !right) return false;
 
-            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
-            else if (!left->is_token) {
-                switch (left->node->GetType()) {
-                    case Type::Assignment_TypeAssign:
-                        return true;
-                    
-                    default:
-                        return false;
-                }
-            }
+            if (!left->is_token) return false;
+            if (left->token->GetType() != TokenType::Type::Identifier) return false;
 
             if (right->is_token) {
                 switch (right->token->GetType()) {
-                    case TokenType::Type::String8:
-                    case TokenType::Type::String16:
-                    case TokenType::Type::String32:
-                    case TokenType::Type::String16l:
-                    case TokenType::Type::String32l:
-                    case TokenType::Type::String16b:
-                    case TokenType::Type::String32b:
                     case TokenType::Type::Integer:
                     case TokenType::Type::UInteger:
                     case TokenType::Type::FloatingSingle:
                     case TokenType::Type::FloatingDouble:
-                    case TokenType::Type::Boolean:
                     case TokenType::Type::Identifier:
                         return true;
                     
@@ -529,6 +509,14 @@ namespace Martin {
             } else {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_Dot:
+                    case Type::Struct_Parentheses:
                         return true;
                     
                     default:
@@ -562,31 +550,15 @@ namespace Martin {
         bool Valid() const override {
             if (!left || !right) return false;
 
-            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
-            else if (!left->is_token) {
-                switch (left->node->GetType()) {
-                    case Type::Assignment_TypeAssign:
-                        return true;
-                    
-                    default:
-                        return false;
-                }
-            }
+            if (!left->is_token) return false;
+            if (left->token->GetType() != TokenType::Type::Identifier) return false;
 
             if (right->is_token) {
                 switch (right->token->GetType()) {
-                    case TokenType::Type::String8:
-                    case TokenType::Type::String16:
-                    case TokenType::Type::String32:
-                    case TokenType::Type::String16l:
-                    case TokenType::Type::String32l:
-                    case TokenType::Type::String16b:
-                    case TokenType::Type::String32b:
                     case TokenType::Type::Integer:
                     case TokenType::Type::UInteger:
                     case TokenType::Type::FloatingSingle:
                     case TokenType::Type::FloatingDouble:
-                    case TokenType::Type::Boolean:
                     case TokenType::Type::Identifier:
                         return true;
                     
@@ -596,6 +568,14 @@ namespace Martin {
             } else {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_Dot:
+                    case Type::Struct_Parentheses:
                         return true;
                     
                     default:
@@ -629,31 +609,15 @@ namespace Martin {
         bool Valid() const override {
             if (!left || !right) return false;
 
-            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
-            else if (!left->is_token) {
-                switch (left->node->GetType()) {
-                    case Type::Assignment_TypeAssign:
-                        return true;
-                    
-                    default:
-                        return false;
-                }
-            }
+            if (!left->is_token) return false;
+            if (left->token->GetType() != TokenType::Type::Identifier) return false;
 
             if (right->is_token) {
                 switch (right->token->GetType()) {
-                    case TokenType::Type::String8:
-                    case TokenType::Type::String16:
-                    case TokenType::Type::String32:
-                    case TokenType::Type::String16l:
-                    case TokenType::Type::String32l:
-                    case TokenType::Type::String16b:
-                    case TokenType::Type::String32b:
                     case TokenType::Type::Integer:
                     case TokenType::Type::UInteger:
                     case TokenType::Type::FloatingSingle:
                     case TokenType::Type::FloatingDouble:
-                    case TokenType::Type::Boolean:
                     case TokenType::Type::Identifier:
                         return true;
                     
@@ -663,6 +627,14 @@ namespace Martin {
             } else {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_Dot:
+                    case Type::Struct_Parentheses:
                         return true;
                     
                     default:
@@ -696,31 +668,15 @@ namespace Martin {
         bool Valid() const override {
             if (!left || !right) return false;
 
-            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
-            else if (!left->is_token) {
-                switch (left->node->GetType()) {
-                    case Type::Assignment_TypeAssign:
-                        return true;
-                    
-                    default:
-                        return false;
-                }
-            }
+            if (!left->is_token) return false;
+            if (left->token->GetType() != TokenType::Type::Identifier) return false;
 
             if (right->is_token) {
                 switch (right->token->GetType()) {
-                    case TokenType::Type::String8:
-                    case TokenType::Type::String16:
-                    case TokenType::Type::String32:
-                    case TokenType::Type::String16l:
-                    case TokenType::Type::String32l:
-                    case TokenType::Type::String16b:
-                    case TokenType::Type::String32b:
                     case TokenType::Type::Integer:
                     case TokenType::Type::UInteger:
                     case TokenType::Type::FloatingSingle:
                     case TokenType::Type::FloatingDouble:
-                    case TokenType::Type::Boolean:
                     case TokenType::Type::Identifier:
                         return true;
                     
@@ -730,6 +686,14 @@ namespace Martin {
             } else {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_Dot:
+                    case Type::Struct_Parentheses:
                         return true;
                     
                     default:
@@ -763,31 +727,15 @@ namespace Martin {
         bool Valid() const override {
             if (!left || !right) return false;
 
-            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
-            else if (!left->is_token) {
-                switch (left->node->GetType()) {
-                    case Type::Assignment_TypeAssign:
-                        return true;
-                    
-                    default:
-                        return false;
-                }
-            }
+            if (!left->is_token) return false;
+            if (left->token->GetType() != TokenType::Type::Identifier) return false;
 
             if (right->is_token) {
                 switch (right->token->GetType()) {
-                    case TokenType::Type::String8:
-                    case TokenType::Type::String16:
-                    case TokenType::Type::String32:
-                    case TokenType::Type::String16l:
-                    case TokenType::Type::String32l:
-                    case TokenType::Type::String16b:
-                    case TokenType::Type::String32b:
                     case TokenType::Type::Integer:
                     case TokenType::Type::UInteger:
                     case TokenType::Type::FloatingSingle:
                     case TokenType::Type::FloatingDouble:
-                    case TokenType::Type::Boolean:
                     case TokenType::Type::Identifier:
                         return true;
                     
@@ -797,6 +745,14 @@ namespace Martin {
             } else {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_Dot:
+                    case Type::Struct_Parentheses:
                         return true;
                     
                     default:
@@ -830,31 +786,15 @@ namespace Martin {
         bool Valid() const override {
             if (!left || !right) return false;
 
-            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
-            else if (!left->is_token) {
-                switch (left->node->GetType()) {
-                    case Type::Assignment_TypeAssign:
-                        return true;
-                    
-                    default:
-                        return false;
-                }
-            }
+            if (!left->is_token) return false;
+            if (left->token->GetType() != TokenType::Type::Identifier) return false;
 
             if (right->is_token) {
                 switch (right->token->GetType()) {
-                    case TokenType::Type::String8:
-                    case TokenType::Type::String16:
-                    case TokenType::Type::String32:
-                    case TokenType::Type::String16l:
-                    case TokenType::Type::String32l:
-                    case TokenType::Type::String16b:
-                    case TokenType::Type::String32b:
                     case TokenType::Type::Integer:
                     case TokenType::Type::UInteger:
                     case TokenType::Type::FloatingSingle:
                     case TokenType::Type::FloatingDouble:
-                    case TokenType::Type::Boolean:
                     case TokenType::Type::Identifier:
                         return true;
                     
@@ -864,6 +804,14 @@ namespace Martin {
             } else {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_Dot:
+                    case Type::Struct_Parentheses:
                         return true;
                     
                     default:
@@ -897,31 +845,15 @@ namespace Martin {
         bool Valid() const override {
             if (!left || !right) return false;
 
-            if (left->is_token && (left->token->GetType() != TokenType::Type::Identifier)) return false;
-            else if (!left->is_token) {
-                switch (left->node->GetType()) {
-                    case Type::Assignment_TypeAssign:
-                        return true;
-                    
-                    default:
-                        return false;
-                }
-            }
+            if (!left->is_token) return false;
+            if (left->token->GetType() != TokenType::Type::Identifier) return false;
 
             if (right->is_token) {
                 switch (right->token->GetType()) {
-                    case TokenType::Type::String8:
-                    case TokenType::Type::String16:
-                    case TokenType::Type::String32:
-                    case TokenType::Type::String16l:
-                    case TokenType::Type::String32l:
-                    case TokenType::Type::String16b:
-                    case TokenType::Type::String32b:
                     case TokenType::Type::Integer:
                     case TokenType::Type::UInteger:
                     case TokenType::Type::FloatingSingle:
                     case TokenType::Type::FloatingDouble:
-                    case TokenType::Type::Boolean:
                     case TokenType::Type::Identifier:
                         return true;
                     
@@ -931,6 +863,14 @@ namespace Martin {
             } else {
                 switch (right->node->GetType()) {
                     case Type::Misc_Call:
+                    case Type::OP_Add:
+                    case Type::OP_Sub:
+                    case Type::OP_Mul:
+                    case Type::OP_Div:
+                    case Type::OP_Mod:
+                    case Type::OP_Pow:
+                    case Type::OP_Dot:
+                    case Type::Struct_Parentheses:
                         return true;
                     
                     default:

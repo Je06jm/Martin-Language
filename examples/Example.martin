@@ -35,8 +35,10 @@ struct FloatingValue {
     let type : FloatingType
 }
 
-constexpr VERSION : Versioning = {1, 0, 0}
-//constexpr VERSION : Versioning = {1, 0, 0} // Also works
+constexpr VERSION : Versioning = (1, 0, 0)
+// Maybe {1, 0, 0} could be static data? Or the compiler could auto detect
+// when this should happen with tuples. Another option is that {} could also
+// indicate array data
 
 func print_type(const type : Type) -> None {
     print(type.name)
@@ -98,9 +100,7 @@ func main(let params : array[] String8) -> None {
     let myptr : pointer Float64
     set myptr2 : set pointer array[] Float64
     let myptr3 : pointer const reference array[2] Float64 = (1, 2)
-    // let myptr3 : pointer const reference array[2] Float64 = {1, 2} // Also works
     set myptr4 : pointer pointer set array[3,4] Float64 = ((1, 2, 3), (1, 2, 3, 4))
-    // set myptr4 : pointer pointer set array[3,4] Float64 = {{1, 2, 3}, {1, 2, 3, 4}} // Also works
     // And so on
 
     // () defines a constexpr tuple

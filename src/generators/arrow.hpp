@@ -2,6 +2,8 @@
 #define MARTIN_GENERATORS_ARROW
 
 #include <parse.hpp>
+#include "enclosures.hpp"
+#include "comma.hpp"
 
 namespace Martin {
 
@@ -25,10 +27,39 @@ namespace Martin {
             if (!left || !right) return false;
 
             if (left->is_token) return false;
-            if (!right->is_token) return false;
+            if (right->is_token) {
+                if (right->token->GetType() != TokenType::Type::Identifier) return false;
+            } else {
+                if (right->node->GetType() != Type::Struct_Curly) return false;
+                auto curly = std::static_pointer_cast<StructCurlyTreeNode>(right->node);
+                auto tree = curly->inside;
 
-            if (right->token->GetType() != TokenType::Type::Identifier) return false;
-            if (left->node->GetType() != Type::Struct_Parentheses) return false;
+                if (tree->size() == 0) return false;
+                
+                if ((*tree)[0]->is_token) {
+                    if ((*tree)[0]->token->GetType() != TokenType::Type::Identifier) return false;
+                    for (auto it : *(tree)) {
+                        if (!it->is_token) return false;
+                        if (it->token->GetType() != TokenType::Type::Identifier) return false;
+                    }
+                } else {
+                    if ((*tree)[0]->node->GetType() != Type::Struct_Comma) return false;
+                    auto comma = std::static_pointer_cast<StructCommaTreeNode>((*tree)[0]->node);
+                    for (auto it : comma->nodes) {
+                        if (!it->is_token) return false;
+                        if (it->token->GetType() != TokenType::Type::Identifier) return false;
+                    }
+                }
+            }
+
+            switch (left->node->GetType()) {
+                case Type::Struct_Parentheses:
+                case Type::Definition_Typedef:
+                    break;
+                
+                default:
+                    return false;
+            }
 
             return left->node->Valid();
         }

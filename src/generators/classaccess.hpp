@@ -19,7 +19,18 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($)", GetName(), *right);
-            
+        }
+
+        bool Valid() const override {
+            if (!right) return false;
+
+            if (right->is_token) {
+                if (right->token->GetType() != TokenType::Type::Identifier) return false;
+            } else {
+                if (right->node->GetType() != Type::Struct_Curly) return false;
+            }
+
+            return true;
         }
 
         const TokenNode right;
@@ -39,7 +50,18 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($)", GetName(), *right);
-            
+        }
+
+        bool Valid() const override {
+            if (!right) return false;
+
+            if (right->is_token) {
+                if (right->token->GetType() != TokenType::Type::Identifier) return false;
+            } else {
+                if (right->node->GetType() != Type::Struct_Curly) return false;
+            }
+
+            return true;
         }
 
         const TokenNode right;
@@ -59,7 +81,18 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($)", GetName(), *right);
-            
+        }
+
+        bool Valid() const override {
+            if (!right) return false;
+
+            if (right->is_token) {
+                if (right->token->GetType() != TokenType::Type::Identifier) return false;
+            } else {
+                if (right->node->GetType() != Type::Struct_Curly) return false;
+            }
+
+            return true;
         }
 
         const TokenNode right;
@@ -79,7 +112,18 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($)", GetName(), *right);
-            
+        }
+
+        bool Valid() const override {
+            if (!right) return false;
+
+            if (right->is_token) {
+                if (right->token->GetType() != TokenType::Type::Identifier) return false;
+            } else {
+                if (right->node->GetType() != Type::Struct_Curly) return false;
+            }
+
+            return true;
         }
 
         const TokenNode right;
