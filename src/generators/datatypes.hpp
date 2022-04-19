@@ -2,6 +2,8 @@
 #define MARTIN_GENERATORS_DATATYPE
 
 #include <parse.hpp>
+#include "enclosures.hpp"
+#include "assignments.hpp"
 
 namespace Martin {
 
@@ -19,7 +21,36 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *name, *members);
-            
+        }
+
+        bool Valid() const override {
+            if (!name || !members) return false;
+
+            if (!name->is_token) return false;
+            if (name->token->GetType() != TokenType::Type::Identifier) return false;
+
+            if (members->is_token) return false;
+            if (!members->node->Valid()) return false;
+            if (members->node->GetType() != Type::Struct_Curly) return false;
+
+            auto curly = std::static_pointer_cast<StructCurlyTreeNode>(members->node);
+            for (auto it : *(curly->inside)) {
+                if (it->is_token) return false;
+                if (!it->node->Valid()) return false;
+
+                switch(it->node->GetType()) {
+                    case Type::Definition_Let:
+                    case Type::Definition_Set:
+                    case Type::Definition_Const:
+                    case Type::Definition_Constexpr:
+                        break;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         const TokenNode name;
@@ -42,6 +73,36 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), *name, *members);
         }
 
+        bool Valid() const override {
+            if (!name || !members) return false;
+
+            if (!name->is_token) return false;
+            if (name->token->GetType() != TokenType::Type::Identifier) return false;
+
+            if (members->is_token) return false;
+            if (!members->node->Valid()) return false;
+            if (members->node->GetType() != Type::Struct_Curly) return false;
+
+            auto curly = std::static_pointer_cast<StructCurlyTreeNode>(members->node);
+            for (auto it : *(curly->inside)) {
+                if (it->is_token) return false;
+                if (!it->node->Valid()) return false;
+
+                switch(it->node->GetType()) {
+                    case Type::Definition_Let:
+                    case Type::Definition_Set:
+                    case Type::Definition_Const:
+                    case Type::Definition_Constexpr:
+                        break;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
         const TokenNode name;
         const TokenNode members;    
     };
@@ -60,7 +121,43 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *name, *members);
-            
+        }
+
+        bool Valid() const override {
+            if (!name || !members) return false;
+
+            if (!name->is_token) return false;
+            if (name->token->GetType() != TokenType::Type::Identifier) return false;
+
+            if (members->is_token) return false;
+            if (!members->node->Valid()) return false;
+            if (members->node->GetType() != Type::Struct_Curly) return false;
+
+            auto curly = std::static_pointer_cast<StructCurlyTreeNode>(members->node);
+            for (auto it : *(curly->inside)) {
+                if (it->is_token) {
+                    if (it->token->GetType() != TokenType::Type::Identifier) return false;
+                } else {
+                    if (!it->node->Valid()) return false;
+                    if (it->node->GetType() != Type::Assignment_Assign) return false;
+
+                    auto assign = std::static_pointer_cast<AssignTreeNode>(it->node);
+
+                    if (!assign->left->is_token) return false;
+                    if (assign->left->token->GetType() != TokenType::Type::Identifier) return false;
+
+                    if (!assign->right->is_token) return false;
+                    switch (assign->right->token->GetType()) {
+                        case TokenType::Type::Integer:
+                        case TokenType::Type::UInteger:
+                            break;
+                        default:
+                            return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         const TokenNode name;
@@ -92,7 +189,7 @@ namespace Martin {
                             break;
                         
                         case TokenType::Type::KW_Enum:
-                            op = TreeNode(new UnionTreeNode(id, members));
+                            op = TreeNode(new EnumTreeNode(id, members));
                             break;
                     }
 
