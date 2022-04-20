@@ -19,7 +19,6 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *left, *right);
-            
         }
 
         const TokenNode left;

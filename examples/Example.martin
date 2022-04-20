@@ -58,7 +58,7 @@ func call_callback(let fn : (let a : Int32) -> None) -> None {
     callback(2)
 }
 
-func add(let nums : array[] Int32) -> Int32 {
+func add(let nums : array[-1] Int32) -> Int32 {
     let total : Int32 = 0
     for (let i := 0, i < nums.count(), i += 1) {
         total += nums.get(i)
@@ -82,25 +82,25 @@ func multiple() -> Tuple {
     return (1, 2, 3)
 }
 
-func main(let params : array[] String8) -> None {
+func main(let params : array[-1] String8) -> None {
     let mystr : String = "Hello"
     set mystr2 := "Constant String!"
 
     const app_name : shared String8 = "My App"
 
     let myarr : array[1,2,3] Int32
-    set myarr2 : array[,2] Int32
+    set myarr2 : array[-1,2] Int32
 
-    let myref : reference array[] Float32
-    set myref2 : reference array[,4,] Float32
-    let myref3 : reference pointer array[] Float32
+    let myref : reference array[-1] Float32
+    set myref2 : reference array[-1,4,-1] Float32
+    let myref3 : reference pointer array[-1] Float32
     // And so on
 
 
     let myptr : pointer Float64
-    set myptr2 : set pointer array[] Float64
-    let myptr3 : pointer const reference array[2] Float64 = (1, 2)
-    set myptr4 : pointer pointer set array[3,4] Float64 = ((1, 2, 3), (1, 2, 3, 4))
+    set myptr2 : pointer array[-1] Float64
+    let myptr3 : pointer reference array[2] Float64 = (1, 2)
+    set myptr4 : pointer pointer array[3,4] Float64 = ((1, 2, 3), (1, 2, 3, 4))
     // And so on
 
     // () defines a constexpr tuple
@@ -135,7 +135,7 @@ func main(let params : array[] String8) -> None {
 
     let float_enum : Floating = Floating.SINGLE
 
-    switch (float_enum) {
+    switch float_enum {
         Floating.SINGLE: {}
         Floating.DOUBLE: lambda () -> None {}
         default: print()

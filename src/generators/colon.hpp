@@ -73,6 +73,7 @@ namespace Martin {
                     case Type::ClassAccess_Public:
                     case Type::ClassAccess_Private:
                     case Type::ClassAccess_Protected:
+                    case Type::Struct_Curly:
                         return right->node->Valid();
                     
                     case Type::Struct_Comma:

@@ -2,6 +2,8 @@
 #define MARTIN_GENERATORS_DEFINITIONS
 
 #include <parse.hpp>
+#include "enclosures.hpp"
+#include "comma.hpp"
 
 namespace Martin {
 
@@ -38,6 +40,51 @@ namespace Martin {
                 serial = Format("$, $)", serial, *types);
             else
                 serial = Format("$, nullptr)", serial);
+        }
+
+        bool Valid() const override {
+            if (ids.size() == 0) return false;
+            if (!types) return false;
+
+            if (types->is_token) {
+                if (types->token->GetType() != TokenType::Type::Identifier) return false;
+            } else {
+                if (!types->node->Valid()) return false;
+                switch (types->node->GetType()) {
+                    case Type::Misc_Arrow:
+                    case Type::Access_Pointer:
+                    case Type::Access_Reference:
+                    case Type::Access_Shared:
+                    case Type::Access_Unique:
+                    case Type::Access_Array:
+                        break;
+
+                    case Type::Struct_Curly: {
+                        auto curly = std::static_pointer_cast<StructCurlyTreeNode>(types->node);
+                        auto tree = curly->inside;
+                        if (tree->size() == 0) return false;
+
+                        if ((*tree)[0]->is_token) {
+                            if ((*tree)[0]->token->GetType() != TokenType::Type::Identifier) return false;
+                        } else {
+                            if ((*tree)[0]->node->GetType() != Type::Struct_Comma) return false;
+                            auto comma = std::static_pointer_cast<StructCommaTreeNode>((*tree)[0]->node);
+                            if (!comma->Valid()) return false;
+
+                            for (auto it : comma->nodes) {
+                                if (!it->is_token) return false;
+                                if (it->token->GetType() != TokenType::Type::Identifier) return false;
+                            }
+                        }
+                        break;
+                    }
+
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         const std::vector<Token> ids;
@@ -79,6 +126,51 @@ namespace Martin {
                 serial = Format("$, nullptr)", serial);
         }
 
+        bool Valid() const override {
+            if (ids.size() == 0) return false;
+            if (!types) return false;
+
+            if (types->is_token) {
+                if (types->token->GetType() != TokenType::Type::Identifier) return false;
+            } else {
+                if (!types->node->Valid()) return false;
+                switch (types->node->GetType()) {
+                    case Type::Misc_Arrow:
+                    case Type::Access_Pointer:
+                    case Type::Access_Reference:
+                    case Type::Access_Shared:
+                    case Type::Access_Unique:
+                    case Type::Access_Array:
+                        break;
+
+                    case Type::Struct_Curly: {
+                        auto curly = std::static_pointer_cast<StructCurlyTreeNode>(types->node);
+                        auto tree = curly->inside;
+                        if (tree->size() == 0) return false;
+
+                        if ((*tree)[0]->is_token) {
+                            if ((*tree)[0]->token->GetType() != TokenType::Type::Identifier) return false;
+                        } else {
+                            if ((*tree)[0]->node->GetType() != Type::Struct_Comma) return false;
+                            auto comma = std::static_pointer_cast<StructCommaTreeNode>((*tree)[0]->node);
+                            if (!comma->Valid()) return false;
+
+                            for (auto it : comma->nodes) {
+                                if (!it->is_token) return false;
+                                if (it->token->GetType() != TokenType::Type::Identifier) return false;
+                            }
+                        }
+                        break;
+                    }
+
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
         const std::vector<Token> ids;
         const TokenNode types;   
     };
@@ -118,6 +210,51 @@ namespace Martin {
                 serial = Format("$, nullptr)", serial);
         }
 
+        bool Valid() const override {
+            if (ids.size() == 0) return false;
+            if (!types) return false;
+
+            if (types->is_token) {
+                if (types->token->GetType() != TokenType::Type::Identifier) return false;
+            } else {
+                if (!types->node->Valid()) return false;
+                switch (types->node->GetType()) {
+                    case Type::Misc_Arrow:
+                    case Type::Access_Pointer:
+                    case Type::Access_Reference:
+                    case Type::Access_Shared:
+                    case Type::Access_Unique:
+                    case Type::Access_Array:
+                        break;
+
+                    case Type::Struct_Curly: {
+                        auto curly = std::static_pointer_cast<StructCurlyTreeNode>(types->node);
+                        auto tree = curly->inside;
+                        if (tree->size() == 0) return false;
+
+                        if ((*tree)[0]->is_token) {
+                            if ((*tree)[0]->token->GetType() != TokenType::Type::Identifier) return false;
+                        } else {
+                            if ((*tree)[0]->node->GetType() != Type::Struct_Comma) return false;
+                            auto comma = std::static_pointer_cast<StructCommaTreeNode>((*tree)[0]->node);
+                            if (!comma->Valid()) return false;
+
+                            for (auto it : comma->nodes) {
+                                if (!it->is_token) return false;
+                                if (it->token->GetType() != TokenType::Type::Identifier) return false;
+                            }
+                        }
+                        break;
+                    }
+
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
         const std::vector<Token> ids;
         const TokenNode types;   
     };
@@ -155,6 +292,51 @@ namespace Martin {
                 serial = Format("$, $)", serial, *types);
             else
                 serial = Format("$, nullptr)", serial);
+        }
+
+        bool Valid() const override {
+            if (ids.size() == 0) return false;
+            if (!types) return false;
+
+            if (types->is_token) {
+                if (types->token->GetType() != TokenType::Type::Identifier) return false;
+            } else {
+                if (!types->node->Valid()) return false;
+                switch (types->node->GetType()) {
+                    case Type::Misc_Arrow:
+                    case Type::Access_Pointer:
+                    case Type::Access_Reference:
+                    case Type::Access_Shared:
+                    case Type::Access_Unique:
+                    case Type::Access_Array:
+                        break;
+
+                    case Type::Struct_Curly: {
+                        auto curly = std::static_pointer_cast<StructCurlyTreeNode>(types->node);
+                        auto tree = curly->inside;
+                        if (tree->size() == 0) return false;
+
+                        if ((*tree)[0]->is_token) {
+                            if ((*tree)[0]->token->GetType() != TokenType::Type::Identifier) return false;
+                        } else {
+                            if ((*tree)[0]->node->GetType() != Type::Struct_Comma) return false;
+                            auto comma = std::static_pointer_cast<StructCommaTreeNode>((*tree)[0]->node);
+                            if (!comma->Valid()) return false;
+
+                            for (auto it : comma->nodes) {
+                                if (!it->is_token) return false;
+                                if (it->token->GetType() != TokenType::Type::Identifier) return false;
+                            }
+                        }
+                        break;
+                    }
+
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         const std::vector<Token> ids;

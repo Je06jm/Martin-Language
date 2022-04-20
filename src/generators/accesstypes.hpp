@@ -9,7 +9,7 @@ namespace Martin {
 
     class ArrayTypesTreeNode : public TreeNodeBase {
     public:
-        ArrayTypesTreeNode(TokenNode sizes, TokenNode right) : sizes(sizes), right(right) {}
+        ArrayTypesTreeNode(const std::vector<Token>& sizes, TokenNode right) : sizes(sizes), right(right) {}
 
         Type GetType() const override {
             return Type::Access_Array;
@@ -20,29 +20,18 @@ namespace Martin {
         }
 
         void Serialize(std::string& serial) const override {
-            serial = Format("$($, $)", GetName(), *sizes, *right);
+            serial = Format("$($)", GetName(), *right);
         }
         
         bool Valid() const override {
-            if (!sizes || (!sizes->is_token && !sizes->node->Valid()))
-                return false;
-
-            else if (sizes->is_token && !(
-                (sizes->token->GetType() != TokenType::Type::Integer) ||
-                (sizes->token->GetType() != TokenType::Type::UInteger)
-            ))
-                return false;
-                
-            else if (!sizes->is_token && (sizes->node->GetType() == Type::Struct_Comma)) {
-                auto comma = std::static_pointer_cast<StructCommaTreeNode>(sizes->node);
-                for (auto it : comma->nodes) {
-                    if (!it->is_token)
-                        return false;
+            if (sizes.size() == 0) return 0;
+            for (auto it : sizes) {
+                switch (it->GetType()) {
+                    case TokenType::Type::Integer:
+                    case TokenType::Type::UInteger:
+                        break;
                     
-                    if (
-                        (it->token->GetType() != TokenType::Type::Integer) ||
-                        (it->token->GetType() != TokenType::Type::UInteger)
-                    )
+                    default:
                         return false;
                 }
             }
@@ -53,11 +42,11 @@ namespace Martin {
                 
                 else if (!right->is_token) {
                     switch (right->node->GetType()) {
-                        case TreeNodeBase::Type::Access_Pointer:
-                        case TreeNodeBase::Type::Access_Reference:
-                        case TreeNodeBase::Type::Access_Shared:
-                        case TreeNodeBase::Type::Access_Unique:
-                        case TreeNodeBase::Type::Access_Array:
+                        case Type::Access_Pointer:
+                        case Type::Access_Reference:
+                        case Type::Access_Shared:
+                        case Type::Access_Unique:
+                        case Type::Access_Array:
                             break;
                         
                         default:
@@ -70,7 +59,7 @@ namespace Martin {
         }
         
 
-        const TokenNode sizes;
+        const std::vector<Token> sizes;
         const TokenNode right;
     };
 
@@ -259,7 +248,56 @@ namespace Martin {
                 TokenNode right = GetIndexOrNull(tree, index+2);
 
                 if (sizes && right) {
-                    TreeNode op = TreeNode(new ArrayTypesTreeNode(sizes, right));
+                    std::vector<Token> vsizes;
+                    
+                    if (sizes->is_token) {
+                        switch (sizes->token->GetType()) {
+                            case TokenType::Type::Integer:
+                            case TokenType::Type::UInteger:
+                                vsizes.push_back(sizes->token);
+                                break;
+                            
+                            default:
+                                return 0;
+                        }
+                    } else {
+                        if (!sizes->node->Valid()) return 0;
+                        if (sizes->node->GetType() != TreeNodeBase::Type::Struct_Bracket) return false;
+                        auto bracket = std::static_pointer_cast<StructBracketTreeNode>(sizes->node);
+                        auto inside = bracket->inside;
+                        if (inside->size() != 0) {
+                            if ((*inside)[0]->is_token) {
+                                switch((*inside)[0]->token->GetType()) {
+                                    case TokenType::Type::Integer:
+                                    case TokenType::Type::UInteger:
+                                        vsizes.push_back((*inside)[0]->token);
+                                        break;
+                                    
+                                    default:
+                                        return 0;
+                                }
+                            } else {
+                                if (!(*inside)[0]->node->Valid()) return 0;
+                                if ((*inside)[0]->node->GetType() != TreeNodeBase::Type::Struct_Comma) return 0;
+                                
+                                auto comma = std::static_pointer_cast<StructCommaTreeNode>((*inside)[0]->node);
+                                for (auto it : comma->nodes) {
+                                    Print("$\n", *it);
+                                    if (!it->is_token) return 0;
+                                    switch (it->token->GetType()) {
+                                        case TokenType::Type::Integer:
+                                        case TokenType::Type::UInteger:
+                                            vsizes.push_back(it->token);
+                                            break;
+                                        
+                                        default:
+                                            return 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    TreeNode op = TreeNode(new ArrayTypesTreeNode(vsizes, right));
 
                     TokenNode token_node = TokenNode(new TokenNodeBase);
                     token_node->node = op;

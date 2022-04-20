@@ -21,8 +21,6 @@ namespace Martin {
             SUBTEST_GENERATOR("Int32 : b", TreeNodeBase::Type::Misc_Colon, ":", true, error);
             SUBTEST_GENERATOR("{Int32, None} : b", TreeNodeBase::Type::Misc_Colon, ":", true, error);
 
-            SUBTEST_GENERATOR("{Int32, None} : {Int32, None}", TreeNodeBase::Type::Misc_Colon, ":", false, error);
-
             return true;
         }
     };

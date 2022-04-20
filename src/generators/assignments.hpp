@@ -9,6 +9,7 @@
 #include "funclambda.hpp"
 #include "muldivmod.hpp"
 #include "pow.hpp"
+#include "definitions.hpp"
 
 namespace Martin {
 
@@ -116,8 +117,13 @@ namespace Martin {
                     case Type::Definition_Let:
                     case Type::Definition_Set:
                     case Type::Definition_Const:
-                    case Type::Definition_Constexpr:
-                        return left->node->Valid();
+                    case Type::Definition_Constexpr: {
+                        // left->node will not be Valid here
+                        auto def = std::static_pointer_cast<LetTreeNode>(left->node);
+                        if (def->ids.size() == 0) return false;
+                        if (def->types != nullptr) return false;
+                        break;
+                    }
                     
                     default:
                         return false;

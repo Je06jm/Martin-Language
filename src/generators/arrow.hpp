@@ -4,6 +4,7 @@
 #include <parse.hpp>
 #include "enclosures.hpp"
 #include "comma.hpp"
+#include "rettypes.hpp"
 
 namespace Martin {
 
@@ -30,31 +31,70 @@ namespace Martin {
             if (right->is_token) {
                 if (right->token->GetType() != TokenType::Type::Identifier) return false;
             } else {
-                if (right->node->GetType() != Type::Struct_Curly) return false;
-                auto curly = std::static_pointer_cast<StructCurlyTreeNode>(right->node);
-                auto tree = curly->inside;
+                switch (right->node->GetType()) {
+                    case Type::ReturnType_Let:
+                    case Type::ReturnType_Set:
+                    case Type::ReturnType_Const:
+                    case Type::ReturnType_Constexpr:
+                        break;
+                    
+                    case Type::Struct_Curly: {
+                        auto curly = std::static_pointer_cast<StructCurlyTreeNode>(right->node);
+                        auto tree = curly->inside;
 
-                if (tree->size() == 0) return false;
-                
-                if ((*tree)[0]->is_token) {
-                    if ((*tree)[0]->token->GetType() != TokenType::Type::Identifier) return false;
-                    for (auto it : *(tree)) {
-                        if (!it->is_token) return false;
-                        if (it->token->GetType() != TokenType::Type::Identifier) return false;
+                        if (tree->size() == 0) return false;
+                        
+                        if ((*tree)[0]->is_token) {
+                            if ((*tree)[0]->token->GetType() != TokenType::Type::Identifier) return false;
+                            for (auto it : *(tree)) {
+                                if (!it->is_token) return false;
+                                if (it->token->GetType() != TokenType::Type::Identifier) return false;
+                            }
+                        } else {
+                            switch ((*tree)[0]->node->GetType()) {
+                                case Type::ReturnType_Let:
+                                case Type::ReturnType_Set:
+                                case Type::ReturnType_Const:
+                                case Type::ReturnType_Constexpr:
+                                    break;
+
+                                case Type::Struct_Comma: {
+                                    auto comma = std::static_pointer_cast<StructCommaTreeNode>((*tree)[0]->node);
+                                    for (auto it : comma->nodes) {
+                                        if (it->is_token) {
+                                            if (it->token->GetType() != TokenType::Type::Identifier) return false;
+                                        } else {
+                                            switch (it->node->GetType()) {
+                                                case Type::ReturnType_Let:
+                                                case Type::ReturnType_Set:
+                                                case Type::ReturnType_Const:
+                                                case Type::ReturnType_Constexpr:
+                                                    break;
+                                                
+                                                default:
+                                                    return false;
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+
+                                default:
+                                    return false;
+                            }
+                        }
+                        break;
                     }
-                } else {
-                    if ((*tree)[0]->node->GetType() != Type::Struct_Comma) return false;
-                    auto comma = std::static_pointer_cast<StructCommaTreeNode>((*tree)[0]->node);
-                    for (auto it : comma->nodes) {
-                        if (!it->is_token) return false;
-                        if (it->token->GetType() != TokenType::Type::Identifier) return false;
-                    }
+
+                    default:
+                        return false;
                 }
             }
 
             switch (left->node->GetType()) {
                 case Type::Struct_Parentheses:
                 case Type::Definition_Typedef:
+                case Type::Misc_Call:
                     break;
                 
                 default:

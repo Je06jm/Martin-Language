@@ -4,6 +4,7 @@
 #include <parse.hpp>
 
 #include <logging.hpp>
+#include "enclosures.hpp"
 
 namespace Martin {
 
@@ -97,8 +98,15 @@ namespace Martin {
                     case Type::OP_LessThanEquals:
                     case Type::OP_Dot:
                     case Type::Misc_Call:
-                    case Type::Struct_Parentheses:
                         return true;
+
+                    case Type::Struct_Parentheses: {
+                        auto parenth = std::static_pointer_cast<StructParenthesesTreeNode>(node->node);
+                        auto tree = parenth->inside;
+                        if (tree->size() != 1) return false;
+                        TokenNode token_node = (*tree)[0];
+                        return ValidateTokenNode(token_node);
+                    }
                     
                     default:
                         return false;
@@ -171,8 +179,15 @@ namespace Martin {
                     case Type::OP_LessThanEquals:
                     case Type::OP_Dot:
                     case Type::Misc_Call:
-                    case Type::Struct_Parentheses:
                         return true;
+
+                    case Type::Struct_Parentheses: {
+                        auto parenth = std::static_pointer_cast<StructParenthesesTreeNode>(node->node);
+                        auto tree = parenth->inside;
+                        if (tree->size() != 1) return false;
+                        TokenNode token_node = (*tree)[0];
+                        return ValidateTokenNode(token_node);
+                    }
                     
                     default:
                         return false;

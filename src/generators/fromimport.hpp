@@ -2,12 +2,14 @@
 #define MARTIN_GENERATORS_FROMIMPORT
 
 #include <parse.hpp>
+#include <vector>
+#include "comma.hpp"
 
 namespace Martin {
 
     class MiscFromImportTreeNode : public TreeNodeBase {
     public:
-        MiscFromImportTreeNode(TokenNode id, TokenNode imports) : id(id), imports(imports) {}
+        MiscFromImportTreeNode(const std::vector<TokenNode>& ids, const std::vector<TokenNode>& imports) : ids(ids), imports(imports) {}
 
         Type GetType() const override {
             return Type::Misc_FromImport;
@@ -18,14 +20,71 @@ namespace Martin {
         }
 
         void Serialize(std::string& serial) const override {
-            if (imports)
-                serial = Format("$($, $)", GetName(), *id, *imports);
-            else
-                serial = Format("$($)", GetName(), *id);
+            serial = Format("$(", GetName());
+            if (ids.size() == 0) {
+                serial = Format("($)", serial);
+            } else if (ids.size() == 1) {
+                serial = Format("$($)", serial, *(ids[0]));
+            } else {
+                serial = Format("$(($", serial, *(ids[0]));
+                for (size_t i = 1; i < ids.size(); i++) {
+                    serial = Format("$, $", serial, *(ids[i]));
+                }
+                serial = Format("$)", serial);
+            }
+
+            if (imports.size() == 0) {
+                serial = Format("$)", serial);
+            } else if (imports.size() == 1) {
+                serial = Format("$, ($))", serial, *(imports[0]));
+            } else {
+                serial = Format("$, ($", serial, *(imports[0]));
+                for (size_t i = 1; i < imports.size(); i++) {
+                    serial = Format("$, $", serial, *(imports[i]));
+                }
+                serial = Format("$))", serial);
+            }
         }
 
-        const TokenNode id;
-        const TokenNode imports;
+        bool Valid() const override {
+            if (ids.size() == 0) return false;
+            if ((imports.size() != 0) && (ids.size() != 1)) return false;
+
+            for (auto it : ids) {
+                if (it->is_token) {
+                    if (it->token->GetType() != TokenType::Type::Identifier) return false;
+                } else {
+                    switch (it->node->GetType()) {
+                        case Type::OP_Dot:
+                        case Type::Struct_As:
+                            break;
+                        
+                        default:
+                            return false;
+                    }
+                }
+            }
+
+            for (auto it : imports) {
+                if (it->is_token) {
+                    if (it->token->GetType() != TokenType::Type::Identifier) return false;
+                } else {
+                    switch (it->node->GetType()) {
+                        case Type::OP_Dot:
+                        case Type::Struct_As:
+                            break;
+                        
+                        default:
+                            return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        const std::vector<TokenNode> ids;
+        const std::vector<TokenNode> imports;
     };
 
     class MiscFromImportTreeGenerator : public TreeNodeGenerator {
@@ -36,7 +95,26 @@ namespace Martin {
                 TokenNode id = GetIndexOrNull(tree, index+1);
 
                 if (id) {
-                    TreeNode op = TreeNode(new MiscFromImportTreeNode(id, nullptr));
+                    std::vector<TokenNode> ids;
+                    std::vector<TokenNode> vimports;
+
+                    if (id->is_token) {
+                        ids.push_back(id);
+                    } else {
+                        if (!id->node->Valid()) return 0;
+
+                        if (id->node->GetType() == TreeNodeBase::Type::Struct_As) {
+                            ids.push_back(id);
+                        }
+                        else if (id->node->GetType() == TreeNodeBase::Type::Struct_Comma) {
+                            auto comma = std::static_pointer_cast<StructCommaTreeNode>(id->node);
+                            for (auto it : comma->nodes) {
+                                ids.push_back(it);
+                            }
+                        } else return 0;
+                    }
+
+                    TreeNode op = TreeNode(new MiscFromImportTreeNode(ids, vimports));
 
                     TokenNode token_node = TokenNode(new TokenNodeBase);
                     token_node->node = op;
@@ -50,7 +128,38 @@ namespace Martin {
                 TokenNode imports = GetIndexOrNull(tree, index+3);
 
                 if (id && sym_import && imports && (sym_import->GetType() == TokenType::Type::KW_Import)) {
-                    TreeNode op = TreeNode(new MiscFromImportTreeNode(id, imports));
+                    std::vector<TokenNode> ids;
+                    std::vector<TokenNode> vimports;
+
+                    if (id->is_token) {
+                        ids.push_back(id);
+                    } else {
+                        if (!id->node->Valid()) return 0;
+
+                        if (id->node->GetType() != TreeNodeBase::Type::Struct_Comma) return 0;
+
+                        auto comma = std::static_pointer_cast<StructCommaTreeNode>(id->node);
+                        for (auto it : comma->nodes) {
+                            ids.push_back(it);
+                        }
+                    }
+
+                    if (imports->is_token) {
+                        vimports.push_back(imports);
+                    } else {
+                        if (!imports->node->Valid()) return 0;
+
+                        if (imports->node->GetType() == TreeNodeBase::Type::Struct_As) {
+                            vimports.push_back(imports);
+                        } else if (imports->node->GetType() == TreeNodeBase::Type::Struct_Comma) {
+                            auto comma = std::static_pointer_cast<StructCommaTreeNode>(imports->node);
+                            for (auto it : comma->nodes) {
+                                vimports.push_back(it);
+                            }
+                        } else return 0;
+                    }
+
+                    TreeNode op = TreeNode(new MiscFromImportTreeNode(ids, vimports));
 
                     TokenNode token_node = TokenNode(new TokenNodeBase);
                     token_node->node = op;

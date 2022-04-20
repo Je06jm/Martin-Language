@@ -32,7 +32,6 @@ namespace Martin {
             }
 
             SUBTEST_TREE("a : Int32", a, int32, ColonTreeNode, true);
-            SUBTEST_TREE("a : {Int32, None}", a, types, ColonTreeNode, false);
             SUBTEST_TREE("{Int32, None} : a", types, a, ColonTreeNode, true);
 
             return true;

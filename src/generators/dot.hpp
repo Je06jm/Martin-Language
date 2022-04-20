@@ -21,6 +21,28 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
 
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (!left->is_token) return false;
+            if (left->token->GetType() != TokenType::Type::Identifier) return false;
+            if (right->is_token) {
+                if (right->token->GetType() != TokenType::Type::Identifier) return false;
+            } else {
+                switch (right->node->GetType()) {
+                    case Type::OP_Dot:
+                    case Type::Misc_Call:
+                        if (!right->node->Valid()) return false;
+                        break;
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
         const TokenNode left;
         const TokenNode right;
     };

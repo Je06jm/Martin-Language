@@ -111,7 +111,7 @@ namespace Martin {
         }
 
         if (node->node->Valid() != valid) {
-            if (valid) {
+            if (node->node->Valid()) {
                 error = ParseNodeError("valid", str);
             } else {
                 error = ParseNodeError("not valid", str);

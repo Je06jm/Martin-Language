@@ -24,6 +24,22 @@ namespace Martin {
                 serial = Format("$($, nullptr)", GetName(), *arrow);
         }
 
+        bool Valid() const override {
+            if (!arrow) return false;
+            
+            if (arrow->is_token) return false;
+            if (!arrow->node->Valid()) return false;
+            if (arrow->node->GetType() != Type::Misc_Arrow) return false;
+
+            if (scope) {
+                if (scope->is_token) return false;
+                if (!scope->node->Valid()) return false;
+                if (scope->node->GetType() != Type::Struct_Curly) return false;
+            }
+
+            return true;
+        }
+
         const TokenNode arrow;
         const TokenNode scope;
     };
@@ -45,6 +61,20 @@ namespace Martin {
                 serial = Format("$($, $)", GetName(), *arrow, *scope);
             else
                 serial = Format("$($, nullptr)", GetName(), *arrow);
+        }
+
+        bool Valid() const override {
+            if (!arrow || !scope) return false;
+
+            if (arrow->is_token) return false;
+            if (!arrow->node->Valid()) return false;
+            if (arrow->node->GetType() != Type::Misc_Arrow) return false;
+
+            if (scope->is_token) return false;
+            if (!scope->node->Valid()) return false;
+            if (scope->node->GetType() != Type::Struct_Curly) return false;
+
+            return true;
         }
 
         const TokenNode arrow;

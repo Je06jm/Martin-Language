@@ -29,6 +29,18 @@ namespace Martin {
             serial += ")";
         }
 
+        bool Valid() const override {
+            if (!inside) return false;
+
+            for (auto it : (*inside)) {
+                if (!it->is_token) {
+                    if (!it->node->Valid()) return false;
+                }
+            }
+
+            return true;
+        }
+
         const Tree inside;
     };
 
@@ -54,6 +66,18 @@ namespace Martin {
             serial += ")";
         }
 
+        bool Valid() const override {
+            if (!inside) return false;
+
+            for (auto it : (*inside)) {
+                if (!it->is_token) {
+                    if (!it->node->Valid()) return false;
+                }
+            }
+
+            return true;
+        }
+
         const Tree inside;
     };
 
@@ -77,6 +101,18 @@ namespace Martin {
                 serial += s;
             }
             serial += ")";
+        }
+
+        bool Valid() const override {
+            if (!inside) return false;
+
+            for (auto it : (*inside)) {
+                if (!it->is_token) {
+                    if (!it->node->Valid()) return false;
+                }
+            }
+
+            return true;
         }
 
         const Tree inside;

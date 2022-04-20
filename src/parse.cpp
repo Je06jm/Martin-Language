@@ -31,6 +31,7 @@
 #include "generators/call.hpp"
 #include "generators/gettersetter.hpp"
 #include "generators/seperator.hpp"
+#include "generators/rettypes.hpp"
 
 namespace Martin {
 
@@ -50,10 +51,11 @@ namespace Martin {
         generators.push_back(TreeGenerator(new OPNotLogicTreeGenerator));
         generators.push_back(TreeGenerator(new OPLogicalsTreeGenerator));
         generators.push_back(TreeGenerator(new AccessTypesTreeGenerator));
+        generators.push_back(TreeGenerator(new ArrowTreeGenerator));
         generators.push_back(TreeGenerator(new DefinitionsTreeGenerator));
+        generators.push_back(TreeGenerator(new RetTypesTreeGenerator));
         generators.push_back(TreeGenerator(new DataTypesTreeGenerator));
         generators.push_back(TreeGenerator(new AssignmentsTreeGenerator));
-        generators.push_back(TreeGenerator(new ArrowTreeGenerator));
         generators.push_back(TreeGenerator(new FlowControlsTreeGenerator));
         generators.push_back(TreeGenerator(new FuncLambdaTreeGenerator));
         generators.push_back(TreeGenerator(new ClassTypeTreeGenerator));
