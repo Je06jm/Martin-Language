@@ -10,13 +10,14 @@ Lastly, it supports zero cost returns of any sized type.
 * Parser
 * Tokenizer
 * Unicode conversion
+* Verifier
 
 ## Currently working on
-* Verifier
+* Project manager
+* Package manager
 
 ## Future goals
 * Interpreter
 * Code generation using LLVM
-* Project manager
 * Standard library
-* Package manager
+* Code simplification of hi level abstractions to low level concepts

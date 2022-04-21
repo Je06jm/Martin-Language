@@ -13,8 +13,11 @@ if run_test:
     run_test = run_test.lower() in truestr
 
 env = Environment(
-    CPPPATH=['include']
-    )
+    CPPPATH=[
+        'include',
+        'vendors/nlohmann_json/include'
+    ]
+)
 
 if 'gcc' in env['TOOLS']:
     env.Append(CXXFLAGS=['-std=c++17'])
