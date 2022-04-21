@@ -19,17 +19,20 @@ namespace Martin {
         }
 
         bool RunTest() override {
-            auto tree = TokenizerSingleton.TokenizeString("1,2,3");
+            auto tree = TokenizerSingleton.TokenizeString("1 2 3");
             auto tree2 = TokenizerSingleton.TokenizeString("Int32");
 
-            if (!ValidateTokenList(tree, error, 5, ValidateSizeType::Equals)) return false;
+            if (!ValidateTokenList(tree, error, 3, ValidateSizeType::Equals)) return false;
             if (!ValidateTokenList(tree2, error, 1, ValidateSizeType::Equals)) return false;
 
             TokenNode one = GetTokenNodeFromTokenList(tree, 0);
             TokenNode id = GetTokenNodeFromTokenList(tree2, 0);
 
+            std::vector<Token> nums;
+            nums.push_back(one->token);
+
             {
-                ArrayTypesTreeNode node(one, id);
+                ArrayTypesTreeNode node(nums, id);
 
                 if (!node.Valid()) {
                     error = "ArrayTypesTreeNode is not valid when given (Token(1), $)";
@@ -39,7 +42,8 @@ namespace Martin {
             }
 
             {
-                ArrayTypesTreeNode node(nullptr, id);
+                std::vector<Token> empty;
+                ArrayTypesTreeNode node(empty, id);
 
                 if (node.Valid()) {
                     error = "ArrayTypesTreeNode is valid when given (nullptr, $)";
@@ -49,7 +53,7 @@ namespace Martin {
             }
 
             {
-                ArrayTypesTreeNode node(one, nullptr);
+                ArrayTypesTreeNode node(nums, nullptr);
 
                 if (node.Valid()) {
                     error = "ArrayTypesTreeNode is valid when given (Token(1), nullptr)";
@@ -58,7 +62,8 @@ namespace Martin {
             }
 
             {
-                ArrayTypesTreeNode node(nullptr, nullptr);
+                std::vector<Token> empty;
+                ArrayTypesTreeNode node(empty, nullptr);
                 
                 if (node.Valid()) {
                     error = "ArrayTypesTreeNode is valid when given (nullptr, nullptr)";

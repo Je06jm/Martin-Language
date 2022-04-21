@@ -2,8 +2,8 @@
 #define MARTIN_GENERATOR_ACCESSTYPES
 
 #include <parse.hpp>
-
 #include "comma.hpp"
+#include "enclosures.hpp"
 
 namespace Martin {
 

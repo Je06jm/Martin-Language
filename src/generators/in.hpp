@@ -2,6 +2,7 @@
 #define MARTIN_GENERATORS_IN
 
 #include <parse.hpp>
+#include "dot.hpp"
 
 namespace Martin {
 
@@ -19,6 +20,88 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($, $)", GetName(), *left, *right);
+        }
+
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (left->is_token) {
+                if (left->token->GetType() != TokenType::Type::Identifier) return false;
+            } else {
+                if (!left->node->Valid()) return false;
+
+                switch (left->node->GetType()) {
+                    case Type::Definition_Let:
+                    case Type::Definition_Set:
+                    case Type::Definition_Const:
+                        break;
+                    
+                    case Type::OP_Dot: {
+                            TreeNode node = left->node;
+                            while (node->GetType() == Type::OP_Dot) {
+                                auto dot = std::static_pointer_cast<OPDotTreeNode>(node);
+
+                                if (!dot->left->is_token) return false;
+                                if (dot->left->token->GetType() != TokenType::Type::Identifier) return false;
+
+                                if (dot->right->is_token) {
+                                    if (dot->right->token->GetType() != TokenType::Type::Identifier) return false;
+                                    break;
+
+                                } else {
+                                    if (!dot->right->node->Valid()) return false;
+                                    if (dot->right->node->GetType() != Type::OP_Dot) return false;
+                                    node = dot->right->node;
+                                    
+                                }
+                            }
+                        break;
+                    }
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            if (right->is_token) {
+                if (right->token->GetType() != TokenType::Type::Identifier) return false;
+            } else {
+                if (!right->node->Valid()) return false;
+
+                switch (right->node->GetType()) {
+                    case Type::Definition_Let:
+                    case Type::Definition_Set:
+                    case Type::Definition_Const:
+                        break;
+                    
+                    case Type::OP_Dot: {
+                            TreeNode node = right->node;
+                            while (node->GetType() == Type::OP_Dot) {
+                                auto dot = std::static_pointer_cast<OPDotTreeNode>(node);
+
+                                if (!dot->left->is_token) return false;
+                                if (dot->left->token->GetType() != TokenType::Type::Identifier) return false;
+
+                                if (dot->right->is_token) {
+                                    if (dot->right->token->GetType() != TokenType::Type::Identifier) return false;
+                                    break;
+
+                                } else {
+                                    if (!dot->right->node->Valid()) return false;
+                                    if (dot->right->node->GetType() != Type::OP_Dot) return false;
+                                    node = dot->right->node;
+                                    
+                                }
+                            }
+                        break;
+                    }
+                    
+                    default:
+                        return false;
+                }
+            }
+
+            return true;
         }
 
         const TokenNode left;

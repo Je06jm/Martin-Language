@@ -22,7 +22,11 @@ namespace Martin {
         }
 
         bool Valid() const override {
-            return id != nullptr;
+            if (!id) return false;
+
+            if (id->GetType() != TokenType::Type::Identifier) return false;
+
+            return true;
         }
 
         const Token id;
@@ -45,7 +49,11 @@ namespace Martin {
         }
 
         bool Valid() const override {
-            return id != nullptr;
+            if (!id) return false;
+
+            if (id->GetType() != TokenType::Type::Identifier) return false;
+
+            return true;
         }
 
         const Token id;
@@ -68,7 +76,11 @@ namespace Martin {
         }
 
         bool Valid() const override {
-            return id != nullptr;
+            if (!id) return false;
+
+            if (id->GetType() != TokenType::Type::Identifier) return false;
+
+            return true;
         }
 
         const Token id;
@@ -91,7 +103,11 @@ namespace Martin {
         }
 
         bool Valid() const override {
-            return id != nullptr;
+            if (!id) return false;
+
+            if (id->GetType() != TokenType::Type::Identifier) return false;
+
+            return true;
         }
 
         const Token id;

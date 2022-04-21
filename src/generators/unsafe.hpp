@@ -2,6 +2,7 @@
 #define MARTIN_GENERATORS_UNSAFE
 
 #include <parse.hpp>
+#include "assignments.hpp"
 
 namespace Martin {
 
@@ -19,7 +20,48 @@ namespace Martin {
 
         void Serialize(std::string& serial) const override {
             serial = Format("$($)", GetName(), *right);
-            
+        }
+
+        bool Valid() const override {
+            if (!right) return false;
+
+            if (right->is_token) return false;
+            if (!right->node->Valid()) return false;
+
+            switch (right->node->GetType()) {
+                case Type::Definition_Let:
+                case Type::Definition_Set:
+                case Type::Definition_Const:
+                case Type::Definition_Constexpr:
+                case Type::Misc_Func:
+                case Type::Struct_Curly:
+                case Type::Assignment_TypeAssign:
+                    break;
+                
+                case Type::Assignment_Assign: {
+                    auto assign = std::static_pointer_cast<AssignTreeNode>(right->node);
+
+                    if (assign->left->is_token) return false;
+                    
+                    switch (assign->left->node->GetType()) {
+                        case Type::Definition_Let:
+                        case Type::Definition_Set:
+                        case Type::Definition_Const:
+                        case Type::Definition_Constexpr:
+                            break;
+                        
+                        default:
+                            return false;
+                    }
+
+                    break;
+                }
+
+                default:
+                    return false;
+            }
+
+            return true;
         }
 
         const TokenNode right;

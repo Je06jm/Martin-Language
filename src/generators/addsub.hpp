@@ -59,7 +59,6 @@ namespace Martin {
             return true;
         }
     
-    private:
         const TokenNode left;
         const TokenNode right;
 
@@ -140,7 +139,6 @@ namespace Martin {
             return true;
         }
 
-    private:
         TokenNode left;
         TokenNode right;
 

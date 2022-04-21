@@ -2,6 +2,7 @@
 #define MARTIN_GENERATORS_LOGICAL
 
 #include <parse.hpp>
+#include "enclosures.hpp"
 
 namespace Martin {
 
@@ -21,7 +22,60 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
 
-    private:
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (!ValidateTokenNode(left)) return false;
+            if (!ValidateTokenNode(right)) return false;
+
+            return true;
+        }
+
+        static bool ValidateTokenNode(TokenNode node) {
+            if (node->is_token) {
+                switch (node->token->GetType()) {
+                    case TokenType::Type::Identifier:
+                    case TokenType::Type::Boolean:
+                        break;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                if (!node->node->Valid()) return false;
+                switch (node->node->GetType()) {
+                    case Type::OP_Dot:
+                    case Type::Misc_Call:
+                    case Type::OP_LogicalAnd:
+                    case Type::OP_LogicalOr:
+                    case Type::OP_LogicalNot:
+                    case Type::OP_Equals:
+                    case Type::OP_NotEquals:
+                    case Type::OP_LessThan:
+                    case Type::OP_GreaterThan:
+                    case Type::OP_LessThanEquals:
+                    case Type::OP_GreaterThanEquals:
+                        break;
+
+                    case Type::Struct_Parentheses: {
+                        auto parenth = std::static_pointer_cast<StructParenthesesTreeNode>(node->node);
+                        auto tree = parenth->inside;
+
+                        if (tree->size() != 1) return false;
+
+                        if (!ValidateTokenNode((*tree)[0])) return false;
+
+                        break;
+                    }
+                    
+                    default:
+                        return false;
+                }
+            }
+            
+            return true;
+        }
+
         const TokenNode left;
         const TokenNode right;
     };
@@ -42,7 +96,60 @@ namespace Martin {
             serial = Format("$($, $)", GetName(), *left, *right);
         }
 
-    private:
+        bool Valid() const override {
+            if (!left || !right) return false;
+
+            if (!ValidateTokenNode(left)) return false;
+            if (!ValidateTokenNode(right)) return false;
+
+            return true;
+        }
+
+        static bool ValidateTokenNode(TokenNode node) {
+            if (node->is_token) {
+                switch (node->token->GetType()) {
+                    case TokenType::Type::Identifier:
+                    case TokenType::Type::Boolean:
+                        break;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                if (!node->node->Valid()) return false;
+                switch (node->node->GetType()) {
+                    case Type::OP_Dot:
+                    case Type::Misc_Call:
+                    case Type::OP_LogicalAnd:
+                    case Type::OP_LogicalOr:
+                    case Type::OP_LogicalNot:
+                    case Type::OP_Equals:
+                    case Type::OP_NotEquals:
+                    case Type::OP_LessThan:
+                    case Type::OP_GreaterThan:
+                    case Type::OP_LessThanEquals:
+                    case Type::OP_GreaterThanEquals:
+                        break;
+
+                    case Type::Struct_Parentheses: {
+                        auto parenth = std::static_pointer_cast<StructParenthesesTreeNode>(node->node);
+                        auto tree = parenth->inside;
+
+                        if (tree->size() != 1) return false;
+
+                        if (!ValidateTokenNode((*tree)[0])) return false;
+
+                        break;
+                    }
+                    
+                    default:
+                        return false;
+                }
+            }
+            
+            return true;
+        }
+
         const TokenNode left;
         const TokenNode right;
     };
@@ -63,7 +170,59 @@ namespace Martin {
             serial = Format("$($)", GetName(), *right);
         }
 
-    private:
+        bool Valid() const override {
+            if (!right) return false;
+
+            if (!ValidateTokenNode(right)) return false;
+
+            return true;
+        }
+
+        static bool ValidateTokenNode(TokenNode node) {
+            if (node->is_token) {
+                switch (node->token->GetType()) {
+                    case TokenType::Type::Identifier:
+                    case TokenType::Type::Boolean:
+                        break;
+                    
+                    default:
+                        return false;
+                }
+            } else {
+                if (!node->node->Valid()) return false;
+                switch (node->node->GetType()) {
+                    case Type::OP_Dot:
+                    case Type::Misc_Call:
+                    case Type::OP_LogicalAnd:
+                    case Type::OP_LogicalOr:
+                    case Type::OP_LogicalNot:
+                    case Type::OP_Equals:
+                    case Type::OP_NotEquals:
+                    case Type::OP_LessThan:
+                    case Type::OP_GreaterThan:
+                    case Type::OP_LessThanEquals:
+                    case Type::OP_GreaterThanEquals:
+                        break;
+
+                    case Type::Struct_Parentheses: {
+                        auto parenth = std::static_pointer_cast<StructParenthesesTreeNode>(node->node);
+                        auto tree = parenth->inside;
+
+                        if (tree->size() != 1) return false;
+
+                        if (!ValidateTokenNode((*tree)[0])) return false;
+
+                        break;
+                    }
+                    
+                    default:
+                        return false;
+                }
+            }
+            
+            return true;
+        }
+
         const TokenNode right;
     };
 

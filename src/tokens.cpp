@@ -27,6 +27,12 @@
     public:\
         bool IsMatch(const std::string& in) const override {\
             if (!StrHelper::IsFirstMatch(in.c_str(), str)) return false;\
+            if (in.length() >= sizeof(str)) {\
+                char c = in[sizeof(str) - 1];\
+                if ((c >= 'a') && (c <= 'z')) return false;\
+                if ((c >= 'A') && (c <= 'Z')) return false;\
+                if ((c >= '0') && (c <= '9')) return false;\
+            }\
             return true;\
         }\
         Token CreateToken() const override {\
@@ -930,18 +936,18 @@ namespace Martin {
         }
     };
 
-    FixedToken(KWFromToken, KWFromPattern, Type::KW_From, "from ")
-    FixedToken(KWImportToken, KWImportPattern, Type::KW_Import, "import ")
-    FixedToken(KWAsToken, KWAsPattern, Type::KW_As, "as ")
-    FixedToken(KWInToken, KWInPattern, Type::KW_In, "in ")
-    FixedToken(KWStructToken, KWStructPattern, Type::KW_Struct, "struct ")
-    FixedToken(KWUnionToken, KWUnionPattern, Type::KW_Union, "union ")
-    FixedToken(KWEnumToken, KWEnumPattern, Type::KW_Enum, "enum ")
-    FixedToken(KWTypedefToken, KWTypedefPattern, Type::KW_Typedef, "typedef ")
-    FixedToken(KWLetToken, KWLetPattern, Type::KW_Let, "let ")
-    FixedToken(KWSetToken, KWSetPattern, Type::KW_Set, "set ")
-    FixedToken(KWConstToken, KWConstPattern, Type::KW_Const, "const ")
-    FixedToken(KWConstexprToken, KWConstexprPattern, Type::KW_Constexpr, "constexpr ")
+    FixedToken(KWFromToken, KWFromPattern, Type::KW_From, "from")
+    FixedToken(KWImportToken, KWImportPattern, Type::KW_Import, "import")
+    FixedToken(KWAsToken, KWAsPattern, Type::KW_As, "as")
+    FixedToken(KWInToken, KWInPattern, Type::KW_In, "in")
+    FixedToken(KWStructToken, KWStructPattern, Type::KW_Struct, "struct")
+    FixedToken(KWUnionToken, KWUnionPattern, Type::KW_Union, "union")
+    FixedToken(KWEnumToken, KWEnumPattern, Type::KW_Enum, "enum")
+    FixedToken(KWTypedefToken, KWTypedefPattern, Type::KW_Typedef, "typedef")
+    FixedToken(KWLetToken, KWLetPattern, Type::KW_Let, "let")
+    FixedToken(KWSetToken, KWSetPattern, Type::KW_Set, "set")
+    FixedToken(KWConstToken, KWConstPattern, Type::KW_Const, "const")
+    FixedToken(KWConstexprToken, KWConstexprPattern, Type::KW_Constexpr, "constexpr")
 
     class KWArrayToken : public TokenType {
     public:
@@ -968,38 +974,38 @@ namespace Martin {
         }
     };
 
-    FixedToken(KWReferenceToken, KWReferencePattern, Type::KW_Reference, "reference ")
-    FixedToken(KWSharedToken, KWSharedPattern, Type::KW_Shared, "shared ")
-    FixedToken(KWUniqueToken, KWUniquePattern, Type::KW_Unique, "unique ")
-    FixedToken(KWPointerToken, KWPointerPattern, Type::KW_Pointer, "pointer ")
-    FixedToken(KWExternToken, KWExternPattern, Type::KW_Extern, "extern ")
-    FixedToken(KWUnsafeToken, KWUnsafePattern, Type::KW_Unsafe, "unsafe ")
-    FixedToken(KWFuncToken, KWFuncPattern, Type::KW_Func, "func ")
-    FixedToken(KWClassToken, KWClassPattern, Type::KW_Class, "class ")
-    FixedToken(KWPublicToken, KWPublicPattern, Type::KW_Public, "public ")
-    FixedToken(KWProtectedToken, KWProtectedPattern, Type::KW_Protected, "protected ")
-    FixedToken(KWPrivateToken, KWPrivatePattern, Type::KW_Private, "private ")
-    FixedToken(KWFriendToken, KWFriendPattern, Type::KW_Friend, "friend ");
-    FixedToken(KWVirtualToken, KWVirtualPattern, Type::KW_Virtual, "virtual ")
-    FixedToken(KWOverrideToken, KWOverridePattern, Type::KW_Override, "override ")
-    FixedToken(KWStaticToken, KWStaticPattern, Type::KW_Static, "static ")
-    FixedToken(KWGetterToken, KWGetterPattern, Type::KW_Getter, "getter ")
-    FixedToken(KWSetterToken, KWSetterPattern, Type::KW_Setter, "setter ")
-    FixedToken(KWIfToken, KWIfPattern, Type::KW_If, "if ")
-    FixedToken(KWElifToken, KWElifPattern, Type::KW_Elif, "elif ")
-    FixedToken(KWElseToken, KWElsePattern, Type::KW_Else, "else ")
-    FixedToken(KWForToken, KWForPattern, Type::KW_For, "for ")
-    FixedToken(KWForeachToken, KWForeachPattern, Type::KW_Foreach, "foreach ")
-    FixedToken(KWWhileToken, KWWhilePattern, Type::KW_While, "while ")
-    FixedToken(KWContinueToken, KWContinuePattern, Type::KW_Continue, "continue ")
-    FixedToken(KWBreakToken, KWBreakPattern, Type::KW_Break, "break ")
-    FixedToken(KWMatchToken, KWMatchPattern, Type::KW_Match, "match ")
-    FixedToken(KWSwitchToken, KWSwitchPattern, Type::KW_Switch, "switch ")
-    FixedToken(KWReturnToken, KWReturnPattern, Type::KW_Return, "return ")
-    FixedToken(KWLambdaToken, KWLambdaPattern, Type::KW_Lambda, "lambda ")
-    FixedToken(KWAndToken, KWAndPattern, Type::KW_And, "and ")
-    FixedToken(KWOrToken, KWOrPattern, Type::KW_Or, "or ")
-    FixedToken(KWNotToken, KWNotPattern, Type::KW_Not, "not ")
+    FixedToken(KWReferenceToken, KWReferencePattern, Type::KW_Reference, "reference")
+    FixedToken(KWSharedToken, KWSharedPattern, Type::KW_Shared, "shared")
+    FixedToken(KWUniqueToken, KWUniquePattern, Type::KW_Unique, "unique")
+    FixedToken(KWPointerToken, KWPointerPattern, Type::KW_Pointer, "pointer")
+    FixedToken(KWExternToken, KWExternPattern, Type::KW_Extern, "extern")
+    FixedToken(KWUnsafeToken, KWUnsafePattern, Type::KW_Unsafe, "unsafe")
+    FixedToken(KWFuncToken, KWFuncPattern, Type::KW_Func, "func")
+    FixedToken(KWClassToken, KWClassPattern, Type::KW_Class, "class")
+    FixedToken(KWPublicToken, KWPublicPattern, Type::KW_Public, "public")
+    FixedToken(KWProtectedToken, KWProtectedPattern, Type::KW_Protected, "protected")
+    FixedToken(KWPrivateToken, KWPrivatePattern, Type::KW_Private, "private")
+    FixedToken(KWFriendToken, KWFriendPattern, Type::KW_Friend, "friend");
+    FixedToken(KWVirtualToken, KWVirtualPattern, Type::KW_Virtual, "virtual")
+    FixedToken(KWOverrideToken, KWOverridePattern, Type::KW_Override, "override")
+    FixedToken(KWStaticToken, KWStaticPattern, Type::KW_Static, "static")
+    FixedToken(KWGetterToken, KWGetterPattern, Type::KW_Getter, "getter")
+    FixedToken(KWSetterToken, KWSetterPattern, Type::KW_Setter, "setter")
+    FixedToken(KWIfToken, KWIfPattern, Type::KW_If, "if")
+    FixedToken(KWElifToken, KWElifPattern, Type::KW_Elif, "elif")
+    FixedToken(KWElseToken, KWElsePattern, Type::KW_Else, "else")
+    FixedToken(KWForToken, KWForPattern, Type::KW_For, "for")
+    FixedToken(KWForeachToken, KWForeachPattern, Type::KW_Foreach, "foreach")
+    FixedToken(KWWhileToken, KWWhilePattern, Type::KW_While, "while")
+    FixedToken(KWContinueToken, KWContinuePattern, Type::KW_Continue, "continue")
+    FixedToken(KWBreakToken, KWBreakPattern, Type::KW_Break, "break")
+    FixedToken(KWMatchToken, KWMatchPattern, Type::KW_Match, "match")
+    FixedToken(KWSwitchToken, KWSwitchPattern, Type::KW_Switch, "switch")
+    FixedToken(KWReturnToken, KWReturnPattern, Type::KW_Return, "return")
+    FixedToken(KWLambdaToken, KWLambdaPattern, Type::KW_Lambda, "lambda")
+    FixedToken(KWAndToken, KWAndPattern, Type::KW_And, "and")
+    FixedToken(KWOrToken, KWOrPattern, Type::KW_Or, "or")
+    FixedToken(KWNotToken, KWNotPattern, Type::KW_Not, "not")
 
     FixedTokenSYM(SYMCommaToken, SYMCommaPattern, Type::SYM_Comma, ",")
     FixedTokenSYM(SYMPeriodToken, SYMPeriodPattern, Type::SYM_Period, ".")
