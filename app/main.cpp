@@ -25,10 +25,12 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    auto project = Martin::Project::CreateEmpty();
-    project->SaveToFile(argv[0]);
+    //auto project = Martin::Project::CreateEmpty();
+    //project->SaveToFile(argv[0]);
 
-    //auto project = Martin::Project::LoadFromFile(argv[0]);
+    auto project = Martin::Project::LoadFromFile(argv[0]);
+
+    project->LoadProject("examples/");
 
     return 0;
     

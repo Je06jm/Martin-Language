@@ -2,6 +2,7 @@ from IO import print, input
 from OS import name as os_name, version as os_version
 import OS
 import System as Sys
+import Math
 
 // When imported, all private scopes are not included. Only this
 // file can access what's inside of this private scope
@@ -56,26 +57,6 @@ func call_callback(let fn : (let a : Int32) -> None) -> None {
     fn(1)
     let callback : MyCallFunc = fn
     callback(2)
-}
-
-func add(let nums : array[-1] Int32) -> Int32 {
-    let total : Int32 = 0
-    for (let i := 0, i < nums.count(), i += 1) {
-        total += nums.get(i)
-    }
-
-    return total
-}
-
-func add2(let nums : Tuple) -> {const Int32, None} {
-    let total : Int32 = 0
-    for (let i := 0, i < nums.count(), i += 1) {
-        if (nums.type(i) != Int32) {
-            return None
-        }
-        total += nums.get(i)
-    }
-    return total
 }
 
 func multiple() -> Tuple {
@@ -144,13 +125,13 @@ func main(let params : array[-1] String8) -> None {
     const mytuple : Tuple = multiple()
     const a, b, c : Int32 = multiple() // Expands tuple to match the number of variables
 
-    add((1, 2, 3, 4))
-    add(1, 2, 3, 4)
+    Math.add((1, 2, 3, 4))
+    Math.add(1, 2, 3, 4)
     /*
-     * Both add calls are valid and are packed into an array
+     * Both Math.add calls are valid and are packed into an array
     */
-    add2((1, 2, 3, 4))
-    add2(1, 2, 3, 4)
+    Math.add2((1, 2, 3, 4))
+    Math.add2(1, 2, 3, 4)
     /*
      * Also valid here, but are instead packed into a Tuple
     */

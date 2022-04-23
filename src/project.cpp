@@ -4,8 +4,57 @@
 
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 
 namespace Martin {
+
+    const std::vector<Tree> Project::GetMainTrees() const {
+        return project_trees;
+    }
+
+    const std::unordered_map<std::string, Tree> Project::GetPackages() const {
+        return files;
+    }
+
+    void Project::LoadPackages(const std::string& proj_src_dir) {
+        std::string proj_package_dir = proj_src_dir + ""
+    }
+    
+    void Project::LoadProject(const std::string& starting_path) {
+        std::string proj_src_dir = starting_path;
+        proj_src_dir += source_directory;
+
+        auto proj_files = ListDirectory(proj_src_dir);
+        std::string error;
+        Tree tree;
+
+        for (auto path : proj_files) {
+            tree = ParserSingleton.ParseFile(path, error);
+            if (!tree) {
+                Fatal("Parser error: $\n", error);
+            }
+
+            project_trees.push_back(tree);
+        }
+
+        LoadPackages(proj_src_dir);
+    }
+
+    const std::vector<std::string> Project::ListDirectory(const std::string& path) {
+        std::vector<std::string> paths;
+        for (const auto& entry : std::filesystem::directory_iterator(path)) {
+            std::string name = entry.path().string();
+            
+            if (std::filesystem::is_directory(name)) {
+                auto npaths = ListDirectory(name);
+                paths.insert(paths.end(), npaths.begin(), npaths.end());
+            } else {
+                paths.push_back(name);
+            }
+        }
+
+        return paths;
+    }
 
     void Project::SaveToFile(const std::string& path) {
         std::ofstream file(path);
@@ -38,7 +87,6 @@ namespace Martin {
         }
         j["project-version"] = {version.major, version.minor, version.patch, level};
         j["source-directory"] = source_directory;
-        j["main-file"] = main_file;
         j["output"] = output;
         
         j["additional-files"] = nlohmann::json::array();
@@ -138,14 +186,13 @@ namespace Martin {
 
         std::string name = "Project";
         Version version;
-        std::string source_directory = "./";
-        std::string main_file = "main.martin";
+        std::string source_directory = "src";
         std::string output = "Project";
         std::vector<std::string> additional_files;
         std::vector<PlatformFiles> platform_files;
         Version language_version;
         std::vector<std::string> local_package_paths;
-        std::vector<Package> packages;
+        std::vector<DependendPackage> packages;
         std::vector<Author> authors;
         std::string link;
         std::string license = "Unknown";
@@ -202,16 +249,6 @@ namespace Martin {
             }
         } catch (...) {
             Fatal("Malformed project source directory\n");
-        }
-
-        try {
-            if (j.contains("main-file")) {
-                main_file = j["main-file"];
-            } else {
-                Warning("Project has no main file\n");
-            }
-        } catch (...) {
-            Fatal("Malformed project main file\n");
         }
 
         try {
@@ -331,7 +368,7 @@ namespace Martin {
                     } else {
                         Fatal("Malformed package $ version\n", name);
                     }
-                    Package pkg {
+                    DependendPackage pkg {
                         name,
                         ver
                     };
@@ -379,7 +416,6 @@ namespace Martin {
             name,
             version,
             source_directory,
-            main_file,
             output,
             additional_files,
             platform_files,
@@ -397,14 +433,13 @@ namespace Martin {
     std::unique_ptr<Project> Project::CreateEmpty() {
         std::string name = "Project";
         Version version;
-        std::string source_directory = "./";
-        std::string main_file = "main.martin";
+        std::string source_directory = "src";
         std::string output = "Project";
         std::vector<std::string> additional_files;
         std::vector<PlatformFiles> platform_files;
         Version language_version;
         std::vector<std::string> local_package_paths;
-        std::vector<Package> packages;
+        std::vector<DependendPackage> packages;
         std::vector<Author> authors;
         std::string link;
         std::string license = "Unknown";
@@ -413,7 +448,6 @@ namespace Martin {
             name,
             version,
             source_directory,
-            main_file,
             output,
             additional_files,
             platform_files,

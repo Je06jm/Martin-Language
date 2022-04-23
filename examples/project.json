@@ -1,8 +1,7 @@
 {
     "name": "MyProject",
     "project-version": [1, 0, 0, "release"],
-    "source-directory": "./src",
-    "main-file": "Example.martin",
+    "source-directory": "src",
     "output": "Example",
 
     "additional-files": ["file.txt"],

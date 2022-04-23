@@ -282,7 +282,6 @@ namespace Martin {
                                 
                                 auto comma = std::static_pointer_cast<StructCommaTreeNode>((*inside)[0]->node);
                                 for (auto it : comma->nodes) {
-                                    Print("$\n", *it);
                                     if (!it->is_token) return 0;
                                     switch (it->token->GetType()) {
                                         case TokenType::Type::Integer:

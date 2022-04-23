@@ -11,4 +11,10 @@
 #define cpu_x86
 #endif
 
+#if defined(_WIN32) || defined(WIN32)
+#define windows
+#else
+#define unix
+#endif
+
 #endif

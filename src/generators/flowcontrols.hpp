@@ -52,7 +52,6 @@ namespace Martin {
                         break;
                     
                     default:
-                        Print("$\n", condition->node->GetName());
                         return false;
                 }
             }

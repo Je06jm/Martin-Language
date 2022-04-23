@@ -1,0 +1,19 @@
+func add(let nums : array[-1] Int32) -> Int32 {
+    let total : Int32 = 0
+    for (let i := 0, i < nums.count(), i += 1) {
+        total += nums.get(i)
+    }
+
+    return total
+}
+
+func add2(let nums : Tuple) -> {const Int32, None} {
+    let total : Int32 = 0
+    for (let i := 0, i < nums.count(), i += 1) {
+        if (nums.type(i) != Int32) {
+            return None
+        }
+        total += nums.get(i)
+    }
+    return total
+}
