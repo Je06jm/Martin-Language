@@ -1,0 +1,162 @@
+{
+    "martin": {
+        "name": "martin",
+
+        "src": [
+            "src/*.cpp"
+        ],
+
+        "includes": [
+            "include",
+            "vendors/nlohmann_json/include"
+        ],
+
+        "flags": {
+            "debug": {
+                "msbuild": [],
+                "clang-gcc": [
+                    "g",
+                    "fsanitize=address",
+                    "fno-omit-frame-pointer"
+                ]
+            },
+
+            "release": {
+                "msbuild": [],
+                "clang-gcc": [
+                    "-O2"
+                ]
+            },
+
+            "common": {
+                "msbuild": [],
+                "clang-gcc": [
+                    "std=c++17"
+                ]
+            },
+
+            "windows": {
+                "msbuild": [],
+                "clang-gcc": []
+            },
+
+            "posix": {
+                "msbuild": [],
+                "clang-gcc": []
+            }
+        },
+
+        "linker": {
+            "debug": {
+                "msbuild": [],
+                "clang-gcc": [
+                    "fsanitize=address"
+                ]
+            },
+
+            "release": {
+                "msbuild": [],
+                "clang-gcc": []
+            },
+
+            "common": {
+                "msbuild": [],
+                "clang-gcc": []
+            },
+
+            "windows": {
+                "msbuild": [],
+                "clang-gcc": []
+            },
+
+            "posix": {
+                "msbuild": [],
+                "clang-gcc": []
+            }
+        },
+
+        "defines": {
+            "debug": ["MARTIN_DEBUG"],
+            "release": ["MARTIN_RELEASE"],
+            "common": [],
+            "windows": [],
+            "posix": []
+        }
+    },
+
+    "tests": {
+        "name": "martin-test",
+
+        "src": [
+            "tests/*.cpp"
+        ],
+
+        "includes": [
+            "include",
+            "vendors/nlohmann_json/include",
+            "src"
+        ],
+
+        "flags": {
+            "debug": {
+                "msbuild": [],
+                "clang-gcc": []
+            },
+
+            "release": {
+                "msbuild": [],
+                "clang-gcc": []
+            },
+
+            "common": {
+                "msbuild": [],
+                "clang-gcc": []
+            },
+
+            "windows": {
+                "msbuild": [],
+                "clang-gcc": []
+            },
+
+            "posix": {
+                "msbuild": [],
+                "clang-gcc": []
+            }
+        },
+
+        "linker": {
+            "debug": {
+                "msbuild": [],
+                "clang-gcc": []
+            },
+
+            "release": {
+                "msbuild": [],
+                "clang-gcc": []
+            },
+
+            "common": {
+                "msbuild": [],
+                "clang-gcc": []
+            },
+
+            "windows": {
+                "msbuild": [],
+                "clang-gcc": []
+            },
+
+            "posix": {
+                "msbuild": [],
+                "clang-gcc": []
+            }
+        },
+
+        "defines": {
+            "debug": ["MARTIN_DEBUG"],
+            "release": ["MARTIN_RELEASE"],
+            "common": ["MARTIN_TESTING"],
+            "windows": [],
+            "posix": []
+        }
+    }
+}
