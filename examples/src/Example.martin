@@ -84,6 +84,9 @@ func main(let params : array[-1] String8) -> None {
     set myptr4 : pointer pointer array[3,4] Float64 = ((1, 2, 3), (1, 2, 3, 4))
     // And so on
 
+    let a : unique Int32 = 1
+    let b : shared Int32 = 2
+
     // () defines a constexpr tuple
     // {} defines a constexpr array or a scope
     
