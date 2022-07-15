@@ -2,6 +2,7 @@
 #define MARTIN_GENERATORS_FUNCLAMBDA
 
 #include <parse.hpp>
+#include <string>
 
 namespace Martin {
 
@@ -25,6 +26,13 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!arrow) return false;
             
             if (arrow->is_token) return false;
@@ -38,6 +46,28 @@ namespace Martin {
             }
 
             return true;
+        }
+
+        std::vector<TreeNode> GetAllNodesOfType(Type type) const override {
+            std::vector<TreeNode> list;
+
+            if (!arrow->is_token) {
+                if (arrow->node->GetType() == type) {
+                    list.push_back(arrow->node);
+                }
+                auto list2 = arrow->node->GetAllNodesOfType(type);
+                list.insert(list.end(), list2.begin(), list2.end());
+            }
+
+            if (scope &&(!scope->is_token)) {
+                if (scope->node->GetType() == type) {
+                    list.push_back(scope->node);
+                }
+                auto list2 = scope->node->GetAllNodesOfType(type);
+                list.insert(list.end(), list2.begin(), list2.end());
+            }
+
+            return list;
         }
 
         const TokenNode arrow;
@@ -64,6 +94,13 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!arrow || !scope) return false;
 
             if (arrow->is_token) return false;
@@ -77,11 +114,36 @@ namespace Martin {
             return true;
         }
 
+        std::vector<TreeNode> GetAllNodesOfType(Type type) const override {
+            std::vector<TreeNode> list;
+
+            if (!arrow->is_token) {
+                if (arrow->node->GetType() == type) {
+                    list.push_back(arrow->node);
+                }
+                auto list2 = arrow->node->GetAllNodesOfType(type);
+                list.insert(list.end(), list2.begin(), list2.end());
+            }
+
+            if (!scope->is_token) {
+                if (scope->node->GetType() == type) {
+                    list.push_back(scope->node);
+                }
+                auto list2 = scope->node->GetAllNodesOfType(type);
+                list.insert(list.end(), list2.begin(), list2.end());
+            }
+
+            return list;
+        }
+
         const TokenNode arrow;
         const TokenNode scope;
+
+        bool has_name = false;
+        std::string name;
     };
 
-    class FuncLambdaTreeGenerator : public TreeNodeGenerator {
+    class FuncTreeGenerator : public TreeNodeGenerator {
     public:
         size_t ProcessBranch(Tree tree, size_t index, size_t end) override {
             Token sym = GetIndexOrNullToken(tree, index);
@@ -92,6 +154,8 @@ namespace Martin {
                 if (arrow && scope && (!scope->is_token) && (scope->node->GetType() == TreeNodeBase::Type::Struct_Curly)) {
                     TreeNode op = TreeNode(new FuncTreeNode(arrow, scope));
 
+                    op->SetLineNumber(sym->GetLineNumber());
+
                     TokenNode token_node = TokenNode(new TokenNodeBase);
                     token_node->node = op;
                     ReplaceTreeWithTokenNode(tree, token_node, index, 3);
@@ -100,18 +164,31 @@ namespace Martin {
                 } else if (arrow) {
                     TreeNode op = TreeNode(new FuncTreeNode(arrow, nullptr));
 
+                    op->SetLineNumber(sym->GetLineNumber());
+
                     TokenNode token_node = TokenNode(new TokenNodeBase);
                     token_node->node = op;
                     ReplaceTreeWithTokenNode(tree, token_node, index, 2);
 
                     return 2;
                 }
-            } else if (sym && (sym->GetType() == TokenType::Type::KW_Lambda)) {
+            }
+            return 0;
+        }
+    };
+
+    class LambdaTreeGenerator : public TreeNodeGenerator {
+    public:
+        size_t ProcessBranch(Tree tree, size_t index, size_t end) override {
+            Token sym = GetIndexOrNullToken(tree, index);
+            if (sym && (sym->GetType() == TokenType::Type::KW_Lambda)) {
                 TokenNode arrow = GetIndexOrNull(tree, index+1);
                 TokenNode scope = GetIndexOrNull(tree, index+2);
 
                 if (arrow && scope) {
                     TreeNode op = TreeNode(new LambdaTreeNode(arrow, scope));
+
+                    op->SetLineNumber(sym->GetLineNumber());
 
                     TokenNode token_node = TokenNode(new TokenNodeBase);
                     token_node->node = op;

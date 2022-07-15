@@ -22,6 +22,13 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!id) return false;
 
             if (id->GetType() != TokenType::Type::Identifier) return false;
@@ -49,6 +56,13 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!id) return false;
 
             if (id->GetType() != TokenType::Type::Identifier) return false;
@@ -76,6 +90,13 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!id) return false;
 
             if (id->GetType() != TokenType::Type::Identifier) return false;
@@ -103,6 +124,13 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!id) return false;
 
             if (id->GetType() != TokenType::Type::Identifier) return false;
@@ -145,6 +173,8 @@ namespace Martin {
                             op = TreeNode(new ConstexprRetTypeTreeNode(id));
                             break;
                     }
+
+                    op->SetLineNumber(sym->GetLineNumber());
 
                     TokenNode token_node = TokenNode(new TokenNodeBase);
                     token_node->node = op;

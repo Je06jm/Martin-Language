@@ -23,12 +23,41 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!left || !right) return false;
 
             if (!left->is_token || (left->token->GetType() != TokenType::Type::Identifier)) return false;
             if (!right->is_token || (right->token->GetType() != TokenType::Type::Identifier)) return false;
 
             return true;
+        }
+
+        std::vector<TreeNode> GetAllNodesOfType(Type type) const override {
+            std::vector<TreeNode> list;
+
+            if (!left->is_token) {
+                if (left->node->GetType() == type) {
+                    list.push_back(left->node);
+                }
+                auto list2 = left->node->GetAllNodesOfType(type);
+                list.insert(list.end(), list2.begin(), list2.end());
+            }
+            
+            if (!right->is_token) {
+                if (right->node->GetType() == type) {
+                    list.push_back(right->node);
+                }
+                auto list2 = right->node->GetAllNodesOfType(type);
+                list.insert(list.end(), list2.begin(), list2.end());
+            }
+
+            return list;
         }
 
         const TokenNode left;
@@ -45,6 +74,8 @@ namespace Martin {
 
                 if (left && right) {
                     TreeNode op = TreeNode(new StructAsTreeNode(left, right));
+
+                    op->SetLineNumber(sym->GetLineNumber());
 
                     TokenNode token_node = TokenNode(new TokenNodeBase);
                     token_node->node = op;

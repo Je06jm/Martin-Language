@@ -1,6 +1,7 @@
 #include <project.hpp>
 #include <nlohmann/json.hpp>
 #include <logging.hpp>
+#include <lambda.hpp>
 
 #include <fstream>
 #include <sstream>
@@ -8,16 +9,20 @@
 
 namespace Martin {
 
-    const std::vector<Tree> Project::GetMainTrees() const {
-        return project_trees;
+    const std::vector<std::unique_ptr<Package>>& Project::GetPackages() const {
+        return all_packages;
     }
 
-    const std::unordered_map<std::string, Tree> Project::GetPackages() const {
+    const std::unordered_map<std::string, Tree>& Project::GetFiles() const {
         return files;
     }
 
-    void Project::LoadPackages(const std::string& proj_src_dir) {
-        std::string proj_package_dir = proj_src_dir + ""
+    const std::unordered_map<std::string, std::unique_ptr<Visibility>>& Project::GetVisibility() const {
+        return visibility;
+    }
+
+    void Project::LoadPackages(const std::string& starting_path) {
+        //std::string proj_package_dir = proj_src_dir + "/" + local_package_paths;
     }
     
     void Project::LoadProject(const std::string& starting_path) {
@@ -28,16 +33,23 @@ namespace Martin {
         std::string error;
         Tree tree;
 
+        ResetLambdaCounter();
+
         for (auto path : proj_files) {
             tree = ParserSingleton.ParseFile(path, error);
             if (!tree) {
                 Fatal("Parser error: $\n", error);
             }
 
-            project_trees.push_back(tree);
+            Parser::Valid(tree);
+
+            files[path] = tree;
+            visibility[path] = std::unique_ptr<Visibility>(new Visibility(tree));
+            
+            ProcessLambdas(tree, name);
         }
 
-        LoadPackages(proj_src_dir);
+        LoadPackages(starting_path);
     }
 
     const std::vector<std::string> Project::ListDirectory(const std::string& path) {

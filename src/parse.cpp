@@ -40,8 +40,8 @@ namespace Martin {
     Parser::Parser() {
         generators.push_back(TreeGenerator(new SeperatorGenerator));
         generators.push_back(TreeGenerator(new StructEnclosuresTreeGenerator));
-        generators.push_back(TreeGenerator(new CallTreeGenerator));
         generators.push_back(TreeGenerator(new OPDotTreeGenerator));
+        generators.push_back(TreeGenerator(new CallTreeGenerator));
         generators.push_back(TreeGenerator(new StructAsTreeGenerator));
         generators.push_back(TreeGenerator(new OPMulDivModTreeGenerator));
         generators.push_back(TreeGenerator(new OPPowTreeGenerator));
@@ -52,12 +52,13 @@ namespace Martin {
         generators.push_back(TreeGenerator(new OPLogicalsTreeGenerator));
         generators.push_back(TreeGenerator(new AccessTypesTreeGenerator));
         generators.push_back(TreeGenerator(new ArrowTreeGenerator));
+        generators.push_back(TreeGenerator(new LambdaTreeGenerator));
         generators.push_back(TreeGenerator(new DefinitionsTreeGenerator));
         generators.push_back(TreeGenerator(new RetTypesTreeGenerator));
         generators.push_back(TreeGenerator(new DataTypesTreeGenerator));
         generators.push_back(TreeGenerator(new AssignmentsTreeGenerator));
         generators.push_back(TreeGenerator(new FlowControlsTreeGenerator));
-        generators.push_back(TreeGenerator(new FuncLambdaTreeGenerator));
+        generators.push_back(TreeGenerator(new FuncTreeGenerator));
         generators.push_back(TreeGenerator(new ClassTypeTreeGenerator));
         generators.push_back(TreeGenerator(new GetterSetterTreeGenerator));
         generators.push_back(TreeGenerator(new ClassAccessTreeGenerator));
@@ -89,9 +90,6 @@ namespace Martin {
     Tree Parser::ParseString(const std::string& code, std::string& error_msg) {
         auto token_array = TokenizerSingleton.TokenizeString(code);
         auto tree = ParserSingleton.ParseTokens(token_array);
-
-        // Run verifier here
-        // Run codegen/code here
 
         return tree;
     }
@@ -141,6 +139,37 @@ namespace Martin {
                 }
             }
         }
+    }
+
+    bool Parser::Valid(Tree tree) {
+        for (auto node : *tree) {
+            if (node->is_token) {
+                Warning("Found a token in the toplevel of the parse tree: $\n", *node);
+                return false;
+            }
+            if (!node->node->Valid()) {
+                Warning("Node $ is not valid\n", *node);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    std::vector<TreeNode> Parser::GetAllNodesOfType(Tree tree, TreeNodeBase::Type type) {
+        std::vector<TreeNode> list;
+
+        for (auto node : *tree) {
+            if (!node->is_token) {
+                if (node->node->GetType() == type) {
+                    list.push_back(node->node);
+                }
+                auto list2 = node->node->GetAllNodesOfType(type);
+                list.insert(list.end(), list2.begin(), list2.end());
+            }
+        }
+
+        return list;
     }
 
 }

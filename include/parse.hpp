@@ -13,6 +13,7 @@ namespace Martin {
 
     class TreeNodeBase;
     class TreeNodeGenerator;
+
     typedef struct _TokenNodeBase TokenNodeBase;
 
     typedef std::shared_ptr<TokenNodeBase> TokenNode;
@@ -120,6 +121,16 @@ namespace Martin {
         virtual Type GetType() const = 0;
         virtual std::string GetName() const = 0;
 
+        virtual void SetLineNumber(unsigned int lineno) {
+            if (this->lineno == 0) {
+                this->lineno = lineno;
+            }
+        }
+
+        virtual unsigned int GetLineNumber() const {
+            return lineno;
+        };
+
         virtual void Serialize(std::string& serial) const {
             serial = "Unimplemented serialize on tree node";
         }
@@ -127,6 +138,13 @@ namespace Martin {
         virtual bool Valid() const {
             return true;
         }
+
+        virtual std::vector<TreeNode> GetAllNodesOfType(Type type) const {
+            return {};
+        }
+
+    private:
+        unsigned int lineno = 0;
     };
 
     struct _TokenNodeBase {
@@ -234,6 +252,10 @@ namespace Martin {
         void Serialize(std::string& serial) const {
             serial = Format("Parser with $ generators", generators.size());
         }
+
+        static bool Valid(Tree tree);
+
+        static std::vector<TreeNode> GetAllNodesOfType(Tree tree, TreeNodeBase::Type type);
 
     private:
         std::vector<TreeGenerator> generators;

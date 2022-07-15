@@ -10,6 +10,7 @@
 #include "package.hpp"
 #include "config.hpp"
 #include "parse.hpp"
+#include "visibility.hpp"
 
 namespace Martin {
 
@@ -75,8 +76,9 @@ namespace Martin {
         static std::unique_ptr<Project> LoadFromFile(const std::string& path);
         static std::unique_ptr<Project> CreateEmpty();
     
-        const std::vector<Tree> GetMainTrees() const;
-        const std::unordered_map<std::string, Tree> GetPackages() const;
+        const std::vector<std::unique_ptr<Package>>& GetPackages() const;
+        const std::unordered_map<std::string, Tree>& GetFiles() const;
+        const std::unordered_map<std::string, std::unique_ptr<Visibility>>& GetVisibility() const;
 
         void LoadProject(const std::string& starting_path);
     private:
@@ -84,9 +86,9 @@ namespace Martin {
 
         static const std::vector<std::string> ListDirectory(const std::string& path);
 
-        std::vector<Tree> project_trees;
         std::vector<std::unique_ptr<Package>> all_packages;
         std::unordered_map<std::string, Tree> files;
+        std::unordered_map<std::string, std::unique_ptr<Visibility>> visibility;
     };
 
 }

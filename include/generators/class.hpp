@@ -28,6 +28,13 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!name || !scope) return false;
 
             if (name->is_token && (name->token->GetType() != TokenType::Type::Identifier)) return false;
@@ -58,6 +65,28 @@ namespace Martin {
 
             return true;
         }
+        
+        std::vector<TreeNode> GetAllNodesOfType(Type type) const override {
+            std::vector<TreeNode> list;
+
+            if (!name->is_token) {
+                if (name->node->GetType() == type) {
+                    list.push_back(name->node);
+                }
+                auto list2 = name->node->GetAllNodesOfType(type);
+                list.insert(list.end(), list2.begin(), list2.end());
+            }
+            
+            if (!scope->is_token) {
+                if (scope->node->GetType() == type) {
+                    list.push_back(scope->node);
+                }
+                auto list2 = scope->node->GetAllNodesOfType(type);
+                list.insert(list.end(), list2.begin(), list2.end());
+            }
+
+            return list;
+        }
 
         const TokenNode name;
         const TokenNode scope;
@@ -85,6 +114,8 @@ namespace Martin {
 
                 if (name && scope) {
                     TreeNode op = TreeNode(new ClassTreeNode(name, scope));
+
+                    op->SetLineNumber(sym->GetLineNumber());
 
                     TokenNode token_node = TokenNode(new TokenNodeBase);
                     token_node->node = op;

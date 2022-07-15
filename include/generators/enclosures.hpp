@@ -30,6 +30,13 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!inside) return false;
 
             for (auto it : (*inside)) {
@@ -39,6 +46,22 @@ namespace Martin {
             }
 
             return true;
+        }
+
+        std::vector<TreeNode> GetAllNodesOfType(Type type) const override {
+            std::vector<TreeNode> list;
+
+            for (auto node : *inside) {
+                if (!node->is_token) {
+                    if (node->node->GetType() == type) {
+                        list.push_back(node->node);
+                    }
+                    auto list2 = node->node->GetAllNodesOfType(type);
+                    list.insert(list.end(), list2.begin(), list2.end());
+                }
+            }
+
+            return list;
         }
 
         const Tree inside;
@@ -67,6 +90,13 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!inside) return false;
 
             for (auto it : (*inside)) {
@@ -76,6 +106,22 @@ namespace Martin {
             }
 
             return true;
+        }
+
+        std::vector<TreeNode> GetAllNodesOfType(Type type) const override {
+            std::vector<TreeNode> list;
+
+            for (auto node : *inside) {
+                if (!node->is_token) {
+                    if (node->node->GetType() == type) {
+                        list.push_back(node->node);
+                    }
+                    auto list2 = node->node->GetAllNodesOfType(type);
+                    list.insert(list.end(), list2.begin(), list2.end());
+                }
+            }
+
+            return list;
         }
 
         const Tree inside;
@@ -104,6 +150,13 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!inside) return false;
 
             for (auto it : (*inside)) {
@@ -113,6 +166,22 @@ namespace Martin {
             }
 
             return true;
+        }
+
+        std::vector<TreeNode> GetAllNodesOfType(Type type) const override {
+            std::vector<TreeNode> list;
+
+            for (auto node : *inside) {
+                if (!node->is_token) {
+                    if (node->node->GetType() == type) {
+                        list.push_back(node->node);
+                    }
+                    auto list2 = node->node->GetAllNodesOfType(type);
+                    list.insert(list.end(), list2.begin(), list2.end());
+                }
+            }
+
+            return list;
         }
 
         const Tree inside;
@@ -182,6 +251,8 @@ namespace Martin {
                                 op = TreeNode(new StructParenthesesTreeNode(new_tree));
                                 break;
                         }
+
+                        op->SetLineNumber(sym->GetLineNumber());
 
                         TokenNode token_node = TokenNode(new TokenNodeBase);
                         token_node->node = op;

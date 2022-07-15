@@ -55,6 +55,8 @@ namespace Martin {
                 
                 else
                     op = TreeNode(new SetterTreeNode);
+
+                op->SetLineNumber(sym->GetLineNumber());
                 
                 TokenNode token_node = TokenNode(new TokenNodeBase);
                 token_node->node = op;

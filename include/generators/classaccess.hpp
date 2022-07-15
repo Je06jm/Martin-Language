@@ -22,6 +22,13 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!right) return false;
 
             if (right->is_token) {
@@ -31,6 +38,21 @@ namespace Martin {
             }
 
             return true;
+        }
+
+        std::vector<TreeNode> GetAllNodesOfType(Type type) const override {
+            if (right->is_token) {
+                return {};
+            }
+
+            std::vector<TreeNode> list;
+            if (right->node->GetType() == type) {
+                list.push_back(right->node);
+            }
+            auto list2 = right->node->GetAllNodesOfType(type);
+            list.insert(list.end(), list2.begin(), list2.end());
+
+            return list;
         }
 
         const TokenNode right;
@@ -53,6 +75,13 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!right) return false;
 
             if (right->is_token) {
@@ -62,6 +91,21 @@ namespace Martin {
             }
 
             return true;
+        }
+
+        std::vector<TreeNode> GetAllNodesOfType(Type type) const override {
+            if (right->is_token) {
+                return {};
+            }
+
+            std::vector<TreeNode> list;
+            if (right->node->GetType() == type) {
+                list.push_back(right->node);
+            }
+            auto list2 = right->node->GetAllNodesOfType(type);
+            list.insert(list.end(), list2.begin(), list2.end());
+
+            return list;
         }
 
         const TokenNode right;
@@ -84,6 +128,13 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!right) return false;
 
             if (right->is_token) {
@@ -93,6 +144,21 @@ namespace Martin {
             }
 
             return true;
+        }
+
+        std::vector<TreeNode> GetAllNodesOfType(Type type) const override {
+            if (right->is_token) {
+                return {};
+            }
+
+            std::vector<TreeNode> list;
+            if (right->node->GetType() == type) {
+                list.push_back(right->node);
+            }
+            auto list2 = right->node->GetAllNodesOfType(type);
+            list.insert(list.end(), list2.begin(), list2.end());
+
+            return list;
         }
 
         const TokenNode right;
@@ -115,6 +181,13 @@ namespace Martin {
         }
 
         bool Valid() const override {
+            if (!NodeValid()) {
+                Fatal("Node $ is invalid on line $\n", GetName(), GetLineNumber());
+            }
+            return true;
+        }
+
+        bool NodeValid() const {
             if (!right) return false;
 
             if (right->is_token) {
@@ -124,6 +197,21 @@ namespace Martin {
             }
 
             return true;
+        }
+
+        std::vector<TreeNode> GetAllNodesOfType(Type type) const override {
+            if (right->is_token) {
+                return {};
+            }
+
+            std::vector<TreeNode> list;
+            if (right->node->GetType() == type) {
+                list.push_back(right->node);
+            }
+            auto list2 = right->node->GetAllNodesOfType(type);
+            list.insert(list.end(), list2.begin(), list2.end());
+
+            return list;
         }
 
         const TokenNode right;
@@ -165,6 +253,8 @@ namespace Martin {
                             op = TreeNode(new ClassAccessFriendTreeNode(right));
                             break;
                     }
+
+                    op->SetLineNumber(sym->GetLineNumber());
 
                     TokenNode token_node = TokenNode(new TokenNodeBase);
                     token_node->node = op;

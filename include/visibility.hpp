@@ -10,20 +10,24 @@ namespace Martin {
 
     class Visibility {
     public:
+        typedef struct {
+            const TokenNode id;
+        } VisibilityNode;
+
         Visibility(Tree tree);
 
-        const std::vector<TokenNode> GetFunctions(const std::string& name = "") const;
-        const std::vector<TokenNode> GetTypes(const std::string& name = "") const;
-        const std::vector<TokenNode> GetVariables(const std::string& name = "") const;
-        const std::vector<TokenNode> GetClasses(const std::string& name = "") const;
-        const std::vector<TokenNode> GetImports(const std::string& name = "") const;
+        const std::vector<VisibilityNode> GetFunctions(const std::string& name = "") const;
+        const std::vector<VisibilityNode> GetTypes(const std::string& name = "") const;
+        const std::vector<VisibilityNode> GetVariables(const std::string& name = "") const;
+        const std::vector<VisibilityNode> GetClasses(const std::string& name = "") const;
+        const std::vector<VisibilityNode> GetImports(const std::string& name = "") const;
 
     private:
-        std::vector<TokenNode> functions;
-        std::vector<TokenNode> types;
-        std::vector<TokenNode> variables;
-        std::vector<TokenNode> classes;
-        std::vector<TokenNode> imports;
+        std::vector<VisibilityNode> functions;
+        std::vector<VisibilityNode> types;
+        std::vector<VisibilityNode> variables;
+        std::vector<VisibilityNode> classes;
+        std::vector<VisibilityNode> imports;
     };
 
 }

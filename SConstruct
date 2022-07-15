@@ -1,7 +1,7 @@
 from os import mkdir
 from os.path import exists
 
-truestr = ['true', '1', 'yes']
+truestr = ['true', '1', 'yes', 'y']
 
 debug = ARGUMENTS.get('debug')
 run_test = ARGUMENTS.get('tests')
@@ -46,7 +46,7 @@ else:
 src = Glob('./src/*.cpp')
 
 if run_test:
-    env.Append(CPPPATH=['./tests', './src'])
+    env.Append(CPPPATH=['./tests'])
     test = Glob('./tests/*.hpp')
     includes = ''
     inits = ''
