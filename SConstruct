@@ -1,10 +1,12 @@
 from os import mkdir
 from os.path import exists
+from os import environ
 
 truestr = ['true', '1', 'yes', 'y']
 
 debug = ARGUMENTS.get('debug')
 run_test = ARGUMENTS.get('tests')
+use_clang = ARGUMENTS.get('use_clang')
 
 if debug:
     debug = debug.lower() in truestr
@@ -12,20 +14,35 @@ if debug:
 if run_test:
     run_test = run_test.lower() in truestr
 
-env = Environment(
-    CPPPATH=[
-        'include',
-        'vendors/nlohmann_json/include'
-    ]
-)
+env = None
 
-if 'gcc' in env['TOOLS']:
+if use_clang:
+    env = Environment(
+        CPPPATH=[
+            'include',
+            'vendors/nlohmann_json/include'
+        ],
+        ENV = {'PATH' : environ['PATH']},
+        CXX='clang++'
+    )
+
+else:
+    env = Environment(
+        CPPPATH=[
+            'include',
+            'vendors/nlohmann_json/include'
+        ]
+    )
+
+use_gcc_style = ('gcc' in env['TOOLS']) or use_clang
+
+if use_gcc_style:
     env.Append(CXXFLAGS=['-std=c++17'])
 
 else:
     env.Append(CXXFLAGS=['/std:c++17', '/EHsc'])
 
-if debug and ('gcc' in env['TOOLS']):
+if debug and use_gcc_style:
     env.Append(CPPDEFINES={'MARTIN_DEBUG': None})
     env.Append(CXXFLAGS=[
         '-g',
@@ -37,7 +54,7 @@ if debug and ('gcc' in env['TOOLS']):
     ])
 
 else:
-    if 'gcc' in env['TOOLS']:
+    if use_gcc_style:
         env.Append(CXXFLAGS=['-O2'])
     
     else:

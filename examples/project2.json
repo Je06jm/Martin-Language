@@ -1,0 +1,39 @@
+{
+    "name": "MyProject",
+    "package-version": "1.0.0 release",
+    "source-directory": "./src",
+    "package-type": "bytecode",
+
+    "language-version": "1.0.0 release",
+    "local-package-paths": ["./packages"],
+
+    "platform": {
+        "*": {
+            "additional-files": ["file.txt"],
+            "packages": {
+                "std-lib": "1.0.0 release",
+                "MyPackage": "1.0.0 release"
+            }
+        },
+
+        "Windows": {
+            "additional-files": ["glfw.dll"],
+            "required-files": ["opengl.dll"],
+            "path": ["C:\\Windows\\sys32"]
+        },
+
+        "Linux": {
+            "additional-files": ["glfw.so"],
+            "required-files": ["gl.so"],
+            "path": ["/libs"]
+        }
+    },
+
+    "authors": {
+        "John": "",
+        "Bob": "bob@example.com"
+    },
+
+    "web": "github.com/John/MyProject",
+    "license": "license"
+}
