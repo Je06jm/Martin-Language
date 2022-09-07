@@ -17,3 +17,11 @@ func add2(let nums : Tuple) -> {const Int32, None} {
     }
     return total
 }
+
+func add3[T: Tuple and Addable, J: Addable](let nums : T) -> const J {
+    let total : J = 0
+    for (let i := 0, i < nums.count(), i += 1) {
+        total += nums[i]
+    }
+    return total
+}
