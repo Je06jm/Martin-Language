@@ -5,15 +5,11 @@ from os import environ
 truestr = ['true', '1', 'yes', 'y']
 
 debug = ARGUMENTS.get('debug')
-run_test = ARGUMENTS.get('tests')
 use_clang = ARGUMENTS.get('use_clang')
 gen_program = ARGUMENTS.get('gen_program')
 
 if debug:
     debug = debug.lower() in truestr
-
-if run_test:
-    run_test = run_test.lower() in truestr
 
 if use_clang:
     use_clang = use_clang.lower() in truestr
@@ -67,42 +63,25 @@ else:
     
     else:
         env.Append(CXXFLAGS=['/O2'])
+    
+    with open("src/grammar.hpp", "w") as file:
+        file.write("#ifndef MARTIN_GRAMMAR\n")
+        file.write("#define MARTIN_GRAMMAR\n\n")
+
+        file.write("namespace Martin {\n\n")
+
+        file.write("\tauto grammar = R\"(\n")
+        with open("config/grammar.txt", "r") as grammar:
+            file.write(grammar.read())
+        
+        file.write("\n")
+        file.write(")\";\n\n")
+
+        file.write("}\n\n")
+
+        file.write("#endif")
 
 src = src = Glob('./src/*.cpp')
 
 if gen_program:
     env.Program('martin', Glob('./app/*.cpp') + src)
-
-if run_test:
-    env.Append(CPPPATH=['./tests'])
-    test = Glob('./tests/*.hpp')
-    includes = ''
-    inits = ''
-    for i in range(len(test)):
-        if (str(test[i]).find('testing.hpp')) == -1:
-            path = str(test[i])
-            path = path[path.find('/')+1:]
-            includes += '#include <' + path + '>\n'
-            path = path[:path.find('.')]
-            inits += '\t\tTEST_VECTOR.push_back(std::shared_ptr<Test>(new Test_' + path + '));\n'
-            
-    file = open('./tests/testing.cpp', 'r')
-    contents = file.read()
-    file.close()
-
-    contents = contents.replace('MARTIN_TESTING_INCLUDES', includes)
-    contents = contents.replace('MARTIN_TESTING_INITS', inits)
-
-    if not exists('./temp'):
-        mkdir('./temp')
-
-    file = open('./temp/test.cpp', 'w')
-    file.write(contents)
-    file.close()
-
-    test = src + Glob('./temp/test.cpp')
-
-    prog = env.Program('martin-test', test)
-
-else:
-    SConscript(['generate_tokens.sconscript'])

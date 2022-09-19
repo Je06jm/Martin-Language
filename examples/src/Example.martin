@@ -66,7 +66,7 @@ func main(let params : String8[?]) -> None {
     let mystr : String = "Hello"
     set mystr2 := "Constant String!"
 
-    shared const app_name : String8 = "My App"
+    const app_name : shared String8 = "My App"
     
     let mystr3 := 'Hello again!'
 
@@ -85,8 +85,8 @@ func main(let params : String8[?]) -> None {
     // And so on
 
     // These are allocated on the heap
-    unique let a : Int32 = 1
-    shared let b : Int32 = 2
+    let a : unique Int32 = 1
+    let b : shared Int32 = 2
 
     // () defines a constexpr tuple
     // [] defines a constexpr list or a scope
@@ -144,17 +144,10 @@ func main(let params : String8[?]) -> None {
 
     //Math.add((1, 2, 3, 4))
     //Math.add(1, 2, 3, 4)
-    
-    /*
-     * All Math.add calls are valid and are packed into an list
-    */
 
     //Math.add2((1, 2, 3, 4))
     //Math.add2([1, 2, 3, 4])
     //Math.add2(1, 2, 3, 4)
-    /*
-     * Also valid here, but are instead packed into a Tuple
-    */
 
     const myfunc : MyCallFunc = lambda (const a : Int32 = 0) -> None {
         //print(String8.format("{}\n", a))
@@ -219,6 +212,6 @@ extern "C++" "Namespace::ParentClass" class MyCppClass[T: Addable] {
 
         func DebugPrint(const text : String) -> None
 
-        deleted func operator_assignment(reference const other : MyCppClass) -> None
+        deleted func operator_assignment(const other : reference MyCppClass) -> None
     }
 }
