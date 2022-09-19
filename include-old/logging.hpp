@@ -135,6 +135,4 @@ namespace Martin {
 
 }
 
-#undef _TO_STRING_HELPER
-
 #endif

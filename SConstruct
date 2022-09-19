@@ -7,6 +7,7 @@ truestr = ['true', '1', 'yes', 'y']
 debug = ARGUMENTS.get('debug')
 run_test = ARGUMENTS.get('tests')
 use_clang = ARGUMENTS.get('use_clang')
+gen_program = ARGUMENTS.get('gen_program')
 
 if debug:
     debug = debug.lower() in truestr
@@ -14,23 +15,30 @@ if debug:
 if run_test:
     run_test = run_test.lower() in truestr
 
+if use_clang:
+    use_clang = use_clang.lower() in truestr
+
+if gen_program:
+    gen_program = gen_program.lower() in truestr
+
 env = None
 
 if use_clang:
     env = Environment(
         CPPPATH=[
             'include',
-            'vendors/nlohmann_json/include'
+            'vendors/nlohmann_json/include',
+            'vendors/peglib'
         ],
-        ENV = {'PATH' : environ['PATH']},
-        CXX='clang++'
+        path = environ["PATH"]
     )
 
 else:
     env = Environment(
         CPPPATH=[
             'include',
-            'vendors/nlohmann_json/include'
+            'vendors/nlohmann_json/include',
+            'vendors/peglib'
         ]
     )
 
@@ -60,7 +68,10 @@ else:
     else:
         env.Append(CXXFLAGS=['/O2'])
 
-src = Glob('./src/*.cpp')
+src = src = Glob('./src/*.cpp')
+
+if gen_program:
+    env.Program('martin', Glob('./app/*.cpp') + src)
 
 if run_test:
     env.Append(CPPPATH=['./tests'])
@@ -94,4 +105,4 @@ if run_test:
     prog = env.Program('martin-test', test)
 
 else:
-    env.Program('martin', src + Glob('./app/*.cpp'))
+    SConscript(['generate_tokens.sconscript'])

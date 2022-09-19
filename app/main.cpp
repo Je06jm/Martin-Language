@@ -1,5 +1,6 @@
 #define DEBUG_PRINT
 
+/*
 #include <unicode.hpp>
 
 #include <values.hpp>
@@ -14,24 +15,48 @@
 #include <parse.hpp>
 #include <logging.hpp>
 #include <project.hpp>
+*/
 
-Martin::UnicodeType input_unicode_type = Martin::UnicodeType_8Bits;
+#include <string>
+#include <iostream>
+#include <logging.hpp>
+#include <martin.hpp>
+
+//Martin::UnicodeType input_unicode_type = Martin::UnicodeType_8Bits;
+
+void PrintNodes(std::shared_ptr<peg::Ast> ast, int level = 0) {
+    if (ast == nullptr) {
+        return;
+    }
+
+    for (int i = 0; i < level; i++) {
+        Martin::Print("\t");
+    }
+
+    std::string type = ast->is_token ? "Token" : "Node";
+    std::string name = ast->name;
+    std::string token = std::string {ast->token};
+    Martin::Print("$ ($) $\n", type, name, token);
+
+    for (auto node : ast->nodes) {
+        PrintNodes(node, level + 1);
+    }
+}
 
 int main(int argc, char** argv) {
     argc--; argv++;
 
     if (argc < 1) {
-        Martin::Warning("No file provided\n");
-        return 0;
+        Martin::Warning("Usage: ttparse.exe <file>\n");
+        exit(EXIT_SUCCESS);
     }
 
-    //auto project = Martin::Project::CreateEmpty();
-    //project->SaveToFile(argv[0]);
+    auto code = Martin::ReadFile(argv[0]);
+    Martin::SanitizeCode(code);
 
-    auto project = Martin::Project::LoadFromFile(argv[0]);
+    auto ast = Martin::CreateASTFromCode(code);
 
-    project->LoadProject("examples/");
+    PrintNodes(ast);
 
     return 0;
-    
 }

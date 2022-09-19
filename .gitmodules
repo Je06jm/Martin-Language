@@ -2,3 +2,6 @@
 	path = vendors/nlohmann_json
 	url = https://github.com/nlohmann/json.git
 	branch = release/3.10.5
+[submodule "vendors/peglib"]
+	path = vendors/peglib
+	url = https://github.com/yhirose/cpp-peglib.git

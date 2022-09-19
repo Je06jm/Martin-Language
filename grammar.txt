@@ -1,0 +1,114 @@
+# Top level
+ModuleStat <- ImportsStat GlobalScopeStat
+
+# Type Definitions
+ImportsStat <- (FromImportStat / ImportNamespaceStat)*
+FromImportStat <- 'from' NAME ImportNamespaceStat { no_ast_opt }
+ImportNamespaceStat <- 'import' NameAliasList { no_ast_opt }
+NameAliasList <- NameAlias (',' NameAlias)*
+NameAlias <- NAME ('as' NAME)?
+GlobalScopeStat <- (FuncDefStat / VarGetterSetterStat / VarDefinitionStat / TypeDefinitionStat / PrivateStat)*
+ClassGlobalScopeStat <- ('static'? 'virtual'? (FuncDefStat / VarGetterSetterStat / VarDefinitionStat / TypeDefinitionStat / PrivateStat))*
+PrivateStat <- 'private' '{' ImportsStat GlobalScopeStat '}' { no_ast_opt }
+TypeDefinitionStat <- (ClassStat / TypedefStat / InterfaceStat / StructStat / UnionStat / EnumStat)
+ClassStat <- ('extern' STRING STRING?)? 'class' NAME GenericTypeList? ('implements' TypeArrayExp)? (':' ClassInherit)? '{' FriendStat* AccessStat* '}'
+ClassInherit <- AccessType NAME (',' AccessType NAME)*
+FriendStat <- 'friend' AccessType NAME
+AccessStat <- AccessType '{' ClassGlobalScopeStat '}' { no_ast_opt }
+AccessType <- ('private' / 'protected' / 'public') { no_ast_opt }
+VarGetterSetterStat <- VarDefinitionStat '{' (PrivateSetterGetter / PublicSetterGetter)+ '}'
+PublicSetterGetter <- ('getter' / 'setter') ':' (LambdaStat / NAME) { no_ast_opt }
+PrivateSetterGetter <- 'private' ('getter' / 'setter') ':' (LambdaStat / NAME) { no_ast_opt }
+TypedefStat <- 'typedef' NAME ':' ((NAME / TypesExp) ArrayExp? / CallableSigExp)
+InterfaceStat <- 'interface' NAME '{' (FuncDefStat / VarDefinitionStat)* '}'
+StructStat <- 'struct' NAME '{' (FuncDefStat / VarDefinitionStat)* '}'
+UnionStat <- 'union' NAME '{' (FuncDefStat / VarDefinitionStat)* '}'
+EnumStat <- 'enum' NAME '{' (NAME ('=' BitXOrExp)?)* '}'
+
+# Flow
+FlowStat <- ReturnStat / ContinueBreakStat
+ContinueBreakStat <- 'continue' / 'break' { no_ast_opt }
+ReturnStat <- 'return' OrBoolExp
+
+# Branches
+BranchStat <- (PatternStat / MatchStat / SwitchStat / ForEachStat / ForStat / WhileStat / IfBranchStat)
+PatternStat <- 'pattern' '(' DotExp ')' '{' PatternItemStat* '}'
+PatternItemStat <- (STRING / 'default') ':' (LambdaStat / CallExp / DotExp)
+SwitchStat <- 'switch' '(' DotExp ')' '{' MatchItemStat* '}'
+MatchStat <- 'match' '(' DotExp ')' '{' MatchItemStat* '}'
+MatchItemStat <- NAME ':' (LambdaStat / CallExp / DotExp)
+ForEachStat <- 'foreach' '(' NAME 'in' DotExp ')' ScopeStat
+ForStat <- 'for' '(' (VarIncrementStat / VarAssignmentStat / VarDefinitionStat)? ',' (OrBoolExp)? ',' (VarIncrementStat / VarAssignmentStat)? ')' ScopeStat
+WhileStat <- 'while' '(' OrBoolExp ')' ScopeStat
+IfBranchStat <- 'if' '(' OrBoolExp ')' ScopeStat ElifBranchStat* ElseBranchStat?
+ElifBranchStat <- 'elif' '(' OrBoolExp ')' ScopeStat
+ElseBranchStat <- 'else' ScopeStat
+
+# Function Definitions
+FuncDefStat <- DefFuncDefStat / ExternPureFuncDefStat
+DefFuncDefStat <- ('extern' STRING / 'unsafe')? 'func' NAME CallableSigExp ScopeStat
+ExternPureFuncDefStat <- ('extern' STRING / 'deleted')? 'func' NAME CallableSigExp ScopeStat?
+
+# Variable Definitions
+ScopeStat <- '{' Statement* '}'
+Statement <- BranchStat / VarAssignmentStat / VarIncrementStat / CallExp / FlowStat
+VarIncrementStat <- NAME ('++' / '--') { no_ast_opt }
+VarAssignmentStat <- (NameArrayExp / NameExtractExp) VarAssignmentTypes (DataArray / OrBoolExp) / VarDefinitionStat
+VarAssignmentTypes <- '+=' / '-=' / '*=' / '/=' / '%=' / '**=' / '&=' / '|=' / '^=' / '=' { no_ast_opt }
+LambdaStat <- 'lambda' CallableSigExp ScopeStat { no_ast_opt}
+VarDefinitionStat <- VarTypeDefinitionExp / VarDefinitionNoCallableExp / VarDefinitionExp
+VarTypeDefinitionExp <- VarDefinitionModifiers? VarDefinitionAccess VarAccessExp (TypeArrayExp / NameExtractExp) ':=' AssignableExp
+VarDefinitionExp <- VarDefinitionAccess VarAccessExp (TypeArrayExp / NameExtractExp) ':' (CallableSigExp) ('=' AssignableExp)?
+VarDefinitionNoCallableExp <- VarDefinitionModifiers? VarDefinitionAccess VarAccessExp (TypeArrayExp / NameExtractExp) ':' ((NAME / TypesExp) ArrayExp?) ('=' AssignableExp)?
+VarAccessExp <- 'let' / 'set' / 'const' / 'constexpr'
+VarDefinitionAccess <- ('reference' / 'pointer')*
+VarDefinitionModifiers <- ('shared' / 'unique')  { no_ast_opt }
+TypesWithAccessExp <- '{' NameConstArrayExp '}'
+TypesExp <- '{' NameArrayExp '}'
+TypeArrayExp <- NAME (',' NAME)*
+ArrayExp <- '[' (BitXOrExp / '?') (',' (BitXOrExp / '?'))* ']'
+NameExtractExp <- '{' NAME '}' (',' '{' NAME '}')*
+NameConstArrayExp <- VarAccessExp? DotExp (',' VarAccessExp? DotExp)*
+NameArrayExp <- (DotExp) (',' DotExp)*
+
+CallableSigExp <- GenericTypeList? '(' (VarAssignmentStat (',' VarAssignmentStat)*)? ')' '->' (VarAccessExp? NAME / TypesWithAccessExp) { no_ast_opt }
+GenericTypeList <- '[' GenericType (',' GenericType)* ']'
+GenericType <- NAME ':' NAME ('and' NAME)*
+
+# Expression
+AssignableExp <- LambdaStat / DataArray / OrBoolExp / BOOL
+OrBoolExp <- AndBoolExp ('or' AndBoolExp)?
+AndBoolExp <- (NotBoolExp / CompExp) ('and' (NotBoolExp / CompExp))?
+NotBoolExp <- 'not' CompExp { no_ast_opt }
+CompExp <- (BitXOrExp / BOOL) (('==' / '!=' / '<=' / '>=' / '<' / '>') (BitXOrExp / BOOL))?
+
+# Math
+BitXOrExp <- BitAndExp ('^' BitAndExp)?
+BitAndExp <- BitShiftExp (('&' / '|') BitShiftExp)?
+BitShiftExp <- BitExp (('<<' | '>>') BitExp)?
+BitExp <- BitNotExp / AddSubExp
+BitNotExp <- '~' AddSubExp { no_ast_opt }
+AddSubExp <- MulDivExp (('+' / '-') MulDivExp)?
+MulDivExp <- ExpExp (('*' / '/' / '%') ExpExp)?
+ExpExp <- (MiscExp / PRIMARY) ('**' (MiscExp / PRIMARY))?
+
+# Misc
+MiscExp <- CallExp
+CallExp <- ScripExp ('(' (Statement (',' Statement)*)? ')')? { no_ast_opt }
+ScripExp <- DotExp ('[' BitXOrExp (',' BitXOrExp)* ']')?
+DotExp <- NAME ('.' MiscExp)*
+# What.Hi[No]()
+
+DataArray <- '(' (BitXOrExp / DataArray / BOOL) (',' (BitXOrExp / DataArray / BOOL))* ')'
+
+# Literals
+BOOL <- 'true' / 'false'
+PRIMARY <- '(' (BitXOrExp) ')' / NAME / NUMBER / STRING
+NUMBER  <- < '-'?[0-9]+('.'[0-9]+)? >
+NAME <- < [a-zA-Z_][a-zA-Z_0-9]* > { no_ast_opt }
+STRING <- DOUBLE_STRING / SINGLE_STRING
+DOUBLE_STRING <- '"' ('\\"' / !'"'.)* '"'
+SINGLE_STRING <- "'" ("\\'" / !"'".)* "'"
+
+%whitespace <-  [ \t\n\r]*
+%word <- NAME

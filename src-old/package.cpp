@@ -6,7 +6,7 @@
 #include <sstream>
 
 namespace Martin {
-
+/*
     void Package::SaveToFile(const std::string& path) {
         std::ofstream file(path);
         if (!file.is_open()) {
@@ -442,5 +442,5 @@ namespace Martin {
 
         return package;
     }
-
+*/
 }

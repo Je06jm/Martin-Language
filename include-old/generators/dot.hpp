@@ -38,7 +38,6 @@ namespace Martin {
             } else {
                 switch (right->node->GetType()) {
                     case Type::OP_Dot:
-                    case Type::Misc_Call:
                         if (!right->node->Valid()) return false;
                         break;
                     
