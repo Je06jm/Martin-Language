@@ -1,7 +1,9 @@
 #include <martin.hpp>
 #include <logging.hpp>
 
-//#include "grammer.hpp"
+#ifndef MARTIN_DEBUG
+#include "grammar.hpp"
+#endif
 
 #include <iostream>
 #include <fstream>
@@ -21,20 +23,24 @@ namespace Martin {
     std::unique_ptr<peg::parser> CreateParser() {
         auto parser = std::make_unique<peg::parser>();
 
-        auto file = std::ifstream("grammar.txt", std::ios_base::binary | std::ios_base::in);
+#ifdef MARTIN_DEBUG
+        auto file = std::ifstream("src/grammar.txt", std::ios_base::binary | std::ios_base::in);
         if (!file.is_open()) {
-            Fatal("Could not open 'grammar.txt'");
+            Fatal("Could not open 'src/grammar.txt'");
         }
 
         std::stringstream buffer;
         buffer << file.rdbuf();
         file.close();
 
-        std::string MartinGrammar = buffer.str();
+        std::string martin_grammar = buffer.str();
+#else
+        std::string martin_grammar = std::string(grammar);
+#endif
 
         parser->set_logger(ParserErrorLog);
 
-        if (!parser->load_grammar(MartinGrammar)) {
+        if (!parser->load_grammar(martin_grammar)) {
             Fatal("Could not create parser");
         }
 
@@ -75,14 +81,7 @@ namespace Martin {
             index = code.find("//");
         }
 
-        // Double line
-        index = code.find("/*");
-        while (index != std::string::npos) {
-            index2 = code.find("*/", index);
-            code = code.substr(0, index) + code.substr(index2 + 2);
-
-            index = code.find("/*");
-        }
+        // Double line comments are not supported right now
     }
 
     std::shared_ptr<peg::Ast> CreateASTFromCode(const std::string& code, bool optimize) {

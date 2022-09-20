@@ -33,7 +33,7 @@ interface MyInterface {
     func add[T: Addable and Iterable, J: Addable](const nums : T) -> J
 }
 
-constexpr VERSION : Versioning = (1, 0, 0)
+const VERSION : Versioning = (1, 0, 0)
 // Maybe {1, 0, 0} could be static data? Or the compiler could auto detect
 // when this should happen with tuples. Another option is that [] could also
 // indicate list data
@@ -63,8 +63,12 @@ func multiple() -> Tuple {
 }
 
 func main(let params : String8[?]) -> None {
+    let mynum : Int32 = 0
+    set mynum2 : Int32 = 0
+    
+
     let mystr : String = "Hello"
-    set mystr2 := "Constant String!"
+    set mystr2 := "Constant String!"//
 
     const app_name : shared String8 = "My App"
     

@@ -74,11 +74,11 @@ VariableSetterGetterPrivate <- 'private' VariableSetterGetterType
 VariableSetterGetterType <- 'setter' / 'getter'
 VariableTypeAssignmentDefinition <- VariableDefinitionStart ':=' Assignable
 VariableAssignmentDefinition <- VariableTypeDefinition '=' Assignable
-VariableTypeDefinition <- VariableDefinitionStart ':' (CallableSignature / TypesDefinition)
+VariableTypeDefinition <- VariableDefinitionStart ':' (CallableSignature / TypesDefinitionNoModifiers)
 VariableDefinitionStart <- VariableExtern? VariableModifier* VariableAccessType VariableNameList
 VariableModifier <- 'static' / 'virtual' / 'unsafe'
 VariableExtern <- 'extern' NAME NAME?
-VariableAccessType <- 'let' / 'set' / 'const' / 'constexpr'
+VariableAccessType <- 'set' / 'let' / 'const'
 VariableNameList <- (VariableNameExpand / NAME) (',' (VariableNameExpand / NAME))*
 VariableNameExpand <- '{' NAME '}' { no_ast_opt }
 
@@ -114,10 +114,14 @@ GenericItem <- NAME ':' GenericNames
 GenericNames <- NAMESPACE ('and' NAMESPACE)*
 
 # Types Definition
+TypesDefinitionNoModifiers <- TypesUnionNoModifiers / TypesItemNoModifiers
 TypesDefinition <- TypesUnion / TypesItem
+TypesUnionNoModifiers <- '{' TypesItemNoModifiers (',' TypesItemNoModifiers)+ '}'
 TypesUnion <- '{' TypesItem (',' TypesItem)+ '}'
-TypesItem <- TypeMemoryType? TypePointerType* (TypesConstDefinition / TypeArray)
-TypesConstDefinition <- 'const' TypeArray
+TypesItemNoModifiers <- TypeMemoryType? TypePointerType* TypeArray
+TypesItem <- TypeMemoryType? TypePointerType* (TypesSetDefinition / TypesConstDefinition / TypeArray)
+TypesConstDefinition <- 'const' TypeArray { no_ast_opt }
+TypesSetDefinition <- 'set' TypeArray { no_ast_opt }
 TypeArray <- NAME ('[' TypeArrayItem (',' TypeArrayItem)* ']')?
 TypeArrayItem <- Expression / '?'
 TypePointerType <- 'pointer' / 'reference'

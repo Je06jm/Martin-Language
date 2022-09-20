@@ -71,7 +71,7 @@ else:
         file.write("namespace Martin {\n\n")
 
         file.write("\tauto grammar = R\"(\n")
-        with open("config/grammar.txt", "r") as grammar:
+        with open("src/grammar.txt", "r") as grammar:
             file.write(grammar.read())
         
         file.write("\n")
