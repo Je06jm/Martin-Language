@@ -1,5 +1,5 @@
-#ifndef MARTIN_ERROR
-#define MARTIN_ERROR
+#ifndef MARTIN_LOGGING
+#define MARTIN_LOGGING
 
 #include <string>
 #include <vector>

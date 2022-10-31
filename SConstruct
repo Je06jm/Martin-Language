@@ -81,7 +81,7 @@ else:
 
         file.write("#endif")
 
-src = src = Glob('./src/*.cpp')
+src = Glob('./src/*.cpp')
 
 if gen_program:
-    env.Program('martin', Glob('./app/*.cpp') + src)
+    env.Program('martin', Glob('./app/*.cpp') + src, LIBS=['LLVM-10.so'])

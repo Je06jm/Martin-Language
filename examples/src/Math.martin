@@ -1,3 +1,0 @@
-func add() -> None {
-    a.b()
-}

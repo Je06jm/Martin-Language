@@ -1,221 +1,66 @@
-from IO import print, input
-from OS import name as os_name, version as os_version
-import OS
-import System as Sys
+from IO import println, readline
+pub import OS
+
+@platform: not windows
 import Math
 
-// When imported, all private scopes are not included. Only this
-// file can access what's inside of this private scope
-
-typedef MyCallFunc : (let myid : Int32) -> None
-typedef MyClassHeap : MyClass
-
-struct Versioning {
-    let major, minor, patch : Int32
+func in_type(var type : type, var typelist : type) -> bool {
+    return 1
 }
 
-union Floating {
-    let single : Float32
-    let double : Float64
-}
-
-enum FloatingType {
-    SINGLE
-    DOUBLE
-}
-
-struct FloatingValue {
-    let value : Floating
-    let type : FloatingType
-}
-
-interface MyInterface {
-    func add[T: Addable and Iterable, J: Addable](const nums : T) -> J
-}
-
-const VERSION : Versioning = (1, 0, 0)
-// Maybe {1, 0, 0} could be static data? Or the compiler could auto detect
-// when this should happen with tuples. Another option is that [] could also
-// indicate list data
-
-func print_type(const type : Type) -> None {
-    print()
-}
-
-func test(let num : Int32 = 3) -> {None, Int32} {
-    if (num % 2 == 0) {
-        return None
-    } elif (num % 3 == 0) {
-        return -1
-    } else {
-        return num
-    }
-}
-
-func call_callback(let fn : (let a : Int32) -> None) -> None {
-    fn(1)
-    let callback : MyCallFunc = fn
-    callback(2)
-}
-
-func multiple() -> Tuple {
-    return (1, 2, 3)
-}
-
-func main(let params : String8[?]) -> None {
-    let mynum : Int32 = 0
-    set mynum2 : Int32 = 0
-    
-
-    let mystr : String = "Hello"
-    set mystr2 := "Constant String!"//
-
-    const app_name : shared String8 = "My App"
-    
-    let mystr3 := 'Hello again!'
-
-    let myarr : Int32[1,2,3]
-    set myarr2 : Int32[?,2]
-
-    let myref : Float32[?]
-    set myref2 : Float32[?,4,?]
-    let myref3 : Float32[?]
-    // And so on
-
-    let myptr : Float64
-    set myptr2 : Float64[?]
-    let myptr3 : Float64[2] = (1, 2)
-    set myptr4 : Float64[2,3] = ((1, 2, 3), (1, 2, 3))
-    // And so on
-
-    // These are allocated on the heap
-    let a : unique Int32 = 1
-    let b : shared Int32 = 2
-
-    // () defines a constexpr tuple
-    // [] defines a constexpr list or a scope
-    
-    //print(Stringformat("My two strings are {}, {}\n", mystr, mystr2))
-
-    foreach (item in params) {
-        print("Foreach loop {}\n", item)
+@platform: windows
+func sqrt(var num : f32) -> {f32, ValueError} {
+    if (num < 0) {
+        return ValueError
     }
 
-    for (let i := 0, i < params.count, i += 1) {
-        print(String8.format("For loop {}: {}\n", i, params.get(i)))
-    }
+    return num ** (1/2)
+}
 
-    for (,, i++) {}
+@platform~
+func sqrt(var num : f32) -> any {
+    return Math.sqrt(num)
+}
 
-    let ttype : {None, Int32, Float32, String} = test(2)
-    let atype := test(1)
+pub func main(var args : str[*]) -> i32 {
+    // Literals have a mutable type by default
 
-    match (ttype) {
-        default: lambda () -> None {
-            print("Nothing!")
+    var nums : {f32, ValueError}[*]
+    for (var i := 1, i < args.count(), i++) {
+        var val := f32(args[i])
+
+        if (val is ValueError) {
+            // Error!
+            println(str.format('Argument {}:{} is not a number!', i, args[i]))
         }
-        Int32: lambda (let num : Int32) -> None {
-            //print(String8.format("Number! {}\n", num))
+        // elif () {}
+        // else {}
+
+        nums.push_back(val)
+    }
+
+    for (val in nums) {
+        match (val) {
+            f32: lambda (var val : f32) -> none { println(val) }
+            // ValueError:
+            default: none
         }
-        //Float32: PrintFloat(ttype)
-        String: lambda () -> None {
-            //let tmp := String8.substr(ttype, 2, String8.length(ttype))
-            print(tmp)
+
+        pattern (i32(val)) {
+            0: lambda (var _ : i32) -> none { println("Zero!") }
+            default: lambda (var _ : i32) -> none { println('Not zero!') }
         }
     }
 
-    let my_pattern := "Hello"
-    pattern (my_pattern) {
-        default: lambda () -> None {
-            print("Unknown!\n")
+    while (true) {
+        println("Type 'q' to quit")
+        var in := readline()
+        if (in == 'q') {
+            break
         }
 
-        "Hello": lambda () -> None {
-            print("Pattern matched 'Hello'\n")
-        }
+        // continue
     }
 
-    let float_enum : Floating = Floating.SINGLE
-
-    switch (float_enum) {
-        //Floating.SINGLE: {}
-        //Floating.DOUBLE: lambda () -> None {}
-        default: print()
-    }
-
-    const mytuple : Tuple = multiple()
-    const a, b, c : Int32 = multiple() // Expands tuple to match the number of variables
-
-    //Math.add((1, 2, 3, 4))
-    //Math.add(1, 2, 3, 4)
-
-    //Math.add2((1, 2, 3, 4))
-    //Math.add2([1, 2, 3, 4])
-    //Math.add2(1, 2, 3, 4)
-
-    const myfunc : MyCallFunc = lambda (const a : Int32 = 0) -> None {
-        //print(String8.format("{}\n", a))
-    }
-
-    myfunc()
-    myfunc(2)
-}
-
-class MyClass implements MyInterface : public MyOther {
-    friend protected MyWinClass
-    friend private MyCppClass
-
-    public {
-        func Construct() -> None {}
-        func Deconstruct() -> None {}
-
-        func myfunc() -> None {}
-        extern "C" func MyCFunc() -> None {}
-        extern "C" func MyExternCFunc() -> None
-        func MyVirtual() -> None {}
-        virtual func MyPureVirtual() -> None
-        func MyOverride() -> None
-        static func MyStatic() -> None {}
-        static unsafe func CanUsePointers() -> None {}
-        static virtual let a : Int32
-        static virtual let b : Int32
-
-        let a : Int32 {
-            getter: lambda () -> Int32 {
-                return a
-            }
-            private setter: lambda (const new_a : Int32) -> None {
-                a = new_a
-            }
-        }
-
-        let b : Int32 {
-            private getter: my_get
-            setter: my_set
-        }
-    }
-    private {
-        func my_get(let new_b : Int32) -> None {
-            b = new_b
-        }
-
-        func my_set() -> Int32 {
-            return b
-        }
-    }
-    protected {
-
-    }
-}
-
-// Ends up being defined as Namespace::ParentClass::MyCppClass in C++
-extern "C++" "Namespace::ParentClass" class MyCppClass[T: Addable] {
-    public {
-        func Construct() -> None
-        func Deconstruct() -> None
-
-        func DebugPrint(const text : String) -> None
-
-        deleted func operator_assignment(const other : reference MyCppClass) -> None
-    }
+    return 0
 }

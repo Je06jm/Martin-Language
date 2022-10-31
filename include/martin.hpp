@@ -8,7 +8,6 @@
 namespace Martin {
 
     std::string ReadFile(const std::string& path);
-    void SanitizeCode(std::string& code);
     std::shared_ptr<peg::Ast> CreateASTFromCode(const std::string& code, bool optimize=true);
 
 }

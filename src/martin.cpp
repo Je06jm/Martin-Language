@@ -64,26 +64,6 @@ namespace Martin {
         return code;
     }
 
-    void SanitizeCode(std::string& code) {
-        // Scrub comments out since I can't figure out how to do that in the grammar
-
-        // Single line
-        size_t index = code.find("//");
-        size_t index2;
-        while (index != std::string::npos) {
-            index2 = code.find("\n", index);
-            if (index2 == std::string::npos) {
-                code = code.substr(0, index);
-            } else {
-                code = code.substr(0, index) + code.substr(index2);
-            }
-
-            index = code.find("//");
-        }
-
-        // Double line comments are not supported right now
-    }
-
     std::shared_ptr<peg::Ast> CreateASTFromCode(const std::string& code, bool optimize) {
         current_file = "Code";
         
