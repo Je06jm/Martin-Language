@@ -1,6 +1,8 @@
-#define DEBUG_PRINT
+#include <logging.hpp>
+#include <codegen.hpp>
 
 /*
+<<<<<<< HEAD
 #include <unicode.hpp>
 
 #include <values.hpp>
@@ -25,13 +27,16 @@
 
 //Martin::UnicodeType input_unicode_type = Martin::UnicodeType_8Bits;
 
+=======
+>>>>>>> 199adef817ec4e361f445b5dc192f38a7fb78168
 void PrintNodes(std::shared_ptr<peg::Ast> ast, int level = 0) {
-    if (ast == nullptr) {
-        return;
-    }
-
     for (int i = 0; i < level; i++) {
         Martin::Print("\t");
+    }
+
+    if (ast == nullptr) {
+        Martin::Print("(nullptr)\n");
+        return;
     }
 
     std::string type = ast->is_token ? "Token" : "Node";
@@ -43,21 +48,23 @@ void PrintNodes(std::shared_ptr<peg::Ast> ast, int level = 0) {
         PrintNodes(node, level + 1);
     }
 }
+*/
 
 int main(int argc, char** argv) {
     argc--; argv++;
 
     if (argc < 1) {
-        Martin::Warning("Usage: ttparse.exe <file>\n");
+        Martin::Warning("Usage: martin.exe <code> <obj?>\n");
         exit(EXIT_SUCCESS);
     }
 
-    auto code = Martin::ReadFile(argv[0]);
-    Martin::SanitizeCode(code);
-
-    auto ast = Martin::CreateASTFromCode(code);
-
-    PrintNodes(ast);
+    auto codegen = Martin::CodeGen::FromFile(argv[0]);
+    
+    if (argc < 2) {
+        codegen.Run();
+    } else {
+        codegen.Compile(argv[1]);
+    }
 
     Martin::Syntax::Analyze(ast);
 

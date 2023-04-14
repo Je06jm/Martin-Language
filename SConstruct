@@ -95,9 +95,13 @@ else:
 
         file.write("#endif")
 
-src = src = Glob('./src/*.cpp')
+src = Glob('./src/*.cpp')
 
 if gen_program:
+<<<<<<< HEAD
     env.Program('martin', Glob('./app/*.cpp') + src)
 else:
     env.StaticLibrary('martin', src)
+=======
+    env.Program('martin', Glob('./app/*.cpp') + src, LIBS=['LLVM-10.so'])
+>>>>>>> 199adef817ec4e361f445b5dc192f38a7fb78168
