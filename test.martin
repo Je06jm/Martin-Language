@@ -1,1 +1,5 @@
-let a : const Int32
+pub import hello.world;
+
+pub extern "C" var EXIT_SUCCESS : i32;
+
+pub func main() -> u32;

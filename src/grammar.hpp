@@ -4,134 +4,62 @@
 namespace Martin {
 
 	auto grammar = R"(
-# Top
-TOP <- GlobalScope
+TOP <- (ImportNames / Function / FunctionDefinition / Extern? VariableDefinition ';')* { no_ast_opt }
 
-# Global Scope
-GlobalScope <- ImportsDefinition* PrivateGlobalScope? GlobalScopeItem*
-PrivateGlobalScope <- 'private' '{' ImportsDefinition* GlobalScopeItem* '}'
-GlobalScopeItem <- CustomTypeDefinitions / ClassDefinition / FunctionDefinition / VariableDefinition
+ImportNames <- 'import' ImportNameAs (',' ImportNameAs)* ';' { no_ast_opt }
+ImportNameAs <- NAMESPACE ('as' NAMESPACE)?
 
-# Imports
-ImportsDefinition <- ImportFrom / ImportNames
-ImportFrom <- 'from' NAME ImportNames
-ImportNames <- 'import' ImportNameList
-ImportNameList <- ImportNameListItem (',' ImportNameListItem)*
-ImportNameListItem <- NAME ('as' NAME)?
+Function <- Extern? 'func' NAME FunctionSignature Scope { no_ast_opt }
+FunctionDefinition <- Extern? 'func' NAME FunctionSignature ';' { no_ast_opt }
 
-# Class Definitions
-ClassDefinition <- ClassExtern? 'class' NAME Generics? ('implements' GenericNames)? (':' ClassInherits)? '{' ClassFriends* ClassScope* '}'
-ClassExtern <- 'extern' STRING STRING?
-ClassInherits <- ClassScopeAccess NAMESPACE (',' ClassScopeAccess NAMESPACE)*
-ClassScope <- ClassScopeAccess '{' ClassStatement* '}'
-ClassFriends <- 'friend' ClassScopeAccess NAMESPACE
-ClassStatement <- FunctionDefinition / VariableDefinition / CustomTypeDefinitions
-ClassScopeAccess <- 'public' / 'private' / 'protected'
+Extern <- 'extern' STRING { no_ast_opt }
 
-# Custom Type Definitions
-CustomTypeDefinitions <- InterfaceDefinition / TypedefDefinition / StructTypeDefinition / UnionTypeDefinition / EnumTypeDefinition
-InterfaceDefinition <- 'interface' NAME Generics? ('implements' GenericNames)? '{' StructUnionItem* '}'
-TypedefDefinition <- 'typedef' NAME ':' (TypesDefinition / CallableSignature)
-StructTypeDefinition <- 'struct' NAME '{' StructUnionItem* '}'
-UnionTypeDefinition <- 'union' NAME '{' StructUnionItem* '}'
-StructUnionItem <- FunctionDefinition / VariableDefinition
-EnumTypeDefinition <- 'enum' NAME '{' EnumItem* '}'
-EnumItem <- NAME ('=' IntegerMathExpression)?
+Switch <- 'switch' '(' Expression ')' '{' SwitchItem+ '}'
+SwitchItem <- NAMESPACE ':' (Lambda / DataAccess) ';'
+Match <- 'match' '(' Expression ')' '{' MatchItem+ '}'  { no_ast_opt }
+MatchItem <- NAMESPACE ':' (Lambda / DataAccess) ';'
 
-# Function Definitions
-FunctionDefinition <- FunctionImplementation / FunctionPureDefinition
-FunctionImplementation <- FunctionPureDefinition Scope
-FunctionPureDefinition <- FunctionExtern? FunctionModifier* 'func' NAME CallableSignature
-FunctionModifier <- 'static' / 'virtual' / 'unsafe' / 'deleted'
-FunctionExtern <- 'extern' STRING
+Lambda <- 'lambda' FunctionSignature Scope
 
-# Scope
-Scope <- '{' Statement* '}'
+FunctionSignature <- '(' (VariableDefinition (',' VariableDefinition)*)? ')' '->' TypeUnion
 
-# Statement
-Statement <- FlowStatement / SwitchDefinition / LoopDefinition / VariableDefinition / BranchStatement / AssignmentStatement / CallVariable
+Scope <- '{' (Statement / Flow)* '}'
 
-# Flow Statements
-FlowStatement <- ReturnStatement / ContinueBreakStatement
-ContinueBreakStatement <- 'continue' / 'break'
-ReturnStatement <- 'return' Expression?
+Flow <- FlowControl / If / WhileLoop / ForEachLoop / ForLoop / Match / Switch
 
-# Switch Definitions
-SwitchDefinition <- SwitchSwitchDefinition / PatternSwitchDefinition / MatchSwitchDefinition
-SwitchSwitchDefinition <- 'switch' '(' Expression ')' '{' SwitchSwitchItem* '}' { no_ast_opt }
-SwitchSwitchItem <- NAMESPACE ':' CallableItem
-PatternSwitchDefinition <- 'pattern' '(' Expression ')' '{' PatternSwitchItem* '}' { no_ast_opt }
-PatternSwitchItem <- (STRING / 'default') ':' CallableItem
-MatchSwitchDefinition <- 'match' '(' Expression ')' '{' MatchSwitchItem* '}' { no_ast_opt }
-MatchSwitchItem <- NAMESPACE ':' CallableItem
+FlowControl <- ('return' (StatementList / Expression*) / 'break' NAME? / 'continue' NAME?) ';'
 
-# Loop Definitions
-LoopDefinition <- WhileLoopDefinitions / ForEachLoopDefinition / ForLoopDefinition { no_ast_opt }
-WhileLoopDefinitions <- 'while' '(' Expression ')' Scope { no_ast_opt }
-ForEachLoopDefinition <- 'foreach' '(' ForEachNames 'in' ForEachIterableItem ')' Scope { no_ast_opt }
-ForEachNames <- NAME (',' NAME)* { no_ast_opt }
-ForEachIterableItem <- CallVariable / DataAccess / TUPLE
-ForLoopDefinition <- 'for' '(' (VariableDefinition / AssignmentStatement)? ',' BooleanOperator? ',' (AssignmentStatement / Expression)? ')' Scope { no_ast_opt }
+If <- 'if' '(' BooleanOperator ')' Scope Elif* Else?
+Elif <- 'elif' '(' BooleanOperator ')' Scope
+Else <- 'else' Scope
 
-# Variable Definitions
-VariableDefinition <- VariableAssignmentDefinition / VariableTypeAssignmentDefinition / VariableTypeDefinition ('{' VariableSetterGetter+ '}')?
-VariableSetterGetter <- (VariableSetterGetterPrivate / VariableSetterGetterType) ':' CallableItem
-VariableSetterGetterPrivate <- 'private' VariableSetterGetterType
-VariableSetterGetterType <- 'setter' / 'getter'
-VariableTypeAssignmentDefinition <- VariableDefinitionStart ':=' Assignable
-VariableAssignmentDefinition <- VariableTypeDefinition '=' Assignable
-VariableTypeDefinition <- VariableDefinitionStart ':' (CallableSignature / TypesDefinitionNoModifiers)
-VariableDefinitionStart <- VariableExtern? VariableModifier* VariableAccessType VariableNameList
-VariableModifier <- 'static' / 'virtual' / 'unsafe'
-VariableExtern <- 'extern' NAME NAME?
-VariableAccessType <- 'set' / 'let' / 'const'
-VariableNameList <- (VariableNameExpand / NAME) (',' (VariableNameExpand / NAME))*
-VariableNameExpand <- '{' NAME '}' { no_ast_opt }
+WhileLoop <- (NAME ':')? 'while' '(' (BooleanOperator) ')' Scope
+ForEachLoop <- (NAME ':')? 'foreach' '(' NameList 'in' (DataAccess) ')' Scope
+ForLoop <- (NAME ':')? 'for' '(' (StatementItem)* ',' (BooleanOperator) ',' StatementList ')' Scope
 
-# Branch
-BranchStatement <- IfStatement ElifStatement* ElseStatement?
-IfStatement <- 'if' '(' Expression ')' Scope { no_ast_opt }
-ElifStatement <- 'elif' '(' Expression ')' Scope { no_ast_opt }
-ElseStatement <- 'else' Scope { no_ast_opt }
+Statement <- StatementItem ';'
+StatementList <- StatementItem (',' StatementItem)*
+StatementItem <- (VariableDefinition / VariableMultipleAssignment / VariableAssignment)
 
-# Assignment
-AssignmentStatement <- CopyAssignment / OperatorAssignment
-OperatorAssignment <- DataAccess OperatorAssignmentType Assignable
-OperatorAssignmentType <- '+=' / '-=' / '*=' / '/=' / '&=' / '**=' / '&=' / '|=' / '^=' / '<<=' / '>>='
-CopyAssignment <- DataAccess '=' Assignable
+VariableAssignment <- DataAccess VariableAssignmentType (Lambda / Expression)
+VariableMultipleAssignment <- NameList '=' (Lambda / Expression)
+VariableAssignmentType <- ('+' / '-' / '**' / '*' / '/' / '%' / '<<' / '>>' / '|' / '&' / '^')? '=' { no_ast_opt }
 
-# Assignable
-Assignable <- Expression / STRING / BOOL
+VariableDefinition <- Mutable? 'var' (VariableAutoTypeDefinition / VariableTypeDefinition)
+VariableAutoTypeDefinition <- NameList ':=' (Lambda / Expression)
+VariableTypeDefinition <- NameList ':' TypeUnion ('=' (Lambda / Expression))?
+NameList <- NAME (',' NAME)*
 
-# Expression
-Expression <- Lambda / BooleanOperator / TUPLE
+Expression <- EqualityIs / BooleanOperator / IntegerBitwiseExpression / MathExpression / DataAccess
 
-# Lambda
-Lambda <- 'lambda' CallableSignature Scope { no_ast_opt }
+EqualityIs <- NAME 'is' TypeUnion
 
-# Callable
-CallableItem <- Lambda / CallVariable / DataAccess
-CallableSignature <- Generics? '(' CallableSignatureArguments? ')' '->' TypesDefinition
-CallableSignatureArguments <- VariableDefinition (',' VariableDefinition)*
-
-# Generics
-Generics <- '[' GenericItem (',' GenericItem)* ']'
-GenericItem <- NAME ':' GenericNames
-GenericNames <- NAMESPACE ('and' NAMESPACE)*
-
-# Types Definition
-TypesDefinitionNoModifiers <- TypesUnionNoModifiers / TypesItemNoModifiers
-TypesDefinition <- TypesUnion / TypesItem
-TypesUnionNoModifiers <- '{' TypesItemNoModifiers (',' TypesItemNoModifiers)+ '}'
-TypesUnion <- '{' TypesItem (',' TypesItem)+ '}'
-TypesItemNoModifiers <- TypeMemoryType? TypePointerType* TypeArray
-TypesItem <- TypeMemoryType? TypePointerType* (TypesSetDefinition / TypesConstDefinition / TypeArray)
-TypesConstDefinition <- 'const' TypeArray { no_ast_opt }
-TypesSetDefinition <- 'set' TypeArray { no_ast_opt }
-TypeArray <- NAME ('[' TypeArrayItem (',' TypeArrayItem)* ']')?
-TypeArrayItem <- Expression / '?'
-TypePointerType <- 'pointer' / 'reference'
-TypeMemoryType <- 'unique' / 'shared'
+TypeUnion <- (Type) / ('{' Type ('|' Type)+ '}')
+Type <- (Mutable? TypeHeap)? TypeArr? Mutable? TypeHeap? (ANY / NONE / NAME) { no_ast_opt }
+TypeHeap <- '@u' / '@s' { no_ast_opt }
+TypeArr <- '[' (IntegerMathExpression / TypeArrDynamic) (',' (IntegerMathExpression / TypeArrDynamic))* ']' { no_ast_opt }
+TypeArrDynamic <- '*' { no_ast_opt }
+Mutable <- 'mut' { no_ast_opt }
 
 # Equality Operators
 BooleanOperator <- OrBooleanOperator
@@ -139,52 +67,37 @@ OrBooleanOperator <- AndBooleanOperator ('or' AndBooleanOperator)?
 AndBooleanOperator <- (NotBooleanOperator / ParenthesisOperator) ('and' (NotBooleanOperator / ParenthesisOperator))?
 NotBooleanOperator <- 'not' ParenthesisOperator { no_ast_opt }
 ParenthesisOperator <- EqualityOperator / '(' OrBooleanOperator ')'
-EqualityOperator <- (MathExpression / BOOL) (EqualityOperatorType (MathExpression / BOOL))?
+EqualityOperator <- (BOOL / MathExpression) (EqualityOperatorType (BOOL / MathExpression))?
 EqualityOperatorType <- '==' / '!=' / '<=' / '>=' / '<' / '>'
 
-# Bitwise Operators
-BitwiseExpression <- OrBitwise
-OrBitwise <- AndBitwise (OrBitwiseType AndBitwise)?
-OrBitwiseType <- '|' / '^'
-AndBitwise <- ShiftBitwise ('&' ShiftBitwise)?
-ShiftBitwise <- (NotBitwise / MathExpression) (ShiftBitwiseType (NotBitwise / MathExpression))?
-ShiftBitwiseType <- '<<' / '>>'
-NotBitwise <- '~' MathExpression { no_ast_opt }
+MathExpression <- AddSub
+AddSub <- MulDiv (AddSubType MulDiv)*
+MulDiv <- Exponent (MulDivType Exponent)*
+Exponent <- (Parenthesis / NUMBER / DataAccess) ('**' (Parenthesis / NUMBER / DataAccess))*
+Parenthesis <- '(' MathExpression ')'
 
 IntegerBitwiseExpression <- IntegerOrBitwise
-IntegerOrBitwise <- IntegerAndBitwise (OrBitwiseType IntegerAndBitwise)?
-IntegerAndBitwise <- IntegerShiftBitwise ('&' IntegerShiftBitwise)?
-IntegerShiftBitwise <- (IntegerNotBitwise / IntegerMathExpression) (ShiftBitwiseType (IntegerNotBitwise / IntegerMathExpression))?
+IntegerOrBitwise <- IntegerAndBitwise (OrBitwiseType IntegerAndBitwise)*
+IntegerAndBitwise <- IntegerShiftBitwise ('&' IntegerShiftBitwise)*
+IntegerShiftBitwise <- (IntegerNotBitwise / IntegerMathExpression) (('<<' / '>>') (IntegerNotBitwise / IntegerMathExpression))*
 IntegerNotBitwise <- '~' IntegerMathExpression { no_ast_opt }
 
-# Math Operators
-MathExpression <- AddSub
-AddSub <- (MulDiv AddSubType)? MulDiv / AddSubType MulDiv
-AddSubType <- '+' / '-'
-MulDiv <- Exponent (MulDivType Exponent)?
-MulDivType <- '*' / '/' / '%'
-Exponent <- (Parenthesis / CallVariable / PRIMARY) ('**' (Parenthesis / CallVariable / PRIMARY))?
-Parenthesis <- '(' BitwiseExpression ')'
-
 IntegerMathExpression <- IntegerAddSub
-IntegerAddSub <- IntegerMulDiv (AddSubType IntegerMulDiv)?
-IntegerMulDiv <- IntegerExponent (MulDivType IntegerExponent)?
-IntegerExponent <- (IntegerParenthesis / INTEGER / NAMESPACE) ('**' (IntegerParenthesis / INTEGER / NAMESPACE))?
+IntegerAddSub <- IntegerMulDiv (AddSubType IntegerMulDiv)*
+IntegerMulDiv <- IntegerExponent (MulDivType IntegerExponent)*
+IntegerExponent <- (IntegerParenthesis / INTEGER / DataAccess) ('**' (IntegerParenthesis / INTEGER / DataAccess))*
 IntegerParenthesis <- '(' IntegerBitwiseExpression ')'
 
-# Call
-CallVariable <- DataAccess '(' (VALUE (',' VALUE)*)? ')' { no_ast_opt }
+OrBitwiseType <- '|' / '^' { no_ast_opt }
+MulDivType <- '*' / '/' / '%' { no_ast_opt }
+AddSubType <- '+' / '-' { no_ast_opt }
 
-# Data Access
-VALUE <- MathExpression / TUPLE / NUMBER / STRING / BOOL
-PRIMARY <- NUMBER / IncrementDecrement / DataAccess
-TUPLE <- '(' (VALUE (',' VALUE)*)? ')'
-IncrementDecrement <- DataAccess ('++' / '--') { no_ast_opt }
-DataAccess <- ArrayAccess / DotAccess / NAME
-ArrayAccess <- NAME '[' ((INTEGER / DataAccess) (',' (INTEGER / DataAccess))*) ']'
-DotAccess <- NAME '.' DataAccess
+DataAccess <- (ArrayAccess / FunctorCall / NAME) ('.' (ArrayAccess / FunctorCall / NAME))*
+ArrayAccess <- NAME '[' IntegerBitwiseExpression (',' IntegerBitwiseExpression)* ']'
+FunctorCall <- NAME '(' (DataAccess / LITERAL_ANY)? (',' (DataAccess / LITERAL_ANY))* ')' { no_ast_opt }
 
 # Literals
+LITERAL_ANY <- BOOL / NUMBER / INTEGER / NAMESPACE / NAME / STRING
 BOOL <- 'true' / 'false'
 NUMBER  <- < [0-9]+('.'[0-9]+)? >
 INTEGER <- < [0-9]+ >
@@ -193,6 +106,8 @@ NAME <- < [a-zA-Z_][a-zA-Z_0-9]* > { no_ast_opt }
 STRING <- DOUBLE_STRING / SINGLE_STRING
 DOUBLE_STRING <- '"' ('\\"' / !'"'.)* '"'
 SINGLE_STRING <- "'" ("\\'" / !"'".)* "'"
+NONE <- 'none'
+ANY <- 'any'
 
 %whitespace <-  [ \t\n\r]*
 %word <- NAME

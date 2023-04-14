@@ -21,6 +21,7 @@
 #include <iostream>
 #include <logging.hpp>
 #include <martin.hpp>
+#include <analyze.hpp>
 
 //Martin::UnicodeType input_unicode_type = Martin::UnicodeType_8Bits;
 
@@ -57,6 +58,8 @@ int main(int argc, char** argv) {
     auto ast = Martin::CreateASTFromCode(code);
 
     PrintNodes(ast);
+
+    Martin::Syntax::Analyze(ast);
 
     return 0;
 }

@@ -12,7 +12,7 @@ namespace Martin {
 
     std::string current_file;
 
-    void ParserErrorLog(size_t line, size_t col, const std::string& message, const std::string& rule) {
+    void ParserErrorLog(size_t line, size_t, const std::string& message, const std::string& rule) {
 #ifdef MARTIN_DEBUG
         Fatal("Syntax error, $($). Rule $: $\n", current_file, line, rule, message);
 #else
@@ -46,7 +46,7 @@ namespace Martin {
 
         parser->enable_ast();
 
-        return std::move(parser);
+        return parser;
     }
 
     std::string ReadFile(const std::string& path) {

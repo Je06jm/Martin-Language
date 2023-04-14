@@ -1,3 +1,15 @@
 func add() -> None {
     a.b()
 }
+
+func sum<T: Number>(T lhs, T rhs) -> T {
+    return (lhs + rhs) / 2
+}
+
+func rand(bool requires_int := False) -> {Int32, Float32} {
+    if (requires_int) {
+        return randi()
+    } else {
+        return randf()
+    }
+}

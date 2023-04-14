@@ -80,7 +80,7 @@ namespace Martin {
 
         extern Formatter* FormatFormatter;
 
-        inline void FormatArr(std::vector<std::string>& arr) {}
+        inline void FormatArr(std::vector<std::string>&) {}
 
         template <typename T, typename... Args>
         inline void FormatArr(std::vector<std::string>& arr, T first, Args... rest) {
